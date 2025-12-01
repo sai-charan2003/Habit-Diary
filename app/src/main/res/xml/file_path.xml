@@ -1,0 +1,9 @@
+<paths>
+    <files-path
+        name="images"
+        path="." />
+
+    <cache-path
+        name="images"
+        path="."/>
+</paths>

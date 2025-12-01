@@ -1,0 +1,34 @@
+package com.charan.habitdiary.presentation.add_habit.components
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun FormTextComponent(
+    title: String,
+    textFieldLabel: String,
+    textValue: String,
+    onTextChange: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium
+        )
+        Spacer(Modifier.height(6.dp))
+        OutlinedTextField(
+            value = textValue,
+            onValueChange = onTextChange,
+            label = { Text(textFieldLabel) },
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}

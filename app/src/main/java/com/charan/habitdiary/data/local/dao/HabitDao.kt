@@ -1,0 +1,31 @@
+package com.charan.habitdiary.data.local.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.charan.habitdiary.data.local.entity.HabitEntity
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface HabitDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsetHabit(habit: HabitEntity) : Long
+
+    @Query("SELECT * FROM habit_entity ORDER BY createdAt DESC")
+    fun getAllHabits(): Flow<List<HabitEntity>>
+
+    @Query("SELECT * FROM habit_entity WHERE isDeleted = 0 AND ((habitFrequency LIKE '%' || :currentDayNumber || '%'))")
+    fun getTodayHabits(
+        currentDayNumber: Int,
+    ): Flow<List<HabitEntity>>
+
+    @Query("SELECT * FROM habit_entity WHERE id = :id")
+    fun getHabitWithId(id: Int): HabitEntity
+
+    @Query("UPDATE habit_entity SET isDeleted = 1 WHERE id = :id")
+    fun deleteHabit(id: Int)
+
+
+}
