@@ -9,12 +9,15 @@ import com.charan.habitdiary.data.repository.HabitLocalRepository
 import com.charan.habitdiary.presentation.mapper.toDailyLogEntity
 import com.charan.habitdiary.presentation.mapper.toDailyLogItemDetails
 import com.charan.habitdiary.utils.DateUtil
+import com.charan.habitdiary.utils.DateUtil.toFormattedString
+import com.charan.habitdiary.utils.DateUtil.toLocalDate
 import com.charan.habitdiary.utils.PermissionManager
 import com.charan.habitdiary.utils.ProcessState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,9 +53,9 @@ class DailyLogViewModel @Inject constructor(
             DailyLogEvent.OnOpenSettingsForPermissions -> permissionManager.openSettingsPermissionScreen()
             is DailyLogEvent.ToggleShowRationaleForCameraPermission -> setCameraRationaleVisible(event.showRationale)
             is DailyLogEvent.OnToggleDateSelectorDialog -> setDatePickerVisible(event.isVisible)
-            is DailyLogEvent.OnDateSelected -> updateDate(event.timeMillis)
+            is DailyLogEvent.OnDateSelected -> updateDate(event.date)
             is DailyLogEvent.OnToggleTimeSelectorDialog -> setTimePickerVisible(event.isVisible)
-            is DailyLogEvent.OnTimeSelected -> updateTime(event.timeMillis)
+            is DailyLogEvent.OnTimeSelected -> updateTime(event.time)
             DailyLogEvent.OnDeleteDailyLog -> deleteDailyLog()
             is DailyLogEvent.OnToggleDeleteDialog -> setDeleteDialogVisible(event.showDeleteDialog)
         }
@@ -72,12 +75,11 @@ class DailyLogViewModel @Inject constructor(
                 )
             }
         } else {
-            val now = System.currentTimeMillis()
             _state.update {
                 it.copy(
                     dailyLogItemDetails = it.dailyLogItemDetails.copy(
-                        dateMillis = now,
-                        timeMillis = now
+                        date = DateUtil.getCurrentDate(),
+                        time = DateUtil.getCurrentTime()
                     )
                 )
             }
@@ -122,16 +124,16 @@ class DailyLogViewModel @Inject constructor(
     private fun updateDate(dateMillis: Long) {
         _state.update {
             it.copy(
-                dailyLogItemDetails = it.dailyLogItemDetails.copy(dateMillis = dateMillis),
+                dailyLogItemDetails = it.dailyLogItemDetails.copy(date = dateMillis.toLocalDate()),
                 showDateSelectDialog = false
             )
         }
     }
 
-    private fun updateTime(timeMillis: Long) {
+    private fun updateTime(timeMillis: LocalTime) {
         _state.update {
             it.copy(
-                dailyLogItemDetails = it.dailyLogItemDetails.copy(timeMillis = timeMillis),
+                dailyLogItemDetails = it.dailyLogItemDetails.copy(time = timeMillis),
                 showTimeSelectDialog = false
             )
         }
@@ -174,17 +176,14 @@ class DailyLogViewModel @Inject constructor(
 
     private fun observeDateTimeChanges() = viewModelScope.launch {
         _state
-            .map { it.dailyLogItemDetails.dateMillis to it.dailyLogItemDetails.timeMillis }
+            .map { it.dailyLogItemDetails.date to it.dailyLogItemDetails.time }
             .distinctUntilChanged()
             .collectLatest { (dateMillis, timeMillis) ->
                 _state.update { current ->
                     current.copy(
                         dailyLogItemDetails = current.dailyLogItemDetails.copy(
-                            formattedDateString = DateUtil.getDateStringFromMillis(dateMillis),
-                            formattedTimeString = DateUtil.convertTimeMillisToTimeString(
-                                timeMillis,
-                                dataStoreRepository.getIs24HourFormat.first()
-                            )
+                            formattedDateString = dateMillis.toFormattedString(),
+                            formattedTimeString = timeMillis.toFormattedString(current.is24HourFormat)
                         )
                     )
                 }

@@ -22,6 +22,7 @@ fun RootNavigation(
         if(onBoardingCompleted){
             backStack.add(Destinations.BottomBarNav)
         } else {
+            backStack.clear()
             backStack.add(Destinations.OnBoardingScreenNav)
         }
     }
@@ -76,7 +77,9 @@ fun RootNavigation(
 
                 is Destinations.OnBoardingScreenNav -> NavEntry(key){
                     OnBoardingScreen {
+                        backStack.removeLastOrNull()
                         backStack.add(Destinations.BottomBarNav)
+
                     }
                 }
                 else -> NavEntry(key) { Text("Unknown route") }

@@ -1,5 +1,8 @@
 package com.charan.habitdiary.presentation.add_daily_log
 
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
+
 data class DailyLogState(
     val showImagePickOptionsSheet : Boolean = false,
     val tempImagePath : String = "",
@@ -18,8 +21,8 @@ data class DailyLogItemDetails(
     val imagePath: String = "",
     val formattedDateString: String = "",
     val formattedTimeString: String = "",
-    val timeMillis: Long = 0L,
-    val dateMillis: Long = 0L,
+    val time: LocalTime = LocalTime(0,0),
+    val date: LocalDate = LocalDate(1970,1,1),
     val habitId: Int? = null,
     val habitName: String? = null,
     val habitDescription: String? = null

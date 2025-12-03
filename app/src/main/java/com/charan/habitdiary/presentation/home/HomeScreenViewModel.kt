@@ -105,7 +105,7 @@ class HomeScreenViewModel @Inject constructor(
 
     private fun onAddHabitClick(habitUI : HabitItemUIState,isChecked : Boolean) = viewModelScope.launch(Dispatchers.IO) {
         if (isChecked) {
-            habitLocalRepository.upsetDailyLog(habitUI.toDailyLogEntity(System.currentTimeMillis()))
+            habitLocalRepository.upsetDailyLog(habitUI.toDailyLogEntity(DateUtil.getCurrentDateTime()))
         } else {
             habitLocalRepository.deleteDailyLog(habitUI.logId ?: return@launch)
         }

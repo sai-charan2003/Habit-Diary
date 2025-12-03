@@ -6,6 +6,7 @@ import com.charan.habitdiary.data.repository.DataStoreRepository
 import com.charan.habitdiary.data.repository.HabitLocalRepository
 import com.charan.habitdiary.notification.NotificationScheduler
 import com.charan.habitdiary.presentation.mapper.toHabitEntity
+import com.charan.habitdiary.utils.DateUtil.toFormattedString
 import com.charan.habitdiary.utils.DateUtil.toHourMinute
 import com.charan.habitdiary.utils.DateUtil.toHourMinutesLong
 import com.charan.habitdiary.utils.DateUtil.toTimeString
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,11 +57,11 @@ class AddHabitScreenViewModel @Inject constructor(
             }
 
             is AddHabitEvent.OnHabitTimeChange -> {
-                updateHabitTime(event.hour, event.minutes)
+                updateHabitTime(event.time)
             }
 
             is AddHabitEvent.OnHabitReminderTimeChange -> {
-                updateHabitReminderTime(event.hour, event.minutes)
+                updateHabitReminderTime(event.time)
             }
 
             is AddHabitEvent.OnHabitFrequencyChange -> {
@@ -132,20 +134,20 @@ class AddHabitScreenViewModel @Inject constructor(
         _state.update { it.copy(habitDescription = description) }
     }
 
-    private fun updateHabitTime(hour: Int, minutes: Int) {
+    private fun updateHabitTime(time : LocalTime) {
         _state.update {
             it.copy(
                 showHabitTimeDialog = false,
-                habitTime = Time(hour, minutes),
+                habitTime = time,
             )
         }
     }
 
-    private fun updateHabitReminderTime(hour: Int, minutes: Int) {
+    private fun updateHabitReminderTime(time : LocalTime) {
         _state.update {
             it.copy(
                 showReminderTimeDialog = false,
-                habitReminderTime = Time(hour, minutes),
+                habitReminderTime = time,
             )
         }
     }
@@ -153,15 +155,15 @@ class AddHabitScreenViewModel @Inject constructor(
     private fun initializeHabit(habitId : Int?) = viewModelScope.launch(Dispatchers.IO){
         if(habitId!=null){
             val habit = habitLocalRepository.getHabitWithId(habitId)
-            val habitTime = habit.habitTime.toHourMinute()
-            val reminderTime = habit.habitReminder.toHourMinute()
+            val habitTime = habit.habitTime
+            val reminderTime = habit.habitReminder
             _state.update {
                 it.copy(
                     habitTitle = habit.habitName,
                     habitDescription = habit.habitDescription,
-                    habitTime = Time(habitTime.first,habitTime.second),
+                    habitTime = habitTime,
                     habitFrequency = habit.habitFrequency.split(",").map { day -> day.toInt() },
-                    habitReminderTime = Time(reminderTime.first,reminderTime.second),
+                    habitReminderTime = reminderTime ?: LocalTime(8,0),
                     isReminderEnabled = checkReminderStatus(habit.isReminderEnabled),
                     habitId = habit.id,
                     isEdit = true
@@ -203,7 +205,7 @@ class AddHabitScreenViewModel @Inject constructor(
         val id = habitLocalRepository.upsetHabit(_state.value.toHabitEntity())
         notificationScheduler.scheduleReminder(
             habitId = id.toInt(),
-            time = _state.value.habitReminderTime?.toHourMinutesLong() ?: 0,
+            time = _state.value.habitReminderTime ?: LocalTime(8,0),
             isReminderEnabled = _state.value.isReminderEnabled,
             frequency = _state.value.habitFrequency,
         )
@@ -217,8 +219,8 @@ class AddHabitScreenViewModel @Inject constructor(
             .collectLatest { (habitTime, reminderTime,is24HourFormat) ->
                 _state.update {
                     it.copy(
-                        formatedHabitTime = habitTime.toTimeString(is24HourFormat),
-                        formatedReminderTime = habitTime.toTimeString(is24HourFormat)
+                        formatedHabitTime = habitTime.toFormattedString(is24HourFormat),
+                        formatedReminderTime = reminderTime.toFormattedString(is24HourFormat)
                     )
 
                 }

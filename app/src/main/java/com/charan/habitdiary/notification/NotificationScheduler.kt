@@ -8,6 +8,7 @@ import android.util.Log
 import com.charan.habitdiary.utils.DateUtil.toHourMinute
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.number
@@ -25,7 +26,7 @@ class NotificationScheduler(
     @OptIn(ExperimentalTime::class)
     fun scheduleReminder(
         habitId: Int,
-        time: Long,
+        time: LocalTime?,
         frequency: List<Int>,
         isReminderEnabled: Boolean = false,
     ) {
@@ -33,8 +34,12 @@ class NotificationScheduler(
             cancelReminder(habitId)
             return
         }
+        if(time==null){
+            return
+        }
 
-        val (hours, minutes) = time.toHourMinute()
+        val hours = time.hour
+        val minutes = time.minute
 
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
         var scheduledDate = now.date

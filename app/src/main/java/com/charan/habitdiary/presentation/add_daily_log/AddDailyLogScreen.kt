@@ -35,8 +35,6 @@ import com.charan.habitdiary.presentation.common.components.DeleteWarningDialog
 import com.charan.habitdiary.presentation.common.components.RationaleDialog
 import com.charan.habitdiary.presentation.common.components.SelectDateDialog
 import com.charan.habitdiary.presentation.common.components.SelectTimeDialog
-import com.charan.habitdiary.utils.DateUtil.toLocalTime
-import com.charan.habitdiary.utils.DateUtil.toTimeMillis
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
@@ -101,7 +99,7 @@ fun AddDailyLogScreen(
             onDateSelected = {
                 viewModel.onEvent(DailyLogEvent.OnDateSelected(it ?: 0L))
             },
-            dateMillis = state.dailyLogItemDetails.dateMillis,
+            dateMillis = state.dailyLogItemDetails.date,
 
 
         )
@@ -113,9 +111,9 @@ fun AddDailyLogScreen(
                 viewModel.onEvent(DailyLogEvent.OnToggleTimeSelectorDialog(false))
             },
             onTimeSelected = {
-                viewModel.onEvent(DailyLogEvent.OnTimeSelected(it.toTimeMillis()))
+                viewModel.onEvent(DailyLogEvent.OnTimeSelected(it))
             },
-            selectedTime = state.dailyLogItemDetails.timeMillis.toLocalTime(),
+            selectedTime = state.dailyLogItemDetails.time,
             is24HourFormat = state.is24HourFormat
         )
     }
@@ -209,7 +207,8 @@ fun AddDailyLogScreen(
                 },
                 onDelete = {
                     viewModel.onEvent(DailyLogEvent.OnToggleDeleteDialog(true))
-                }
+                },
+                isSaveEnabled = state.dailyLogItemDetails.imagePath.isNotEmpty() || state.dailyLogItemDetails.notesText.isNotEmpty()
             )
         }
     ) { innerPadding->

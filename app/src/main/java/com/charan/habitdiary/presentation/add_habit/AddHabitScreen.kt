@@ -95,12 +95,11 @@ fun AddHabitScreen(
             onTimeSelected = {
                 viewModel.onEvent(
                     AddHabitEvent.OnHabitTimeChange(
-                        hour = it.hour,
-                        minutes = it.minute
+                        it
                     )
                 )
             },
-            selectedTime = LocalTime(state.habitTime.hour, state.habitTime.minutes),
+            selectedTime = state.habitTime,
             is24HourFormat = state.is24HourFormat
         )
     }
@@ -113,12 +112,11 @@ fun AddHabitScreen(
             onTimeSelected = {
                 viewModel.onEvent(
                     AddHabitEvent.OnHabitReminderTimeChange(
-                        hour = it.hour,
-                        minutes = it.minute
+                        it
                     )
                 )
             },
-            selectedTime = LocalTime(state.habitReminderTime?.hour ?: 0, state.habitReminderTime?.minutes ?: 0),
+            selectedTime = state.habitReminderTime,
             is24HourFormat = state.is24HourFormat
         )
     }
@@ -159,7 +157,8 @@ fun AddHabitScreen(
                 showDeleteButton = state.isEdit,
                 onDelete = {
                     viewModel.onEvent(AddHabitEvent.OnToggleDeleteDialog(true))
-                }
+                },
+                isSaveEnabled = state.habitTitle.isNotEmpty()
 
             )
         }

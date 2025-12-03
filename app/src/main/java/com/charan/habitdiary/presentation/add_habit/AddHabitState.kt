@@ -1,12 +1,14 @@
 package com.charan.habitdiary.presentation.add_habit
 
+import kotlinx.datetime.LocalTime
+
 data class AddHabitState(
     val habitTitle : String = "",
     val habitDescription : String = "",
-    val habitReminderTime : Time? = Time(),
+    val habitReminderTime : LocalTime = LocalTime(8,0),
     val formatedReminderTime : String = "08:00",
     val isLoading : String = "",
-    val habitTime : Time = Time(),
+    val habitTime : LocalTime = LocalTime(8,0),
     val formatedHabitTime : String = "08:00",
     val habitFrequency : List<Int> = listOf(1,2,3,4,5),
     val showHabitTimeDialog : Boolean = false,

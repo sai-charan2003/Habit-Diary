@@ -2,18 +2,25 @@ package com.charan.habitdiary.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.charan.habitdiary.data.local.Converters
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.serialization.Serializable
 
 @Serializable
 @Entity(tableName = "habit_entity")
+@TypeConverters(
+    Converters::class
+)
 data class HabitEntity(
     @PrimaryKey(autoGenerate = true)
     val id : Int = 0,
     val habitName : String,
-    val habitReminder : Long,
-    val createdAt : Long,
+    val habitReminder : LocalTime?,
+    val createdAt : LocalDateTime,
     val habitDescription : String,
-    val habitTime : Long,
+    val habitTime : LocalTime,
     val habitFrequency : String,
     val isDeleted : Boolean = false,
     val isReminderEnabled : Boolean = false

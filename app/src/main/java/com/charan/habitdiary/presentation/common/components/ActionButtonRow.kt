@@ -21,14 +21,16 @@ fun ActionButtonRow(
     deleteButtonText : String = "Delete",
     onSave : () -> Unit,
     onDelete : () -> Unit,
-    showDeleteButton : Boolean = false
+    showDeleteButton : Boolean = false,
+    isSaveEnabled : Boolean = true
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 25.dp)
     ) {
         Button(
             onClick = onSave,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            enabled = isSaveEnabled
         ) {
             Text(saveButtonText)
         }

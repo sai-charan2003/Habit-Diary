@@ -10,7 +10,8 @@ import com.charan.habitdiary.presentation.add_habit.AddHabitState
 import com.charan.habitdiary.presentation.common.model.DailyLogItemUIState
 import com.charan.habitdiary.presentation.home.HabitItemUIState
 import com.charan.habitdiary.utils.DateUtil
-import com.charan.habitdiary.utils.DateUtil.toHourMinutesLong
+import com.charan.habitdiary.utils.DateUtil.toFormattedString
+import kotlinx.datetime.LocalDateTime
 
 fun List<HabitEntity>.toHabitUIList() : List<HabitItemUIState>{
     return this.map {
@@ -45,16 +46,16 @@ fun AddHabitState.toHabitEntity(): HabitEntity {
     return HabitEntity(
         habitName = this.habitTitle,
         habitDescription = this.habitDescription,
-        habitTime = this.habitTime.toHourMinutesLong(),
-        habitReminder = this.habitReminderTime?.toHourMinutesLong() ?: 0L,
+        habitTime = this.habitTime,
+        habitReminder = this.habitReminderTime,
         habitFrequency = this.habitFrequency.joinToString(","),
         isReminderEnabled = this.isReminderEnabled,
         id = this.habitId ?: 0,
-        createdAt = System.currentTimeMillis()
+        createdAt = DateUtil.getCurrentDateTime()
     )
 }
 
-fun HabitItemUIState.toDailyLogEntity(date : Long) : DailyLogEntity {
+fun HabitItemUIState.toDailyLogEntity(date : LocalDateTime) : DailyLogEntity {
     return DailyLogEntity(
         logNote = "",
         imagePath = "",
@@ -69,7 +70,7 @@ fun DailyLogState.toDailyLogEntity(): DailyLogEntity {
         id = item.id ?: 0,
         logNote = item.notesText,
         imagePath = item.imagePath,
-        createdAt = DateUtil.mergeDateTimeToMillis(item.dateMillis, item.timeMillis),
+        createdAt = DateUtil.mergeDateTime(item.date, item.time),
         habitId = item.habitId
     )
 }
@@ -83,7 +84,7 @@ fun DailyLogWithHabit.toDailyLogUIState(is24HourFormat : Boolean) : DailyLogItem
         id = this.dailyLogEntity.id,
         logNote = this.dailyLogEntity.logNote,
         imagePath = this.dailyLogEntity.imagePath,
-        createdAt = DateUtil.convertTimeMillisToTimeString(this.dailyLogEntity.createdAt,is24HourFormat),
+        createdAt = this.dailyLogEntity.createdAt.time.toFormattedString(is24HourFormat),
         habitId = this.dailyLogEntity.habitId,
         habitName = this.habitEntity?.habitName
     )
@@ -100,8 +101,8 @@ fun DailyLogWithHabit.toDailyLogItemDetails() : DailyLogItemDetails {
         id = this.dailyLogEntity.id,
         notesText = this.dailyLogEntity.logNote,
         imagePath = this.dailyLogEntity.imagePath,
-        dateMillis = this.dailyLogEntity.createdAt,
-        timeMillis = this.dailyLogEntity.createdAt,
+        date = this.dailyLogEntity.createdAt.date,
+        time = this.dailyLogEntity.createdAt.time,
         habitId = this.dailyLogEntity.habitId,
         habitName = this.habitEntity?.habitName,
         habitDescription = this.habitEntity?.habitDescription

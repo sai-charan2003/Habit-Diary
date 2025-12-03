@@ -106,6 +106,19 @@ object DateUtil {
             .toEpochMilliseconds()
     }
 
+    fun mergeDateTime(date: LocalDate, time: LocalTime): LocalDateTime {
+        val merged = LocalDateTime(
+            date.year,
+            date.month,
+            date.day,
+            time.hour,
+            time.minute
+        )
+
+        return merged.toInstant(TimeZone.currentSystemDefault())
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+    }
+
     @OptIn(ExperimentalTime::class)
     fun TimePickerState.getTimeMillis(): Long {
         val today = Clock.System.now()
@@ -145,11 +158,33 @@ object DateUtil {
         return "$hour:$minute$amPm"
     }
 
+    fun LocalTime.toFormattedString(is24HrFormat : Boolean) : String{
+        val hour = if(is24HrFormat){
+            this.hour
+        } else {
+            if(this.hour % 12 ==0) 12 else this.hour % 12
+        }
+        val minute = this.minute.toString().padStart(2,'0')
+        val amPm = if(is24HrFormat) "" else if(this.hour <12) " AM" else " PM"
+        return "$hour:$minute$amPm"
+    }
+
+    fun LocalDate.toFormattedString() : String{
+        val month = this.month.name.lowercase().substring(0, 3).replaceFirstChar { it.uppercase() }
+        return "$month ${this.day}, ${this.year}"
+    }
+
     @OptIn(ExperimentalTime::class)
     fun Long.toLocalTime() : LocalTime {
         return Instant.fromEpochMilliseconds(this)
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .time
+    }
+
+    fun Long.toLocalDate() : LocalDate {
+        return Instant.fromEpochMilliseconds(this)
+            .toLocalDateTime(TimeZone.UTC)
+            .date
     }
 
     @OptIn(ExperimentalTime::class)
@@ -184,6 +219,12 @@ object DateUtil {
         return LocalDate.now()
     }
 
+    fun getCurrentTime() : LocalTime {
+        return Clock.System.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .time
+    }
+
 
     fun DayOfWeek.getDisplayName() : String{
         return this.name.lowercase().replaceFirstChar { it.uppercase() }
@@ -192,5 +233,16 @@ object DateUtil {
     fun LocalDate.toEndOfDayMillis() : Long {
         val endOfDay = this.atTime(23, 59, 59, 999_999_999)
         return endOfDay.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+    }
+
+    fun getCurrentDateTime() : LocalDateTime {
+        return Clock.System.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+    }
+
+    fun LocalDateTime.toFormattedString(is24HrFormat : Boolean) : String{
+        val datePart = this.date.toFormattedString()
+        val timePart = this.time.toFormattedString(is24HrFormat)
+        return "$datePart, $timePart"
     }
 }

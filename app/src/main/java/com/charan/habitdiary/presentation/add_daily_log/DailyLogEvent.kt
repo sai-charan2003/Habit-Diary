@@ -1,6 +1,7 @@
 package com.charan.habitdiary.presentation.add_daily_log
 
 import android.net.Uri
+import kotlinx.datetime.LocalTime
 
 sealed class DailyLogEvent {
 
@@ -24,11 +25,11 @@ sealed class DailyLogEvent {
 
     data class OnToggleDateSelectorDialog(val isVisible : Boolean) : DailyLogEvent()
 
-    data class OnDateSelected(val timeMillis : Long) : DailyLogEvent()
+    data class OnDateSelected(val date : Long) : DailyLogEvent()
 
     data class OnToggleTimeSelectorDialog(val isVisible : Boolean) : DailyLogEvent()
 
-    data class OnTimeSelected(val timeMillis : Long) : DailyLogEvent()
+    data class OnTimeSelected(val time : LocalTime) : DailyLogEvent()
 
     data class OnToggleDeleteDialog(val showDeleteDialog : Boolean) : DailyLogEvent()
 
