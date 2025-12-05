@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.charan.habitdiary.data.local.dao.DailyLogDao
 import com.charan.habitdiary.data.local.dao.HabitDao
 import com.charan.habitdiary.data.local.entity.DailyLogEntity
@@ -16,6 +17,9 @@ import com.charan.habitdiary.data.local.entity.HabitEntity
     ],
     version = 1,
     exportSchema = false
+)
+@TypeConverters(
+    Converters::class
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun habitDao() : HabitDao

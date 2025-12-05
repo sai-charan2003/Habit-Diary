@@ -46,7 +46,7 @@ fun HabitItemCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(16.dp)
         ) {
 
             Row(
@@ -61,7 +61,7 @@ fun HabitItemCard(
                 ) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleMedium
                     )
 
                     if (description.isNotBlank()) {
@@ -80,25 +80,26 @@ fun HabitItemCard(
                 )
             }
 
-            Row(
-                modifier = Modifier
-                    .padding(top = 14.dp),
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-            ) {
+            if (time.isNotBlank() || reminder.isNotBlank()) {
+                Row(
+                    modifier = Modifier.padding(top = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                ) {
 
-                if (time.isNotBlank()) {
-                    HabitInfoItem(
-                        icon = Icons.Rounded.Schedule,
-                        text = time
-                    )
-                }
+                    if (time.isNotBlank()) {
+                        HabitInfoItem(
+                            icon = Icons.Rounded.Schedule,
+                            text = time
+                        )
+                    }
 
-                if (reminder.isNotBlank()) {
-                    HabitInfoItem(
-                        icon = Icons.Rounded.Notifications,
-                        text = reminder
-                    )
+                    if (reminder.isNotBlank()) {
+                        HabitInfoItem(
+                            icon = Icons.Rounded.Notifications,
+                            text = reminder
+                        )
+                    }
                 }
             }
         }
@@ -117,32 +118,15 @@ private fun HabitInfoItem(
             imageVector = icon,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(end = 4.dp)
+            modifier = Modifier
+                .size(18.dp)
+                .padding(end = 4.dp)
         )
 
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
-}
-
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun HabitItemCardPreview() {
-    MaterialTheme {
-        HabitItemCard(
-            title = "Morning Meditation",
-            description = "10 minutes of guided mindfulness",
-            time = "07:00 AM",
-            reminder = "06:55 AM",
-            isCompleted = false,
-            onCompletedChange = {},
-            onClick = {}
         )
     }
 }
@@ -157,20 +141,22 @@ fun RoundCheckbox(
 
     Box(
         modifier = Modifier
-            .size(26.dp)
+            .size(28.dp)
             .clip(CircleShape)
             .clickable { onCheckedChange(!checked) }
+            .padding(4.dp)
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
 
             drawCircle(
-                color = if (checked) fillColor.copy(alpha = 0.4f) else strokeColor,
+                color = if (checked) fillColor.copy(alpha = 0.35f) else strokeColor,
                 style = if (!checked) {
                     Stroke(width = 2.dp.toPx())
                 } else {
                     Fill
                 }
             )
+
             if (checked) {
                 drawCircle(
                     color = fillColor,
@@ -180,4 +166,5 @@ fun RoundCheckbox(
         }
     }
 }
+
 

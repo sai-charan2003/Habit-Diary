@@ -1,5 +1,6 @@
 package com.charan.habitdiary.presentation.add_habit
 
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalTime
 
 sealed class AddHabitEvent {
@@ -15,7 +16,7 @@ sealed class AddHabitEvent {
     data class OnHabitReminderToggle(val isEnabled : Boolean) : AddHabitEvent()
 
     data class OnToggleHabitTimeDialog(val showHabitTimeDialog : Boolean) : AddHabitEvent()
-    data class OnHabitFrequencyChange(val habitFrequency : Int) : AddHabitEvent()
+    data class OnHabitFrequencyChange(val dayOfWeek : DayOfWeek) : AddHabitEvent()
     data class OnHabitReminderTimeChange(val time : LocalTime) : AddHabitEvent()
     object OnSaveHabitClick : AddHabitEvent()
 

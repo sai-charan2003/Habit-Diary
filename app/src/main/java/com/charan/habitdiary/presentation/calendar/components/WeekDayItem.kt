@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun WeekDayItem(
-    day: String,
     date: String,
     isSelected: Boolean = false,
     onClick: () -> Unit,
@@ -46,7 +45,6 @@ fun WeekDayItem(
     Surface(
         modifier = Modifier
             .padding(4.dp)
-            .size(64.dp)
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         tonalElevation = if (isSelected) 4.dp else 0.dp,
@@ -62,15 +60,6 @@ fun WeekDayItem(
                 style = MaterialTheme.typography.bodySmall,
                 color = contentColor.copy(alpha = 0.8f)
             )
-
-            Text(
-                text = day,
-                style = MaterialTheme.typography.titleMedium,
-                color = contentColor
-            )
-
-
-
             if (hasContent) {
                 Spacer(modifier = Modifier.height(4.dp))
                 Box(
@@ -89,7 +78,6 @@ fun WeekDayItem(
 @Composable
 fun DayItemPreview(){
     WeekDayItem(
-        day = "15",
         isSelected = true,
         onClick = {},
         isToday = false,

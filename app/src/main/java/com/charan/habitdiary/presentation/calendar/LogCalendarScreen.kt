@@ -68,7 +68,7 @@ fun LogCalendarScreen(
         derivedStateOf {
             when (state.selectedCalendarView) {
                 CalendarViewType.WEEK -> {
-                    weekCalendarState.firstVisibleWeek.days.first().date.month
+                    weekCalendarState.lastVisibleWeek.days.last().date.month
                 }
                 CalendarViewType.MONTH -> {
                     monthCalendarState.lastVisibleMonth.yearMonth.month
@@ -142,7 +142,8 @@ fun LogCalendarScreen(
                         viewModel.onEvent(CalendarScreenEvents.OnDateSelected(date))
                     },
                     currentDate = state.currentDate,
-                    selectedDate = state.selectedDate
+                    selectedDate = state.selectedDate,
+                    visibleMonth = weekCalendarState.lastVisibleWeek.days.last().date.month
                 )
             }
             AnimatedVisibility(
@@ -156,7 +157,8 @@ fun LogCalendarScreen(
                     selectedDate = state.selectedDate,
                     onClick = { date ->
                         viewModel.onEvent(CalendarScreenEvents.OnDateSelected(date))
-                    }
+                    },
+                    visibleMonth = monthCalendarState.lastVisibleMonth.yearMonth.month
                 )
             }
 

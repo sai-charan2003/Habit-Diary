@@ -7,9 +7,6 @@ import com.charan.habitdiary.data.repository.HabitLocalRepository
 import com.charan.habitdiary.notification.NotificationScheduler
 import com.charan.habitdiary.presentation.mapper.toHabitEntity
 import com.charan.habitdiary.utils.DateUtil.toFormattedString
-import com.charan.habitdiary.utils.DateUtil.toHourMinute
-import com.charan.habitdiary.utils.DateUtil.toHourMinutesLong
-import com.charan.habitdiary.utils.DateUtil.toTimeString
 import com.charan.habitdiary.utils.PermissionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +19,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalTime
 import javax.inject.Inject
 
@@ -65,7 +63,7 @@ class AddHabitScreenViewModel @Inject constructor(
             }
 
             is AddHabitEvent.OnHabitFrequencyChange -> {
-                toggleHabitFrequency(event.habitFrequency)
+                toggleHabitFrequency(event.dayOfWeek)
             }
 
             is AddHabitEvent.OnToggleHabitTimeDialog -> {
@@ -162,7 +160,7 @@ class AddHabitScreenViewModel @Inject constructor(
                     habitTitle = habit.habitName,
                     habitDescription = habit.habitDescription,
                     habitTime = habitTime,
-                    habitFrequency = habit.habitFrequency.split(",").map { day -> day.toInt() },
+                    habitFrequency = habit.habitFrequency,
                     habitReminderTime = reminderTime ?: LocalTime(8,0),
                     isReminderEnabled = checkReminderStatus(habit.isReminderEnabled),
                     habitId = habit.id,
@@ -176,7 +174,7 @@ class AddHabitScreenViewModel @Inject constructor(
         return isReminderEnable && permissionManager.isNotificationPermissionGranted()
     }
 
-    private fun toggleHabitFrequency(frequency: Int) {
+    private fun toggleHabitFrequency(frequency: DayOfWeek) {
         val updatedFrequencies = state.value.habitFrequency.toMutableList().apply {
             if (contains(frequency)) remove(frequency) else add(frequency)
         }

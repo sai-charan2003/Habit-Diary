@@ -25,14 +25,17 @@ class NotificationReceiver : BroadcastReceiver() {
                 val habitId = intent?.getIntExtra("habitId", -1) ?: -1
                 if (habitId != -1 && appContext != null) {
                     val habit = habitLocalRepository.getHabitWithId(habitId)
-                    notificationHelper.showNotification(
-                        title = "Habit Reminder",
-                        message = "It's time for your habit: ${habit.habitName}"
-                    )
+                    val habitLog = habitLocalRepository.getLoggedHabitFromIdForRange(habitId)
+                    if(habitLog == null){
+                        notificationHelper.showNotification(
+                            title = "Habit Reminder",
+                            message = "It's time for your habit: ${habit.habitName}"
+                        )
+                    }
                     notificationScheduler.scheduleReminder(
                         habitId = habit.id,
                         time = habit.habitReminder,
-                        frequency = habit.habitFrequency.split(",").mapNotNull { it.toIntOrNull() },
+                        frequency = habit.habitFrequency,
                         isReminderEnabled = habit.isReminderEnabled
                     )
                 }

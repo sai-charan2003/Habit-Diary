@@ -1,13 +1,15 @@
 package com.charan.habitdiary.presentation.home
 
 import com.charan.habitdiary.presentation.common.model.DailyLogItemUIState
+import kotlinx.datetime.LocalTime
 
 data class HomeScreenState(
     val habits : List<HabitItemUIState> = emptyList(),
     val dailyLogs : List<DailyLogItemUIState> = emptyList(),
     val isLoading : Boolean = false,
     val isFabExpanded : Boolean = false,
-    val todayDate : String = ""
+    val todayDate : String = "",
+    val is24HourFormat : Boolean = false
 )
 
 data class HabitItemUIState(
@@ -16,7 +18,8 @@ data class HabitItemUIState(
     val habitDescription : String,
     val habitTime : String,
     val isDone : Boolean = false,
-    val logId  : Int?
+    val logId  : Int?,
+    val habitReminderTime : String?
 )
 
 

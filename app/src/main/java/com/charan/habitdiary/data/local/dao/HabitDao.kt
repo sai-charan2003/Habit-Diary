@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.charan.habitdiary.data.local.entity.HabitEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.DayOfWeek
 
 @Dao
 interface HabitDao {
@@ -14,12 +15,22 @@ interface HabitDao {
     fun upsetHabit(habit: HabitEntity) : Long
 
     @Query("SELECT * FROM habit_entity ORDER BY createdAt DESC")
-    fun getAllHabits(): Flow<List<HabitEntity>>
+    fun getAllHabitsFlow(): Flow<List<HabitEntity>>
 
-    @Query("SELECT * FROM habit_entity WHERE isDeleted = 0 AND ((habitFrequency LIKE '%' || :currentDayNumber || '%'))")
+    @Query("SELECT * FROM habit_entity ORDER BY createdAt DESC")
+    fun getAllHabits(): List<HabitEntity>
+
+    @Query("""
+    SELECT * FROM habit_entity
+    WHERE isDeleted = 0
+    AND habitFrequency LIKE '%' || :currentDayOfWeek || '%'
+    ORDER BY createdAt DESC
+""")
     fun getTodayHabits(
-        currentDayNumber: Int,
+        currentDayOfWeek: DayOfWeek
     ): Flow<List<HabitEntity>>
+
+
 
     @Query("SELECT * FROM habit_entity WHERE id = :id")
     fun getHabitWithId(id: Int): HabitEntity

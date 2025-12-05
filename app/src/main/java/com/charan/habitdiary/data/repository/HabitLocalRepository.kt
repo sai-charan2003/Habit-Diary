@@ -6,6 +6,9 @@ import com.charan.habitdiary.data.local.model.DailyLogWithHabit
 import com.charan.habitdiary.data.local.model.HabitWithDone
 import com.charan.habitdiary.utils.DateUtil
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 interface HabitLocalRepository {
 
@@ -13,13 +16,15 @@ interface HabitLocalRepository {
 
     fun upsetDailyLog(dailyLog : DailyLogEntity)
 
-    fun getAllHabits() : Flow<List<HabitEntity>>
+    fun getAllHabitsFlow() : Flow<List<HabitEntity>>
+
+    fun getAllHabits() : List<HabitEntity>
 
     fun getAllDailyLogs() : Flow<List<DailyLogEntity>>
 
-    fun getDailyLogsInRange(startOfDay : Long = DateUtil.todayStartOfDay(),endOfDay : Long = DateUtil.todayEndOfDay()) : Flow<List<DailyLogWithHabit>>
+    fun getDailyLogsInRange(startOfDay : LocalDateTime = DateUtil.todayStartOfDay(),endOfDay : LocalDateTime = DateUtil.todayEndOfDay()) : Flow<List<DailyLogWithHabit>>
 
-    fun getTodayHabits(currentDayNumber : Int = DateUtil.currentDayIndex(), startOfDay : Long = DateUtil.todayStartOfDay()) : Flow<List<HabitWithDone>>
+    fun getTodayHabits(currentDayOfWeek : DayOfWeek = DateUtil.getCurrentDayOfWeek()) : Flow<List<HabitWithDone>>
 
     fun getDailyLogWithId(id : Int) : DailyLogEntity
 
@@ -31,5 +36,7 @@ interface HabitLocalRepository {
 
     fun deleteHabit(id : Int)
 
-    fun getLoggedHabitIdsForToday(startOfDay: Long = DateUtil.todayStartOfDay()) : Flow<List<DailyLogEntity>>
+    fun getLoggedHabitIdsForRange(startOfDay: LocalDateTime = DateUtil.todayStartOfDay(),endOfDay : LocalDateTime = DateUtil.todayEndOfDay()) : Flow<List<DailyLogEntity>>
+
+    fun getLoggedHabitFromIdForRange(habitId : Int,startOfDay: LocalDateTime = DateUtil.todayStartOfDay(),endOfDay : LocalDateTime = DateUtil.todayEndOfDay()) : DailyLogEntity?
 }

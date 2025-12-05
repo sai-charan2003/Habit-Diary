@@ -20,25 +20,27 @@ fun List<HabitEntity>.toHabitUIList() : List<HabitItemUIState>{
             habitName = it.habitName,
             habitDescription = it.habitDescription,
             habitTime = it.habitTime.toString(),
-            logId = null
+            logId = null,
+            habitReminderTime = null
         )
     }
 }
 
-fun HabitWithDone.toHabitUIState() : HabitItemUIState {
+fun HabitWithDone.toHabitUIState(is24HourFormat: Boolean) : HabitItemUIState {
     return HabitItemUIState(
         id = this.habitEntity.id,
         habitName = this.habitEntity.habitName,
         habitDescription = this.habitEntity.habitDescription,
-        habitTime = this.habitEntity.habitTime.toString(),
+        habitTime = this.habitEntity.habitTime.toFormattedString(is24HourFormat),
         isDone = this.isDone,
-        logId = this.logId
+        logId = this.logId,
+        habitReminderTime = this.habitEntity.habitReminder?.toFormattedString(is24HourFormat)
     )
 }
 
-fun List<HabitWithDone>.toHabitUIState() : List<HabitItemUIState> {
+fun List<HabitWithDone>.toHabitUIState(is24HourFormat: Boolean) : List<HabitItemUIState> {
     return this.map {
-        it.toHabitUIState()
+        it.toHabitUIState(is24HourFormat)
     }
 }
 
@@ -47,8 +49,8 @@ fun AddHabitState.toHabitEntity(): HabitEntity {
         habitName = this.habitTitle,
         habitDescription = this.habitDescription,
         habitTime = this.habitTime,
-        habitReminder = this.habitReminderTime,
-        habitFrequency = this.habitFrequency.joinToString(","),
+        habitReminder = if(this.isReminderEnabled) this.habitReminderTime else null,
+        habitFrequency = this.habitFrequency,
         isReminderEnabled = this.isReminderEnabled,
         id = this.habitId ?: 0,
         createdAt = DateUtil.getCurrentDateTime()

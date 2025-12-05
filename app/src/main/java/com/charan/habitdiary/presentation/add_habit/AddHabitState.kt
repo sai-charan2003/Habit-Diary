@@ -1,5 +1,7 @@
 package com.charan.habitdiary.presentation.add_habit
 
+import com.charan.habitdiary.utils.DateUtil
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalTime
 
 data class AddHabitState(
@@ -10,7 +12,7 @@ data class AddHabitState(
     val isLoading : String = "",
     val habitTime : LocalTime = LocalTime(8,0),
     val formatedHabitTime : String = "08:00",
-    val habitFrequency : List<Int> = listOf(1,2,3,4,5),
+    val habitFrequency : List<DayOfWeek> = DateUtil.defaultHabitFrequency(),
     val showHabitTimeDialog : Boolean = false,
     val showReminderTimeDialog : Boolean = false,
     val isReminderEnabled : Boolean = false,
@@ -19,9 +21,4 @@ data class AddHabitState(
     val habitId : Int? = null,
     val isEdit : Boolean = false,
     val is24HourFormat : Boolean = false
-)
-
-data class Time(
-    val hour : Int = 8,
-    val minutes : Int = 0
 )

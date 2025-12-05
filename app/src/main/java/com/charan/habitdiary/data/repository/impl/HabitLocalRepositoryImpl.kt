@@ -9,6 +9,9 @@ import com.charan.habitdiary.data.local.model.HabitWithDone
 import com.charan.habitdiary.data.repository.HabitLocalRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 class HabitLocalRepositoryImpl(
     private val habitDao : HabitDao,
@@ -24,7 +27,11 @@ class HabitLocalRepositoryImpl(
         dailyLogDao.upsetDailyLog(dailyLog)
     }
 
-    override fun getAllHabits(): Flow<List<HabitEntity>> {
+    override fun getAllHabitsFlow(): Flow<List<HabitEntity>> {
+        return habitDao.getAllHabitsFlow()
+    }
+
+    override fun getAllHabits(): List<HabitEntity> {
         return habitDao.getAllHabits()
     }
 
@@ -33,22 +40,20 @@ class HabitLocalRepositoryImpl(
     }
 
     override fun getDailyLogsInRange(
-        startOfDay: Long,
-        endOfDay: Long
+        startOfDay: LocalDateTime,
+        endOfDay: LocalDateTime
     ): Flow<List<DailyLogWithHabit>> {
         return dailyLogDao.getDailyLogsInRange(startOfDay, endOfDay)
     }
 
 
     override fun getTodayHabits(
-        currentDayNumber: Int,
-        startOfDay: Long
+        currentDayOfWeek: DayOfWeek,
     ): Flow<List<HabitWithDone>> {
         return combine(
-            habitDao.getTodayHabits(currentDayNumber),
-            getLoggedHabitIdsForToday(startOfDay)
+            habitDao.getTodayHabits(currentDayOfWeek),
+            getLoggedHabitIdsForRange()
         ) { habits, dailyLogs ->
-
             val logMap = dailyLogs.associateBy { it.habitId }
             habits.map { habit ->
                 val log = logMap[habit.id]
@@ -85,7 +90,15 @@ class HabitLocalRepositoryImpl(
         habitDao.deleteHabit(id)
     }
 
-    override fun getLoggedHabitIdsForToday(startOfDay: Long): Flow<List<DailyLogEntity>> {
-        return dailyLogDao.getLoggedHabitIdsForToday(startOfDay)
+    override fun getLoggedHabitIdsForRange(startOfDay: LocalDateTime,endOfDay: LocalDateTime): Flow<List<DailyLogEntity>> {
+        return dailyLogDao.getLoggedHabitIdsForToday(startOfDay,endOfDay)
+    }
+
+    override fun getLoggedHabitFromIdForRange(
+        habitId: Int,
+        startOfDay: LocalDateTime,
+        endOfDay: LocalDateTime
+    ): DailyLogEntity? {
+        return dailyLogDao.getLoggedHabitFromIdForRange(habitId, startOfDay, endOfDay)
     }
 }

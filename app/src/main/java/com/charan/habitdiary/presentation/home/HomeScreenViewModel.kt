@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,6 +42,7 @@ class HomeScreenViewModel @Inject constructor(
                 todayDate = DateUtil.getTodayDayAndDate()
             )
         }
+        observeIs24HourFormat()
 
     }
 
@@ -76,21 +79,26 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    private fun getHabits() = viewModelScope.launch(Dispatchers.IO){
-        habitLocalRepository.getTodayHabits().collectLatest { habits->
+    private fun getHabits() = viewModelScope.launch(Dispatchers.IO) {
+        combine(
+            habitLocalRepository.getTodayHabits(),
+            _state.map { it.is24HourFormat }.distinctUntilChanged()
+        ) { habits, is24Hours ->
+            habits.toHabitUIState(is24Hours)
+        }.collectLatest { habitsUIState ->
             _state.update {
-                it.copy(
-                    habits = habits.toHabitUIState()
-                )
-            }
+                it.copy(habits = habitsUIState)
 
+
+            }
         }
     }
+
 
     private fun getDailyLogs() = viewModelScope.launch(Dispatchers.IO) {
         combine(
             habitLocalRepository.getDailyLogsInRange(),
-            dataStoreRepo.getIs24HourFormat
+            _state.map { it.is24HourFormat }.distinctUntilChanged()
         ) { logs, is24Hours ->
             logs.toDailyLogUIStateList(is24Hours)
         }.collectLatest { dailyLogs ->
@@ -108,6 +116,15 @@ class HomeScreenViewModel @Inject constructor(
             habitLocalRepository.upsetDailyLog(habitUI.toDailyLogEntity(DateUtil.getCurrentDateTime()))
         } else {
             habitLocalRepository.deleteDailyLog(habitUI.logId ?: return@launch)
+        }
+    }
+    private fun observeIs24HourFormat() = viewModelScope.launch(Dispatchers.IO) {
+        dataStoreRepo.getIs24HourFormat.collectLatest { is24HourFormat ->
+            _state.update {
+                it.copy(
+                    is24HourFormat = is24HourFormat
+                )
+            }
         }
     }
 

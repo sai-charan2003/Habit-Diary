@@ -5,8 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.charan.habitdiary.utils.DateUtil.toHourMinute
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
@@ -27,7 +27,7 @@ class NotificationScheduler(
     fun scheduleReminder(
         habitId: Int,
         time: LocalTime?,
-        frequency: List<Int>,
+        frequency: List<DayOfWeek>,
         isReminderEnabled: Boolean = false,
     ) {
         if (!isReminderEnabled) {
@@ -65,7 +65,7 @@ class NotificationScheduler(
             )
         }
         while (true) {
-            val weekdayIndex = scheduledTime.dayOfWeek.isoDayNumber % 7
+            val weekdayIndex = scheduledTime.dayOfWeek
             if (frequency.contains(weekdayIndex)) {
                 break
             }

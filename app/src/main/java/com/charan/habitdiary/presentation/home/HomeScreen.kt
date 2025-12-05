@@ -1,6 +1,7 @@
 package com.charan.habitdiary.presentation.home
 
 import DayLogEntryItem
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -86,6 +87,7 @@ fun HomeScreen(
             item {
                 SectionHeading(
                     title = "Today's Habits",
+                    modifier = Modifier.padding(vertical = 15.dp)
                 )
                 if (state.habits.isEmpty()) {
                     EmptyStateItem(
@@ -113,14 +115,18 @@ fun HomeScreen(
                                 habit.id
                             )
                         )
-                    }
+                    },
+                    time = habit.habitTime,
+                    reminder = habit.habitReminderTime ?: ""
 
                 )
             }
             item {
                 SectionHeading(
                     title = "Daily Journals",
+                    modifier = Modifier.padding(vertical = 15.dp)
                 )
+
                 if (state.dailyLogs.isEmpty()) {
                     EmptyStateItem(
                         "No daily logs yet"

@@ -12,15 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.utils.DateUtil
+import kotlinx.datetime.DayOfWeek
 
 @Suppress("NonSkippableComposable")
 @Composable
 fun ScheduleHabitComponent(
     selectedTime: String,
     onTimeClick: () -> Unit,
-    selectedDays: List<Int>,
-    onDayToggle: (Int) -> Unit,
-    daysInitials: List<String> = DateUtil.getDayInitials()
+    selectedDays: List<DayOfWeek>,
+    onDayToggle: (DayOfWeek) -> Unit,
+    daysInitials: List<DayOfWeek> = DateUtil.getDaysOfWeek()
 ) {
     SectionContainer(title = "When will you do this?") {
 
@@ -51,9 +52,9 @@ fun ScheduleHabitComponent(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun SelectDaysItem(
-    daysInitials: List<String>,
-    selectedDays: List<Int>,
-    onDayToggle: (Int) -> Unit
+    daysInitials: List<DayOfWeek>,
+    selectedDays: List<DayOfWeek>,
+    onDayToggle: (DayOfWeek) -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
@@ -74,27 +75,16 @@ private fun SelectDaysItem(
     ) {
         daysInitials.forEachIndexed { index, label ->
             ToggleButton(
-                checked = selectedDays.contains(index),
-                onCheckedChange = { onDayToggle(index) },
+                checked = selectedDays.contains(label),
+                onCheckedChange = { onDayToggle(label) },
                 shapes = when (index) {
                     0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
                     daysInitials.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
                     else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                 }
             ) {
-                Text(label)
+                Text(label.name.take(1))
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ScheduleFieldPreview() {
-    ScheduleHabitComponent(
-        selectedTime = "08:00 AM",
-        onTimeClick = {},
-        selectedDays = listOf(1, 3, 5),
-        onDayToggle = {}
-    )
 }

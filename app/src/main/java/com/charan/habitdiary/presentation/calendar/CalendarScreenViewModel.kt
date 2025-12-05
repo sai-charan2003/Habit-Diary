@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.charan.habitdiary.data.repository.DataStoreRepository
 import com.charan.habitdiary.data.repository.HabitLocalRepository
 import com.charan.habitdiary.presentation.mapper.toDailyLogUIStateList
+import com.charan.habitdiary.utils.DateUtil.getEndOfDay
+import com.charan.habitdiary.utils.DateUtil.getStartOfDay
 import com.charan.habitdiary.utils.DateUtil.toEndOfDayMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 
@@ -101,8 +104,8 @@ class CalendarScreenViewModel @Inject constructor(
             .distinctUntilChanged()
             .flatMapLatest { date ->
                 _state.update { it.copy(dailyLogItem = emptyList()) }
-                val start = date.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
-                val end = date.toEndOfDayMillis()
+                val start = date.getStartOfDay()
+                val end = date.getEndOfDay()
                 val logsFlow = habitLocalRepository.getDailyLogsInRange(start, end)
                 combine(
                     logsFlow,
