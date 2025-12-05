@@ -8,5 +8,7 @@ plugins {
     alias(libs.plugins.plugin.room) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.aboutlibraries.plugin) apply false
+    alias(libs.plugins.google.gms.google.services) apply false
+    alias(libs.plugins.google.firebase.crashlytics) apply false
 
 }
