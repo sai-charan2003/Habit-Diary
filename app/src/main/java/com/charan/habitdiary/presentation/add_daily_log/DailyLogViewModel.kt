@@ -1,6 +1,7 @@
 package com.charan.habitdiary.presentation.add_daily_log
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.charan.habitdiary.data.repository.DataStoreRepository
@@ -140,6 +141,7 @@ class DailyLogViewModel @Inject constructor(
     }
 
     private fun saveDailyLog() = viewModelScope.launch(Dispatchers.IO) {
+        Log.d("TAG", "saveDailyLog: ${_state.value.toDailyLogEntity()}")
         habitLocalRepository.upsetDailyLog(
             _state.value.toDailyLogEntity()
         )

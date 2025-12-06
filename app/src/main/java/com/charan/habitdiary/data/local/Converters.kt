@@ -31,7 +31,7 @@ object Converters {
 
     @TypeConverter
     fun longToLocalDateTime(value : Long) : LocalDateTime {
-        return Instant.fromEpochSeconds(value).toLocalDateTime(TimeZone.currentSystemDefault())
+        return Instant.fromEpochMilliseconds(value).toLocalDateTime(TimeZone.currentSystemDefault())
     }
 
     @TypeConverter

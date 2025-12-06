@@ -76,17 +76,7 @@ object DateUtil {
         val todayIso = Clock.System.now()
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .dayOfWeek
-        Log.d("TAG", "getCurrentDayOfWeek: $todayIso")
         return todayIso
-    }
-
-
-    fun currentDayIndex(): Int {
-        val todayIso = Clock.System.now()
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-            .dayOfWeek
-            .isoDayNumber
-        return if (todayIso == 7) 0 else todayIso
     }
 
     fun mergeDateTime(date: LocalDate, time: LocalTime): LocalDateTime {
@@ -115,6 +105,7 @@ object DateUtil {
     }
 
     fun LocalDate.toFormattedString() : String{
+        Log.d("TAG", "toFormattedString: $this")
         val month = this.month.name.lowercase().substring(0, 3).replaceFirstChar { it.uppercase() }
         return "$month ${this.day}, ${this.year}"
     }
@@ -130,10 +121,6 @@ object DateUtil {
         return YearMonth.now()
     }
 
-    fun getStartOfMonth() : YearMonth {
-        return getCurrentMonth().minusMonths(100)
-    }
-
 
     @OptIn(ExperimentalTime::class)
     fun getCurrentDate() : LocalDate {
@@ -144,16 +131,6 @@ object DateUtil {
         return Clock.System.now()
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .time
-    }
-
-
-    fun DayOfWeek.getDisplayName() : String{
-        return this.name.lowercase().replaceFirstChar { it.uppercase() }
-    }
-
-    fun LocalDate.toEndOfDayMillis() : Long {
-        val endOfDay = this.atTime(23, 59, 59, 999_999_999)
-        return endOfDay.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
     }
 
     fun getCurrentDateTime() : LocalDateTime {

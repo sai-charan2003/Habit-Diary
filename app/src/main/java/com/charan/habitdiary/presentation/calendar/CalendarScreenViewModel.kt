@@ -7,7 +7,6 @@ import com.charan.habitdiary.data.repository.HabitLocalRepository
 import com.charan.habitdiary.presentation.mapper.toDailyLogUIStateList
 import com.charan.habitdiary.utils.DateUtil.getEndOfDay
 import com.charan.habitdiary.utils.DateUtil.getStartOfDay
-import com.charan.habitdiary.utils.DateUtil.toEndOfDayMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
