@@ -16,3 +16,5 @@ local.properties
 /app/src/release/
 /app/release/
 /app/src/debug/
+/.kotlin/
+/keystore.properties

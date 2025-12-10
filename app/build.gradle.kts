@@ -30,15 +30,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     val properties = Properties().apply {
-        load(project.rootProject.file("local.properties").inputStream())
+        load(project.rootProject.file("keystore.properties").inputStream())
     }
 
     signingConfigs {
         create("release"){
-            storeFile = properties.getProperty("storeFile")?.let { file(it) }
-            storePassword = properties.getProperty("storePassword")
-            keyAlias = properties.getProperty("keyAlias")
-            keyPassword = properties.getProperty("keyPassword")
+            storeFile =  properties.getProperty("storeFile")?.let { file(it) }
+            storePassword =  properties.getProperty("storePassword")
+            keyAlias =  properties.getProperty("keyAlias")
+            keyPassword =  properties.getProperty("keyPassword")
 
         }
     }

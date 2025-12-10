@@ -1,0 +1,60 @@
+name: Android Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Restore keystore and google services
+        run: |
+          mkdir -p app/src/release
+
+          # Keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/src/release/habitdiary_release.jks
+
+          # google-services
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/src/release/google-services.json
+
+          # keystore.properties
+          echo "storeFile=src/release/habitdiary_release.jks" > keystore.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
+
+      - name: Create local.properties
+        run: echo "" > local.properties
+
+      - name: Build Release
+        run: ./gradlew assembleRelease bundleRelease
+
+      - name: Upload AAB Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-aab
+          path: app/build/outputs/bundle/release/*.aab
+
+      - name: Create GitHub Release and Upload APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: app/build/outputs/apk/release/*.apk
+          overwrite_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
