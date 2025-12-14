@@ -29,19 +29,23 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    val properties = Properties().apply {
-        load(project.rootProject.file("keystore.properties").inputStream())
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystoreProperties = Properties()
+
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(keystorePropertiesFile.inputStream())
     }
-
     signingConfigs {
-        create("release"){
-            storeFile =  properties.getProperty("storeFile")?.let { file(it) }
-            storePassword =  properties.getProperty("storePassword")
-            keyAlias =  properties.getProperty("keyAlias")
-            keyPassword =  properties.getProperty("keyPassword")
-
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
         }
     }
+
     val appName = "Habit Diary"
     applicationVariants.all {
         val variant = this
