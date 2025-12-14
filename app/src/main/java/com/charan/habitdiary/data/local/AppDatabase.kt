@@ -16,7 +16,7 @@ import com.charan.habitdiary.data.local.entity.HabitEntity
         DailyLogEntity::class
     ],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 @TypeConverters(
     Converters::class

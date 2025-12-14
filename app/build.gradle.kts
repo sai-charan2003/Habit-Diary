@@ -95,6 +95,11 @@ android {
         schemaDirectory("$projectDir/schemas")
         generateKotlin = true
     }
+    sourceSets {
+        getByName("androidTest") {
+            assets.srcDir("$projectDir/schemas")
+        }
+    }
 
 }
 
@@ -110,6 +115,7 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
     implementation(libs.androidx.compose.animation)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.androidx.room.testing)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -140,5 +146,6 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.graphics.shapes)
+    testImplementation(libs.androidx.room.testing)
 
 }
