@@ -4,11 +4,11 @@ on:
   pull_request:
     branches:
       - dev
-      - main
+      - master
   push:
     branches:
       - dev
-      - main
+      - master
 
 jobs:
   migration-tests:
@@ -21,6 +21,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Restore keystore and google services
+        run: |
+          mkdir -p app/src/release
+          mkdir -p app/src/debug
+
+          # Keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/src/release/habitdiary_release.jks
+
+          # google-services
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/src/release/google-services.json
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_DEBUG_BASE64 }}" | base64 --decode > app/src/debug/google-services.json
+
+          # keystore.properties
+          echo "storeFile=src/release/habitdiary_release.jks" > keystore.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -42,4 +60,4 @@ jobs:
           arch: x86_64
           profile: pixel
           disable-animations: true
-          script: ./gradlew connectedAndroidTest
+          script: ./gradlew connectedDebugAndroidTest
