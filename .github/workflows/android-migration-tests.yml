@@ -48,21 +48,12 @@ jobs:
 
       - name: Cache Gradle
         uses: gradle/actions/setup-gradle@v3
-
-      - name: Install SDK tools and system images
+        
+      - name: Enable KVM
         run: |
-          sudo mkdir -p /usr/local/android-sdk
-          sudo chown $USER /usr/local/android-sdk
-          export ANDROID_SDK_ROOT=/usr/local/android-sdk
-          sdkmanager "platform-tools" "platforms;android-29" "system-images;android-29;google_apis;x86_64" "emulator"
-          yes | sdkmanager --licenses
-
-      - name: Kill any running emulators
-        run: adb emu kill || true
-
-      - name: Create AVD
-        run: |
-          echo no | avdmanager create avd -n test -k "system-images;android-29;google_apis;x86_64" --force
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
       - name: Run Room migration tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -70,8 +61,5 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           arch: x86_64
-          disable-animations: true
-          emulator-options: "-no-window"
-          script: |
-            adb wait-for-device
-            ./gradlew connectedDebugAndroidTest
+          profile: pixel_7_pro
+          script: ./gradlew connectedDebugAndroidTest
