@@ -1,5 +1,6 @@
 package com.charan.habitdiary.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.charan.habitdiary.data.repository.DataStoreRepository
@@ -100,6 +101,7 @@ class HomeScreenViewModel @Inject constructor(
             habitLocalRepository.getDailyLogsInRange(),
             _state.map { it.is24HourFormat }.distinctUntilChanged()
         ) { logs, is24Hours ->
+            Log.d("TAG", "getDailyLogs: $logs")
             logs.toDailyLogUIStateList(is24Hours)
         }.collectLatest { dailyLogs ->
             _state.update { it.copy(dailyLogs = dailyLogs) }

@@ -173,7 +173,7 @@ fun LogCalendarScreen(
                     DayLogEntryItem(
                         note = log.logNote,
                         time = log.createdAt,
-                        imagePath = log.imagePath,
+                        mediaPath = log.mediaPaths,
                         onClick = {
                             viewModel.onEvent(
                                 CalendarScreenEvents.OnNavigateToAddDailyLogScreen(

@@ -2,6 +2,7 @@ package com.charan.habitdiary.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -15,8 +16,8 @@ import kotlinx.datetime.LocalDateTime
 @Dao
 interface DailyLogDao {
 
-    @Upsert
-    fun upsetDailyLog(dailyLog: DailyLogEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsetDailyLog(dailyLog: DailyLogEntity) : Long
 
     @Update
     fun updateDailyLog(dailyLog: DailyLogEntity)

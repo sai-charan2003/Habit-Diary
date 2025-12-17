@@ -1,21 +1,25 @@
 package com.charan.habitdiary.data.repository.impl
 
 import com.charan.habitdiary.data.local.dao.DailyLogDao
+import com.charan.habitdiary.data.local.dao.DailyLogMediaDao
 import com.charan.habitdiary.data.local.dao.HabitDao
 import com.charan.habitdiary.data.local.entity.DailyLogEntity
+import com.charan.habitdiary.data.local.entity.DailyLogMediaEntity
 import com.charan.habitdiary.data.local.entity.HabitEntity
 import com.charan.habitdiary.data.local.model.DailyLogWithHabit
 import com.charan.habitdiary.data.local.model.HabitWithDone
 import com.charan.habitdiary.data.repository.HabitLocalRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 
 class HabitLocalRepositoryImpl(
     private val habitDao : HabitDao,
-    private val dailyLogDao : DailyLogDao
+    private val dailyLogDao : DailyLogDao,
+    private val dailyLogMediaDao: DailyLogMediaDao
 ) : HabitLocalRepository {
 
     override fun upsetHabit(habit: HabitEntity) : Long {
@@ -23,8 +27,15 @@ class HabitLocalRepositoryImpl(
 
     }
 
-    override fun upsetDailyLog(dailyLog: DailyLogEntity) {
-        dailyLogDao.upsetDailyLog(dailyLog)
+    override fun upsetDailyLog(
+        dailyLog: DailyLogEntity,
+        mediaEntity : List<DailyLogMediaEntity>
+    ) {
+        val id = dailyLogDao.upsetDailyLog(dailyLog)
+        if(mediaEntity.isNotEmpty()){
+            val mediaEntity = mediaEntity.map { it.copy(dailyLogId = id.toInt()) }
+            dailyLogMediaDao.upsertMedia(mediaEntity)
+        }
     }
 
     override fun getAllHabitsFlow(): Flow<List<HabitEntity>> {
@@ -43,8 +54,17 @@ class HabitLocalRepositoryImpl(
         startOfDay: LocalDateTime,
         endOfDay: LocalDateTime
     ): Flow<List<DailyLogWithHabit>> {
-        return dailyLogDao.getDailyLogsInRange(startOfDay, endOfDay)
+        return dailyLogDao
+            .getDailyLogsInRange(startOfDay, endOfDay)
+            .map { logs ->
+                logs.map { log ->
+                    log.copy(
+                        mediaEntities = log.mediaEntities.filter { !it.isDeleted }
+                    )
+                }
+            }
     }
+
 
 
     override fun getTodayHabits(
@@ -100,5 +120,9 @@ class HabitLocalRepositoryImpl(
         endOfDay: LocalDateTime
     ): DailyLogEntity? {
         return dailyLogDao.getLoggedHabitFromIdForRange(habitId, startOfDay, endOfDay)
+    }
+
+    override fun upsetDailyLogMediaEntities(mediaEntity: List<DailyLogMediaEntity>) {
+        dailyLogMediaDao.upsertMedia(mediaEntity)
     }
 }

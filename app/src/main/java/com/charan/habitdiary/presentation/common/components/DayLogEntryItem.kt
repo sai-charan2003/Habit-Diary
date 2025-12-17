@@ -3,6 +3,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material3.*
+import androidx.compose.material3.carousel.HorizontalUncontainedCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,13 +14,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.charan.habitdiary.presentation.common.components.CustomCarouselImageItem
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.merge
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun DayLogEntryItem(
     time: String,
     note: String,
-    imagePath: String = "",
+    mediaPath: List<String> = emptyList(),
     habitName: String = "",
     onClick: () -> Unit = {}
 ) {
@@ -40,7 +47,7 @@ fun DayLogEntryItem(
 
         LogEntryCard(
             note = note,
-            imagePath = imagePath,
+            mediaPath = mediaPath,
             habitName = habitName,
             onClick = onClick,
             modifier = Modifier.weight(1f)
@@ -52,7 +59,7 @@ fun DayLogEntryItem(
 @Composable
 fun LogEntryCard(
     note: String,
-    imagePath: String = "",
+    mediaPath: List<String> = emptyList(),
     habitName: String = "",
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -91,17 +98,12 @@ fun LogEntryCard(
                     )
                 )
             }
-            if (imagePath.isNotEmpty()) {
-                AsyncImage(
-                    model = imagePath,
-                    contentDescription = "Log Entry Image",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                        .background(MaterialTheme.colorScheme.surfaceContainerHighest),
-                    contentScale = ContentScale.Fit
+            if (mediaPath.isNotEmpty()) {
+                CustomCarouselImageItem(
+                    mediaPaths = mediaPath,
+                    onRemoveClick = {}
                 )
+
             }
             if (note.isNotEmpty()) {
                 Text(
@@ -115,6 +117,37 @@ fun LogEntryCard(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CarouselImageItem(
+    mediaPath : List<String>
+) {
+    HorizontalUncontainedCarousel(
+        state = rememberCarouselState { mediaPath.count() },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .clip(MaterialTheme.shapes.medium),
+        itemWidth = 186.dp,
+        itemSpacing = 8.dp,
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) { index->
+        val item = mediaPath[index]
+        AsyncImage(
+            model = item,
+            contentDescription = "Log Entry Image",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+            contentScale = ContentScale.Fit
+        )
+
+    }
+
 }
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -131,7 +164,7 @@ fun DayLogEntryItemPreview() {
             DayLogEntryItem(
                 time = "09:30 AM",
                 note = "Completed 30 minutes of running followed by 15 push-ups. Feeling energized and ready to tackle the day!",
-                imagePath = "https://picsum.photos/400/200",
+                mediaPath = listOf( "https://picsum.photos/400/200","https://picsum.photos/400/200","https://picsum.photos/400/200"),
 
                 habitName = "Morning Workout"
             )
