@@ -49,15 +49,12 @@ jobs:
       - name: Cache Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Run Room migration tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: google_apis
           arch: x86_64
-          profile: pixel
+          profile: Pixel_4
           disable-animations: true
           script: ./gradlew connectedDebugAndroidTest
