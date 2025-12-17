@@ -12,13 +12,16 @@ data class DailyLogState(
     val isEdit : Boolean = false,
     val showDeleteDialog : Boolean = false,
     val is24HourFormat : Boolean = false,
-    val dailyLogItemDetails : DailyLogItemDetails = DailyLogItemDetails()
+    val dailyLogItemDetails : DailyLogItemDetails = DailyLogItemDetails(),
+    val selectedMediaItemForDelete : DailyLogMediaItem? = null,
+    val showImageDeleteOption : Boolean = false,
+    val isSavingImages : Boolean = false
 )
 
 data class DailyLogItemDetails(
     val id: Int? = null,
     val notesText: String = "",
-    val imagePath: String = "",
+    val mediaItems: List<DailyLogMediaItem> = emptyList(),
     val formattedDateString: String = "",
     val formattedTimeString: String = "",
     val time: LocalTime = LocalTime(0,0),
@@ -26,6 +29,12 @@ data class DailyLogItemDetails(
     val habitId: Int? = null,
     val habitName: String? = null,
     val habitDescription: String? = null
+)
+
+data class DailyLogMediaItem(
+    val mediaPath : String = "",
+    val isDeleted : Boolean = false,
+    val id : Long? = null
 )
 
 

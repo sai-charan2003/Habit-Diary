@@ -25,7 +25,9 @@ fun ActionButtonRow(
     isSaveEnabled : Boolean = true
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 25.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 20.dp)
     ) {
         Button(
             onClick = onSave,

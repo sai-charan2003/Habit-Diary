@@ -139,7 +139,7 @@ fun HomeScreen(
                 DayLogEntryItem(
                     note = dailyLog.logNote,
                     time = dailyLog.createdAt,
-                    imagePath = dailyLog.imagePath,
+                    mediaPath = dailyLog.mediaPaths,
                     onClick = {
                         viewModel.onEvent(
                             HomeScreenEvent.OnDailyLogEdit(

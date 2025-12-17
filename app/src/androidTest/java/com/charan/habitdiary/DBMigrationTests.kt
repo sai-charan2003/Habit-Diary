@@ -6,6 +6,7 @@ import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.charan.habitdiary.data.local.AppDatabase
+import com.charan.habitdiary.data.local.MIGRATION_1_2
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,8 +33,54 @@ class DBMigrationTests {
             InstrumentationRegistry.getInstrumentation().targetContext,
             AppDatabase::class.java,
             TEST_DB
-        ).addMigrations().build().apply {
+        ).addMigrations(
+            MIGRATION_1_2
+        ).build().apply {
             openHelper.writableDatabase.close()
         }
     }
+
+
+    @Test
+    fun migrate_1_to_2_movesImagePathIntoMediaTable() {
+
+        val dbV1 = helper.createDatabase(TEST_DB, 1)
+        dbV1.execSQL(
+            """
+    INSERT INTO daily_log_entity 
+        (id, logNote, imagePath, createdAt, isDeleted, habitId)
+    VALUES
+        (1, 'note 1', '/storage/img1.jpg', '2025-01-01T10:00', 0, NULL),
+        (2, 'note 2', '', '2025-01-01T11:00', 0, NULL),
+        (3, 'note 3', '', '2025-01-01T12:00', 0, NULL)
+    """.trimIndent()
+        )
+
+
+        dbV1.close()
+
+        val dbV2 = helper.runMigrationsAndValidate(
+            TEST_DB,
+            2,
+            true,
+            MIGRATION_1_2
+        )
+
+        val cursor = dbV2.query(
+            """
+        SELECT dailyLogId, mediaPath, isDeleted
+        FROM daily_log_media_entity
+        """
+        )
+
+        assert(cursor.count == 1)
+        cursor.moveToFirst()
+
+        assert(cursor.getInt(0) == 1)
+        assert(cursor.getString(1) == "/storage/img1.jpg")
+        assert(cursor.getInt(2) == 0)
+
+        cursor.close()
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.charan.habitdiary.data.repository
 
 import com.charan.habitdiary.data.local.entity.DailyLogEntity
+import com.charan.habitdiary.data.local.entity.DailyLogMediaEntity
 import com.charan.habitdiary.data.local.entity.HabitEntity
 import com.charan.habitdiary.data.local.model.DailyLogWithHabit
 import com.charan.habitdiary.data.local.model.HabitWithDone
@@ -12,31 +13,47 @@ import kotlinx.datetime.LocalDateTime
 
 interface HabitLocalRepository {
 
-    fun upsetHabit(habit : HabitEntity) : Long
+    fun upsetHabit(habit: HabitEntity): Long
 
-    fun upsetDailyLog(dailyLog : DailyLogEntity)
+    fun upsetDailyLog(
+        dailyLog: DailyLogEntity,
+        mediaEntity: List<DailyLogMediaEntity> = emptyList()
+    )
 
-    fun getAllHabitsFlow() : Flow<List<HabitEntity>>
+    fun getAllHabitsFlow(): Flow<List<HabitEntity>>
 
-    fun getAllHabits() : List<HabitEntity>
+    fun getAllHabits(): List<HabitEntity>
 
-    fun getAllDailyLogs() : Flow<List<DailyLogEntity>>
+    fun getAllDailyLogs(): Flow<List<DailyLogEntity>>
 
-    fun getDailyLogsInRange(startOfDay : LocalDateTime = DateUtil.todayStartOfDay(),endOfDay : LocalDateTime = DateUtil.todayEndOfDay()) : Flow<List<DailyLogWithHabit>>
+    fun getDailyLogsInRange(
+        startOfDay: LocalDateTime = DateUtil.todayStartOfDay(),
+        endOfDay: LocalDateTime = DateUtil.todayEndOfDay()
+    ): Flow<List<DailyLogWithHabit>>
 
-    fun getTodayHabits(currentDayOfWeek : DayOfWeek = DateUtil.getCurrentDayOfWeek()) : Flow<List<HabitWithDone>>
+    fun getTodayHabits(currentDayOfWeek: DayOfWeek = DateUtil.getCurrentDayOfWeek()): Flow<List<HabitWithDone>>
 
-    fun getDailyLogWithId(id : Int) : DailyLogEntity
+    fun getDailyLogWithId(id: Int): DailyLogEntity
 
-    fun getDailyLogsWithHabitWithId(id : Int) : DailyLogWithHabit
+    fun getDailyLogsWithHabitWithId(id: Int): DailyLogWithHabit
 
-    fun getHabitWithId(id : Int) : HabitEntity
+    fun getHabitWithId(id: Int): HabitEntity
 
-    fun deleteDailyLog(id : Int)
+    fun deleteDailyLog(id: Int)
 
-    fun deleteHabit(id : Int)
+    fun deleteHabit(id: Int)
 
-    fun getLoggedHabitIdsForRange(startOfDay: LocalDateTime = DateUtil.todayStartOfDay(),endOfDay : LocalDateTime = DateUtil.todayEndOfDay()) : Flow<List<DailyLogEntity>>
+    fun getLoggedHabitIdsForRange(
+        startOfDay: LocalDateTime = DateUtil.todayStartOfDay(),
+        endOfDay: LocalDateTime = DateUtil.todayEndOfDay()
+    ): Flow<List<DailyLogEntity>>
 
-    fun getLoggedHabitFromIdForRange(habitId : Int,startOfDay: LocalDateTime = DateUtil.todayStartOfDay(),endOfDay : LocalDateTime = DateUtil.todayEndOfDay()) : DailyLogEntity?
+    fun getLoggedHabitFromIdForRange(
+        habitId: Int,
+        startOfDay: LocalDateTime = DateUtil.todayStartOfDay(),
+        endOfDay: LocalDateTime = DateUtil.todayEndOfDay()
+    ): DailyLogEntity?
+
+
+    fun upsetDailyLogMediaEntities(mediaEntity: List<DailyLogMediaEntity>)
 }

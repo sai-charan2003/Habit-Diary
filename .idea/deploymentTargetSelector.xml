@@ -22,6 +22,9 @@
       <SelectionState runConfigName="migrateAll() (1)">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="migrate_1_to_2_movesImagePathIntoMediaTable()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

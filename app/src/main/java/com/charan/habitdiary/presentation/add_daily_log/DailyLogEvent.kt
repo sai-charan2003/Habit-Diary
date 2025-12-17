@@ -17,7 +17,7 @@ sealed class DailyLogEvent {
 
     data object OnTakePhotoClick : DailyLogEvent()
 
-    data class OnImagePick(val uri : Uri) : DailyLogEvent()
+    data class OnImagePick(val uris : List<Uri>) : DailyLogEvent()
 
     data object OnOpenSettingsForPermissions : DailyLogEvent()
 
@@ -34,5 +34,9 @@ sealed class DailyLogEvent {
     data class OnToggleDeleteDialog(val showDeleteDialog : Boolean) : DailyLogEvent()
 
     data object OnDeleteDailyLog : DailyLogEvent()
+
+    data class OnSelectMediaItemForDelete(val mediaItem : String?) : DailyLogEvent()
+
+    data class OnConfirmMediaItemDelete(val confirmDelete : Boolean) : DailyLogEvent()
 
 }
