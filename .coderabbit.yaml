@@ -6,6 +6,7 @@ reviews:
   high_level_summary: true
   review_status: false
   sequence_diagrams: false
-  high_level_summary_placeholder: "@coderabbitai summary"
+  collapse_walkthrough: false
+  poem: false
   auto_review:
-    enabled: false
+    enabled: true
