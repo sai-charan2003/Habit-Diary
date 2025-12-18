@@ -58,16 +58,17 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun AddDailyLogScreen(
     onNavigateBack : () -> Unit,
-    logId : Int? = null
+    logId : Int? = null,
+    onImageOpen : (allImages : List<String>, currentImage : String) -> Unit
 ) {
-
-    val viewModel = hiltViewModel<DailyLogViewModel>()
+    val viewModel = hiltViewModel<DailyLogViewModel, DailyLogViewModel.Factory>(
+        creationCallback = { factory ->
+            factory.create(logId)
+        }
+    )
     val state by viewModel.state.collectAsStateWithLifecycle()
     val imagePickOptionsBottomSheetState = rememberModalBottomSheetState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(DailyLogEvent.InitializeLog(logId))
-    }
     val pickImage = rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) { uris->
         if(uris.isNotEmpty()){
             viewModel.onEvent(DailyLogEvent.OnImagePick(uris))
@@ -303,7 +304,13 @@ fun AddDailyLogScreen(
                             ))
 
                         },
-                        isEdit = true
+                        isEdit = true,
+                        onImageOpen = {
+                            onImageOpen(
+                                activeMedia.map { it.mediaPath },
+                                it
+                            )
+                        }
                     )
                 }
                 AddNoteItem(
@@ -321,13 +328,4 @@ fun AddDailyLogScreen(
 
     }
 
-}
-
-@Preview
-@Composable
-fun AddDailyLogScreenPreview() {
-    AddDailyLogScreen(
-        onNavigateBack = {}
-
-    )
 }

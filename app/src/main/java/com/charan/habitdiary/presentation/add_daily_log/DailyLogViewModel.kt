@@ -2,6 +2,7 @@ package com.charan.habitdiary.presentation.add_daily_log
 
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.charan.habitdiary.data.repository.DataStoreRepository
@@ -15,6 +16,9 @@ import com.charan.habitdiary.utils.DateUtil.toFormattedString
 import com.charan.habitdiary.utils.DateUtil.toLocalDate
 import com.charan.habitdiary.utils.PermissionManager
 import com.charan.habitdiary.utils.ProcessState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -24,13 +28,20 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalTime
 import javax.inject.Inject
 
-@HiltViewModel
-class DailyLogViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = DailyLogViewModel.Factory::class)
+class DailyLogViewModel @AssistedInject constructor(
+    @Assisted val logId : Int?,
     private val habitLocalRepository: HabitLocalRepository,
     private val fileRepository: FileRepository,
     private val permissionManager: PermissionManager,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(logId: Int?) : DailyLogViewModel
+    }
+
 
     private val _state = MutableStateFlow(DailyLogState())
     val state: StateFlow<DailyLogState> = _state.asStateFlow()
@@ -39,15 +50,13 @@ class DailyLogViewModel @Inject constructor(
     val effect: SharedFlow<DailyLogEffect> = _effect.asSharedFlow()
 
     init {
+        initializeLog(logId)
         observeDateTimeChanges()
         observeHourFormat()
     }
 
     fun onEvent(event: DailyLogEvent) {
         when (event) {
-            is DailyLogEvent.InitializeLog -> {
-                initializeLog(event.habitId)
-            }
             is DailyLogEvent.OnNotesTextChange -> {
                 updateNotes(event.text)
             }

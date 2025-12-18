@@ -44,7 +44,8 @@ import com.charan.habitdiary.presentation.settings.SettingsScreen
 fun BottomBarNavigation(
     onAddHabitNav : (Int?) -> Unit,
     onAddDailyLogNav : (Int?) -> Unit,
-    onNavigateToAboutLibraries : () -> Unit
+    onNavigateToAboutLibraries : () -> Unit,
+    onImageOpen : (allImage : List<String>,currentImage : String) -> Unit,
 
 ) {
     val bottomBarBackStack = rememberNavBackStack(BottomBarNavDestinations.Home)
@@ -172,6 +173,13 @@ fun BottomBarNavigation(
                                     id
                                 )
 
+                            },
+                            onImageOpen = { allImages, currentImage ->
+                                onImageOpen(
+                                    allImages,
+                                    currentImage
+
+                                )
                             }
 
                         )
@@ -182,6 +190,12 @@ fun BottomBarNavigation(
                             onNavigateToDailyLogScreen = {
                                 onAddDailyLogNav(
                                     it
+                                )
+                            },
+                            onImageOpen = { allImages, currentImage ->
+                                onImageOpen(
+                                    allImages,
+                                    currentImage
                                 )
                             }
                         )
