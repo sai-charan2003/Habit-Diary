@@ -27,7 +27,8 @@ fun DayLogEntryItem(
     note: String,
     mediaPath: List<String> = emptyList(),
     habitName: String = "",
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onImageClick : (String) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -50,7 +51,10 @@ fun DayLogEntryItem(
             mediaPath = mediaPath,
             habitName = habitName,
             onClick = onClick,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            onImageClick = {
+                onImageClick(it)
+            }
         )
     }
 }
@@ -62,7 +66,8 @@ fun LogEntryCard(
     mediaPath: List<String> = emptyList(),
     habitName: String = "",
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onImageClick : (String) -> Unit
 ) {
     ElevatedCard(
         onClick = onClick,
@@ -101,7 +106,10 @@ fun LogEntryCard(
             if (mediaPath.isNotEmpty()) {
                 CustomCarouselImageItem(
                     mediaPaths = mediaPath,
-                    onRemoveClick = {}
+                    onRemoveClick = {},
+                    onImageOpen = {
+                        onImageClick(it)
+                    }
                 )
 
             }
@@ -166,26 +174,30 @@ fun DayLogEntryItemPreview() {
                 note = "Completed 30 minutes of running followed by 15 push-ups. Feeling energized and ready to tackle the day!",
                 mediaPath = listOf( "https://picsum.photos/400/200","https://picsum.photos/400/200","https://picsum.photos/400/200"),
 
-                habitName = "Morning Workout"
+                habitName = "Morning Workout",
+                onImageClick = {}
             )
 
             DayLogEntryItem(
                 time = "02:15 PM",
                 note = "Quick meditation session during lunch break. Really helped clear my mind.",
 
-                habitName = "Mindfulness"
+                habitName = "Mindfulness",
+                onImageClick = {}
             )
 
             DayLogEntryItem(
                 time = "08:45 PM",
                 note = "",
 
-                habitName = "Evening Stretch"
+                habitName = "Evening Stretch",
+                onImageClick = {}
             )
 
             DayLogEntryItem(
                 time = "11:20 AM",
                 note = "Had a great conversation with the team about the new project direction.",
+                onImageClick = {}
 
             )
         }

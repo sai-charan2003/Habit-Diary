@@ -5,7 +5,6 @@ import kotlinx.datetime.LocalTime
 
 sealed class DailyLogEvent {
 
-    data class InitializeLog(val habitId : Int?) : DailyLogEvent()
     data class OnNotesTextChange(val text : String) : DailyLogEvent()
     data class OnImagePathChange(val path : String) : DailyLogEvent()
     data object OnSaveDailyLogClick : DailyLogEvent()

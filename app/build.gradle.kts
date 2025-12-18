@@ -151,5 +151,6 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.graphics.shapes)
     testImplementation(libs.androidx.room.testing)
+    implementation(libs.zoomable.image.coil3)
 
 }

@@ -28,7 +28,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun HomeScreen(
     onAddHabitClick : (id : Int?) -> Unit,
-    onAddDailyLog : (id : Int?) -> Unit
+    onAddDailyLog : (id : Int?) -> Unit,
+    onImageOpen : (allImages : List<String>, currentImage : String) -> Unit,
 
 ) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
@@ -147,7 +148,14 @@ fun HomeScreen(
                             )
                         )
                     },
-                    habitName = dailyLog.habitName ?: ""
+                    habitName = dailyLog.habitName ?: "",
+                    onImageClick = {
+                        onImageOpen(
+                            dailyLog.mediaPaths,
+                            it
+                        )
+                    }
+
                 )
             }
 

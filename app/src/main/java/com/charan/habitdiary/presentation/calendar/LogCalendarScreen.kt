@@ -44,7 +44,8 @@ import kotlin.time.ExperimentalTime
 )
 @Composable
 fun LogCalendarScreen(
-    onNavigateToDailyLogScreen : (id : Int) -> Unit
+    onNavigateToDailyLogScreen : (id : Int) -> Unit,
+    onImageOpen  : (allImages : List<String>, currentImage : String) -> Unit
 ){
     val viewModel = hiltViewModel<CalendarScreenViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -182,7 +183,13 @@ fun LogCalendarScreen(
                             )
 
                         },
-                        habitName = log.habitName ?: ""
+                        habitName = log.habitName ?: "",
+                        onImageClick = { imagePath ->
+                            onImageOpen(
+                                log.mediaPaths,
+                                imagePath
+                            )
+                        }
                     )
                 }
             }

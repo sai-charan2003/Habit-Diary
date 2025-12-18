@@ -38,7 +38,8 @@ fun CustomCarouselImageItem(
     mediaPaths: List<String>,
     onRemoveClick: (String) -> Unit,
     isEdit: Boolean = false,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onImageOpen : (String) -> Unit = {}
 ) {
     if (mediaPaths.isEmpty()) return
 
@@ -74,7 +75,10 @@ fun CustomCarouselImageItem(
                 AsyncImage(
                     model = item,
                     contentDescription = "Log Entry Image",
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize()
+                        .clickable(true){
+                            onImageOpen(item)
+                        },
                     contentScale = ContentScale.Fit
                 )
                 if (isEdit) {

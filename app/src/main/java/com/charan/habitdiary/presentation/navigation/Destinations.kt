@@ -30,4 +30,7 @@ sealed class Destinations : NavKey {
     @Serializable
     data object OnBoardingScreenNav : Destinations()
 
+    @Serializable
+    data class ImageViewerScreenNav(val allImagePaths : List<String>,val currentImage : String) : Destinations()
+
 }
