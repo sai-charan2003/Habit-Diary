@@ -1,11 +1,9 @@
 package com.charan.habitdiary.presentation.add_daily_log
 
 import android.net.Uri
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil3.toUri
 import com.charan.habitdiary.data.repository.DataStoreRepository
 import com.charan.habitdiary.data.repository.FileRepository
 import com.charan.habitdiary.data.repository.HabitLocalRepository
@@ -73,7 +71,7 @@ class DailyLogViewModel @AssistedInject constructor(
                 toggleImagePickerSheet(event.isVisible)
             }
             DailyLogEvent.OnPickFromGalleryClick -> {
-                sendEffect(DailyLogEffect.OnOpenImagePicker)
+                sendEffect(DailyLogEffect.OnOpenMediaPicker)
             }
             DailyLogEvent.OnTakePhotoClick -> {
                 handleTakePhoto()
@@ -276,12 +274,25 @@ class DailyLogViewModel @AssistedInject constructor(
     }
 
     private fun saveDailyLog() = viewModelScope.launch(Dispatchers.IO) {
-        saveImagesToFileDir()
-        habitLocalRepository.upsetDailyLog(
-            dailyLog = _state.value.toDailyLogEntity(),
-            mediaEntity = _state.value.dailyLogItemDetails.mediaItems.toDailyLogMediaEntityList()
-        )
-        sendEffect(DailyLogEffect.OnNavigateBack)
+        try {
+            setLoading(true)
+            saveImagesToFileDir()
+            habitLocalRepository.upsetDailyLog(
+                dailyLog = _state.value.toDailyLogEntity(),
+                mediaEntity = _state.value.dailyLogItemDetails.mediaItems.toDailyLogMediaEntityList()
+            )
+            sendEffect(DailyLogEffect.OnNavigateBack)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        _state.update {
+            it.copy(
+                isLoading = isLoading
+            )
+        }
     }
 
     private fun handleTakePhoto() {
@@ -319,7 +330,7 @@ class DailyLogViewModel @AssistedInject constructor(
     }
 
     private fun handleImagePicked(uris: List<Uri>) = viewModelScope.launch {
-        _state.update { it.copy(isSavingImages = true) }
+        setLoading(true)
 
         try {
             uris
@@ -335,7 +346,7 @@ class DailyLogViewModel @AssistedInject constructor(
                 }
                 .awaitAll()
         } finally {
-            _state.update { it.copy(isSavingImages = false) }
+            setLoading(false)
         }
     }
 
@@ -345,7 +356,6 @@ class DailyLogViewModel @AssistedInject constructor(
             fileRepository.saveMedia(item.mediaPath.toUri()).collect { state->
                 if (state is ProcessState.Success<String>) {
                     _state.update { current->
-
                         val updatedMediaItems = current.dailyLogItemDetails.mediaItems.map { mediaItem->
                             if(mediaItem == item){
                                 mediaItem.copy(

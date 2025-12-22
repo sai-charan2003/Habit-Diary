@@ -114,16 +114,17 @@ fun List<DailyLogWithHabit>.toDailyLogUIStateList(is24HourFormat: Boolean) : Lis
     }
 }
 
-fun DailyLogMediaEntity.toDailyLogMediaItem() : DailyLogMediaItem {
+fun DailyLogMediaEntity.toDailyLogMediaItem(isPendingSave : Boolean) : DailyLogMediaItem {
     return DailyLogMediaItem(
         mediaPath = this.mediaPath,
         isDeleted = this.isDeleted,
-        id = this.id
+        id = this.id,
+        isPendingSave = isPendingSave
     )
 }
 fun List<DailyLogMediaEntity>.toDailyLogMediaItemList(isPendingSave : Boolean) : List<DailyLogMediaItem> {
     return this.map {
-        it.toDailyLogMediaItem()
+        it.toDailyLogMediaItem(isPendingSave)
     }
 }
 

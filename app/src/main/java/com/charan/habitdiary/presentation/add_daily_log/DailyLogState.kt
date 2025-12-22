@@ -16,7 +16,7 @@ data class DailyLogState(
     val dailyLogItemDetails : DailyLogItemDetails = DailyLogItemDetails(),
     val selectedMediaItemForDelete : DailyLogMediaItem? = null,
     val showImageDeleteOption : Boolean = false,
-    val isSavingImages : Boolean = false,
+    val isLoading : Boolean = false,
     val pendingCameraAction : PendingCameraAction? = null
 )
 
