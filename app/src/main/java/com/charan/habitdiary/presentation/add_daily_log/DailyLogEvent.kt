@@ -38,4 +38,10 @@ sealed class DailyLogEvent {
 
     data class OnConfirmMediaItemDelete(val confirmDelete : Boolean) : DailyLogEvent()
 
+    data object OnCaptureVideoClick : DailyLogEvent()
+
+    data class OnVideoPick(val uri : List<Uri>) : DailyLogEvent()
+
+    data class OnPermissionResult(val isGranted : Boolean) : DailyLogEvent()
+
 }

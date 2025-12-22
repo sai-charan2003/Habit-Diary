@@ -3,7 +3,6 @@ package com.charan.habitdiary.presentation.navigation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -11,7 +10,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.charan.habitdiary.presentation.add_daily_log.AddDailyLogScreen
 import com.charan.habitdiary.presentation.add_habit.AddHabitScreen
-import com.charan.habitdiary.presentation.image_viewer.ImageViewerScreen
+import com.charan.habitdiary.presentation.media_viewer.ImageViewerScreen
 import com.charan.habitdiary.presentation.on_boarding.OnBoardingScreen
 import com.charan.habitdiary.presentation.settings.about_libraries.AboutLibrariesScreen
 

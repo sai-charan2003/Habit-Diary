@@ -114,24 +114,25 @@ fun List<DailyLogWithHabit>.toDailyLogUIStateList(is24HourFormat: Boolean) : Lis
     }
 }
 
-fun DailyLogMediaEntity.toDailyLogMediaItem() : DailyLogMediaItem {
+fun DailyLogMediaEntity.toDailyLogMediaItem(isPendingSave : Boolean) : DailyLogMediaItem {
     return DailyLogMediaItem(
         mediaPath = this.mediaPath,
         isDeleted = this.isDeleted,
-        id = this.id
+        id = this.id,
+        isPendingSave = isPendingSave
     )
 }
-fun List<DailyLogMediaEntity>.toDailyLogMediaItemList() : List<DailyLogMediaItem> {
+fun List<DailyLogMediaEntity>.toDailyLogMediaItemList(isPendingSave : Boolean) : List<DailyLogMediaItem> {
     return this.map {
-        it.toDailyLogMediaItem()
+        it.toDailyLogMediaItem(isPendingSave)
     }
 }
 
-fun DailyLogWithHabit.toDailyLogItemDetails() : DailyLogItemDetails {
+fun DailyLogWithHabit.toDailyLogItemDetails(pendingSaveImage : Boolean = false) : DailyLogItemDetails {
     return DailyLogItemDetails(
         id = this.dailyLogEntity.id,
         notesText = this.dailyLogEntity.logNote,
-        mediaItems = this.mediaEntities.toDailyLogMediaItemList(),
+        mediaItems = this.mediaEntities.toDailyLogMediaItemList(pendingSaveImage),
         date = this.dailyLogEntity.createdAt.date,
         time = this.dailyLogEntity.createdAt.time,
         habitId = this.dailyLogEntity.habitId,

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Camera
 import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -28,19 +29,25 @@ fun ImagePickOptionsBottomSheet(
     onImageFromGalleryClick : () -> Unit,
     onImageFromCameraClick : () -> Unit,
     onDismissRequest : () ->Unit,
+    onCaptureVideo : () -> Unit = {},
     sheetState: SheetState
 ) {
     val imagePickOptions = listOf(
+        ImagePickOptions(
+            title = "Take a Photo",
+            icon = Icons.Rounded.Camera,
+            onClick = onImageFromCameraClick
+        ),
+        ImagePickOptions(
+            title = "Record a Video",
+            icon = Icons.Rounded.Videocam,
+            onClick = onCaptureVideo
+        ),
         ImagePickOptions(
             title = "Pick from Gallery",
             icon = Icons.Rounded.Image,
             onClick = onImageFromGalleryClick
         ),
-        ImagePickOptions(
-            title = "Take a Photo",
-            icon = Icons.Rounded.Camera,
-            onClick = onImageFromCameraClick
-        )
     )
 
     ModalBottomSheet(

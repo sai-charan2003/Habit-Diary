@@ -5,9 +5,11 @@ sealed class DailyLogEffect {
 
     data object OnNavigateBack : DailyLogEffect()
 
-    data object OnOpenImagePicker : DailyLogEffect()
+    data object OnOpenMediaPicker : DailyLogEffect()
 
     data object OnTakePhoto : DailyLogEffect()
 
     data object OnRequestCameraPermission : DailyLogEffect()
+
+    data object OnTakeVideo : DailyLogEffect()
 }
