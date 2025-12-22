@@ -6,6 +6,7 @@ import kotlinx.datetime.LocalTime
 data class DailyLogState(
     val showImagePickOptionsSheet : Boolean = false,
     val tempImagePath : String = "",
+    val tempVideoPath : String = "",
     val showRationaleForCameraPermission : Boolean = false,
     val showDateSelectDialog : Boolean = false,
     val showTimeSelectDialog : Boolean = false,
@@ -15,8 +16,14 @@ data class DailyLogState(
     val dailyLogItemDetails : DailyLogItemDetails = DailyLogItemDetails(),
     val selectedMediaItemForDelete : DailyLogMediaItem? = null,
     val showImageDeleteOption : Boolean = false,
-    val isSavingImages : Boolean = false
+    val isSavingImages : Boolean = false,
+    val pendingCameraAction : PendingCameraAction? = null
 )
+
+enum class PendingCameraAction {
+    PHOTO,
+    VIDEO
+}
 
 data class DailyLogItemDetails(
     val id: Int? = null,
@@ -34,7 +41,8 @@ data class DailyLogItemDetails(
 data class DailyLogMediaItem(
     val mediaPath : String = "",
     val isDeleted : Boolean = false,
-    val id : Long? = null
+    val id : Long? = null,
+    val isPendingSave : Boolean = true
 )
 
 

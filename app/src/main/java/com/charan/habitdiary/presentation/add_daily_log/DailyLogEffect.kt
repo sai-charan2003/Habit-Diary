@@ -10,4 +10,6 @@ sealed class DailyLogEffect {
     data object OnTakePhoto : DailyLogEffect()
 
     data object OnRequestCameraPermission : DailyLogEffect()
+
+    data object OnTakeVideo : DailyLogEffect()
 }

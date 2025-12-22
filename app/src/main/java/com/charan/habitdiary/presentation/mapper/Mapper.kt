@@ -121,17 +121,17 @@ fun DailyLogMediaEntity.toDailyLogMediaItem() : DailyLogMediaItem {
         id = this.id
     )
 }
-fun List<DailyLogMediaEntity>.toDailyLogMediaItemList() : List<DailyLogMediaItem> {
+fun List<DailyLogMediaEntity>.toDailyLogMediaItemList(isPendingSave : Boolean) : List<DailyLogMediaItem> {
     return this.map {
         it.toDailyLogMediaItem()
     }
 }
 
-fun DailyLogWithHabit.toDailyLogItemDetails() : DailyLogItemDetails {
+fun DailyLogWithHabit.toDailyLogItemDetails(pendingSaveImage : Boolean = false) : DailyLogItemDetails {
     return DailyLogItemDetails(
         id = this.dailyLogEntity.id,
         notesText = this.dailyLogEntity.logNote,
-        mediaItems = this.mediaEntities.toDailyLogMediaItemList(),
+        mediaItems = this.mediaEntities.toDailyLogMediaItemList(pendingSaveImage),
         date = this.dailyLogEntity.createdAt.date,
         time = this.dailyLogEntity.createdAt.time,
         habitId = this.dailyLogEntity.habitId,

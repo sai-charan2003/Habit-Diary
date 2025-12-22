@@ -2,9 +2,10 @@ package com.charan.habitdiary.presentation.add_daily_log
 
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil3.toUri
 import com.charan.habitdiary.data.repository.DataStoreRepository
 import com.charan.habitdiary.data.repository.FileRepository
 import com.charan.habitdiary.data.repository.HabitLocalRepository
@@ -26,7 +27,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalTime
-import javax.inject.Inject
 
 @HiltViewModel(assistedFactory = DailyLogViewModel.Factory::class)
 class DailyLogViewModel @AssistedInject constructor(
@@ -107,6 +107,38 @@ class DailyLogViewModel @AssistedInject constructor(
                 )
 
             }
+
+            DailyLogEvent.OnCaptureVideoClick -> {
+                handleTakeVideo()
+
+            }
+
+            is DailyLogEvent.OnVideoPick -> {
+
+            }
+
+            is DailyLogEvent.OnPermissionResult -> {
+                handlePermissionResult(event.isGranted)
+            }
+        }
+    }
+
+    private fun handlePermissionResult(isGranted: Boolean) {
+        val pendingAction = _state.value.pendingCameraAction ?: return
+        if (isGranted) {
+            when (pendingAction) {
+                PendingCameraAction.PHOTO -> {
+                    handleTakePhoto()
+                }
+                PendingCameraAction.VIDEO -> {
+                    handleTakeVideo()
+                }
+            }
+        }
+        _state.update {
+            it.copy(
+                pendingCameraAction = null
+            )
         }
     }
 
@@ -192,7 +224,10 @@ class DailyLogViewModel @AssistedInject constructor(
         _state.update { state ->
             val updatedMediaItems =
                 state.dailyLogItemDetails.mediaItems.toMutableList().apply {
-                    add(DailyLogMediaItem(mediaPath = path))
+                    add(DailyLogMediaItem(
+                        mediaPath = path,
+                        isPendingSave = true
+                    ))
                 }
 
             state.copy(
@@ -241,6 +276,7 @@ class DailyLogViewModel @AssistedInject constructor(
     }
 
     private fun saveDailyLog() = viewModelScope.launch(Dispatchers.IO) {
+        saveImagesToFileDir()
         habitLocalRepository.upsetDailyLog(
             dailyLog = _state.value.toDailyLogEntity(),
             mediaEntity = _state.value.dailyLogItemDetails.mediaItems.toDailyLogMediaEntityList()
@@ -251,6 +287,9 @@ class DailyLogViewModel @AssistedInject constructor(
     private fun handleTakePhoto() {
         if (!permissionManager.isCameraPermissionGranted()) {
             sendEffect(DailyLogEffect.OnRequestCameraPermission)
+            _state.update { it.copy(
+                pendingCameraAction = PendingCameraAction.PHOTO
+            ) }
             return
         }
         val uri = fileRepository.createImageUri()
@@ -262,6 +301,23 @@ class DailyLogViewModel @AssistedInject constructor(
         sendEffect(DailyLogEffect.OnTakePhoto)
     }
 
+    private fun handleTakeVideo() {
+        if (!permissionManager.isCameraPermissionGranted()) {
+            sendEffect(DailyLogEffect.OnRequestCameraPermission)
+            _state.update { it.copy(
+                pendingCameraAction = PendingCameraAction.VIDEO
+            ) }
+            return
+        }
+        val uri = fileRepository.createVideoUri()
+        _state.update {
+            it.copy(
+                tempVideoPath = uri.toString()
+            )
+        }
+        sendEffect(DailyLogEffect.OnTakeVideo)
+    }
+
     private fun handleImagePicked(uris: List<Uri>) = viewModelScope.launch {
         _state.update { it.copy(isSavingImages = true) }
 
@@ -269,7 +325,7 @@ class DailyLogViewModel @AssistedInject constructor(
             uris
                 .map { uri ->
                     async {
-                        fileRepository.saveImage(uri).collect { state ->
+                        fileRepository.saveImagesToCache(uri).collect { state ->
                             if (state is ProcessState.Success<String>) {
                                 updateImagePath(state.data)
                                 return@collect
@@ -281,6 +337,33 @@ class DailyLogViewModel @AssistedInject constructor(
         } finally {
             _state.update { it.copy(isSavingImages = false) }
         }
+    }
+
+    private suspend fun saveImagesToFileDir() {
+        val unSavedImages = _state.value.dailyLogItemDetails.mediaItems.filter { it.isPendingSave && !it.isDeleted }
+        unSavedImages.forEach { item->
+            fileRepository.saveMedia(item.mediaPath.toUri()).collect { state->
+                if (state is ProcessState.Success<String>) {
+                    _state.update { current->
+
+                        val updatedMediaItems = current.dailyLogItemDetails.mediaItems.map { mediaItem->
+                            if(mediaItem == item){
+                                mediaItem.copy(
+                                    mediaPath = state.data,
+                                    isPendingSave = false
+                                )
+                            } else mediaItem
+                        }
+                        current.copy(
+                            dailyLogItemDetails = current.dailyLogItemDetails.copy(
+                                mediaItems = updatedMediaItems
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
     }
 
 
@@ -315,5 +398,11 @@ class DailyLogViewModel @AssistedInject constructor(
 
     private fun sendEffect(effect: DailyLogEffect) = viewModelScope.launch {
         _effect.emit(effect)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        fileRepository.clearCacheMedia()
     }
 }

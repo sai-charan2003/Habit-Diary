@@ -80,11 +80,17 @@ fun AddDailyLogScreen(
             viewModel.onEvent(DailyLogEvent.OnImagePick(listOf(state.tempImagePath.toUri())))
         }
     }
+
+    val captureVideo = rememberLauncherForActivityResult(ActivityResultContracts.CaptureVideo()) { success->
+        if(success){
+            viewModel.onEvent(DailyLogEvent.OnImagePick(listOf(state.tempVideoPath.toUri())))
+        }
+    }
     val cameraPermission = rememberPermissionState(
         permission = Manifest.permission.CAMERA
     ) {
         if(it){
-            viewModel.onEvent(DailyLogEvent.OnTakePhotoClick)
+            viewModel.onEvent(DailyLogEvent.OnPermissionResult(it))
         }
 
     }
@@ -164,13 +170,17 @@ fun AddDailyLogScreen(
                     captureImage.launch(state.tempImagePath.toUri())
                 }
 
-                DailyLogEffect.OnRequestCameraPermission -> {
+                is DailyLogEffect.OnRequestCameraPermission -> {
                     if(cameraPermission.status.shouldShowRationale){
                         viewModel.onEvent(DailyLogEvent.ToggleShowRationaleForCameraPermission(true))
                     } else {
                         cameraPermission.launchPermissionRequest()
                     }
 
+                }
+
+                DailyLogEffect.OnTakeVideo -> {
+                    captureVideo.launch(state.tempVideoPath.toUri())
                 }
             }
         }
@@ -189,6 +199,10 @@ fun AddDailyLogScreen(
             onDismissRequest = {
                 viewModel.onEvent(DailyLogEvent.OnToggleImagePickOptionsSheet(false))
             },
+            onCaptureVideo = {
+                viewModel.onEvent(DailyLogEvent.OnCaptureVideoClick)
+            },
+
             sheetState = imagePickOptionsBottomSheetState
         )
 

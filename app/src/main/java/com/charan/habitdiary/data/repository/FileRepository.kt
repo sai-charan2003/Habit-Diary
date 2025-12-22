@@ -6,7 +6,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface FileRepository {
 
-    fun saveImage(imageUri : Uri) : Flow<ProcessState<String>>
+    fun saveImagesToCache(imageUri : Uri) : Flow<ProcessState<String>>
+
+    fun saveMedia(imageUri : Uri) : Flow<ProcessState<String>>
 
     fun createImageUri() : Uri
+
+    fun createVideoUri() : Uri
+
+    fun clearCacheMedia()
 }

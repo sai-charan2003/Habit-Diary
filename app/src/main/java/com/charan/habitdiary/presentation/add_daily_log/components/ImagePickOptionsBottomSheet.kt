@@ -28,6 +28,7 @@ fun ImagePickOptionsBottomSheet(
     onImageFromGalleryClick : () -> Unit,
     onImageFromCameraClick : () -> Unit,
     onDismissRequest : () ->Unit,
+    onCaptureVideo : () -> Unit = {},
     sheetState: SheetState
 ) {
     val imagePickOptions = listOf(
@@ -40,6 +41,11 @@ fun ImagePickOptionsBottomSheet(
             title = "Take a Photo",
             icon = Icons.Rounded.Camera,
             onClick = onImageFromCameraClick
+        ),
+        ImagePickOptions(
+            title = "Record a Video",
+            icon = Icons.Rounded.Camera,
+            onClick = onCaptureVideo
         )
     )
 

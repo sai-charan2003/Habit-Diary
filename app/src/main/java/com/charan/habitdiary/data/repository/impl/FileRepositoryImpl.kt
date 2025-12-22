@@ -2,6 +2,7 @@ package com.charan.habitdiary.data.repository.impl
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.core.content.FileProvider
 import com.charan.habitdiary.data.repository.FileRepository
 import com.charan.habitdiary.utils.ProcessState
@@ -14,35 +15,13 @@ import java.lang.Exception
 class FileRepositoryImpl(
     private val context : Context
 ) : FileRepository {
-    override fun saveImage(imageUri: Uri): Flow<ProcessState<String>> = flow {
-        emit(ProcessState.Loading())
+    override fun saveImagesToCache(imageUri: Uri) =
+        saveMediaInternal(File(context.cacheDir, "habit_diary_media"), imageUri)
 
-        try {
-            val directory = File(context.filesDir, "habit_diary_images")
-            if (!directory.exists()) {
-                directory.mkdir()
-            }
+    override fun saveMedia(imageUri: Uri) =
+        saveMediaInternal(File(context.filesDir, "habit_diary_media"), imageUri)
 
-            val fileName = "IMG_${System.currentTimeMillis()}"
-            val file = File(directory, fileName)
-            context.contentResolver.openInputStream(imageUri).use { input ->
-                if (input == null) {
-                    emit(ProcessState.Error("Failed to read the image"))
-                    return@flow
-                }
 
-                FileOutputStream(file).use { output ->
-                    input.copyTo(output)
-                }
-            }
-
-            emit(ProcessState.Success(file.absolutePath))
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emit(ProcessState.Error(e.message ?: "An unexpected error occurred"))
-        }
-    }
 
     override fun createImageUri(): Uri {
         val file = File(
@@ -55,5 +34,66 @@ class FileRepositoryImpl(
             "${context.packageName}.provider",
             file
         )
+    }
+
+    override fun createVideoUri(): Uri {
+        val file = File(
+            context.cacheDir,
+            "VID_${System.currentTimeMillis()}.mp4"
+        )
+
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            file
+        )
+    }
+
+
+    private fun saveMediaInternal(
+        baseDir: File,
+        sourceUri: Uri
+    ): Flow<ProcessState<String>> = flow {
+        emit(ProcessState.Loading())
+
+        try {
+            if (!baseDir.exists()) baseDir.mkdirs()
+            val inputStream = if (sourceUri.scheme == "content") {
+                context.contentResolver.openInputStream(sourceUri)
+            } else {
+                File(sourceUri.path ?: "").inputStream()
+            }
+
+            val mimeType = context.contentResolver.getType(sourceUri)
+            val extension = when {
+                mimeType?.startsWith("video/") == true || sourceUri.path?.endsWith(".mp4") == true -> ".mp4"
+                mimeType?.startsWith("image/") == true || sourceUri.path?.endsWith(".jpg") == true -> ".jpg"
+                else -> ".jpg"
+            }
+
+            val file = File(baseDir, "MEDIA_${System.currentTimeMillis()}$extension")
+
+            inputStream?.use { input ->
+                FileOutputStream(file).use { output ->
+                    input.copyTo(output)
+                }
+            } ?: throw Exception("Could not open input stream")
+
+            emit(ProcessState.Success(file.absolutePath))
+        } catch (e: Exception) {
+            emit(ProcessState.Error(e.message ?: "Unexpected error"))
+        }
+    }
+
+    override fun clearCacheMedia() {
+        try {
+            println("Clearing cache media directory")
+            val cacheDir = File(context.cacheDir, "habit_diary_media")
+            if (cacheDir.exists()) {
+                cacheDir.deleteRecursively()
+            }
+        } catch (e: Exception) {
+            Log.e("FileRepositoryImpl", "Error clearing cache media: ${e.message}")
+        }
     }
 }
