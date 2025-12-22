@@ -83,21 +83,22 @@ fun CustomCarouselImageItem(
                         .alpha(0.6f),
                     contentScale = ContentScale.Crop
                 )
-                AsyncImage(
-                    model = item,
-                    imageLoader = imageLoader,
-                    contentDescription = "Media preview",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { onImageOpen(item) },
-                    contentScale = ContentScale.Fit
-                )
                 if (isVideo) {
                     MiniVideoPlayer(
                         videoPath = item,
                         onVideoClick = {
                             onImageOpen(item)
                         }
+                    )
+                } else {
+                    AsyncImage(
+                        model = item,
+                        imageLoader = imageLoader,
+                        contentDescription = "Media preview",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clickable { onImageOpen(item) },
+                        contentScale = ContentScale.Fit
                     )
                 }
                 if (isEdit) {
