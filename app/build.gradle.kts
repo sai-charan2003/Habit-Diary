@@ -154,7 +154,9 @@ dependencies {
     testImplementation(libs.androidx.room.testing)
     implementation(libs.zoomable.image.coil3)
     implementation(libs.coil.video)
-    implementation("androidx.media3:media3-ui-compose:1.9.0")
-    implementation("androidx.media3:media3-ui-compose-material3:1.9.0")
+    implementation(libs.androidx.media3.ui.compose)
+    implementation(libs.androidx.media3.ui.compose.material3)
+    implementation(libs.compose.cloudy)
+
 
 }

@@ -40,6 +40,7 @@ import coil3.video.VideoFrameDecoder
 import com.charan.habitdiary.presentation.media_viewer.MiniVideoPlayer
 import com.charan.habitdiary.presentation.media_viewer.VideoViewer
 import com.charan.habitdiary.utils.isVideo
+import com.skydoves.cloudy.cloudy
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -79,7 +80,7 @@ fun CustomCarouselImageItem(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
-                        .blur(25.dp, BlurredEdgeTreatment.Unbounded)
+                        .cloudy(radius = 50)
                         .alpha(0.6f),
                     contentScale = ContentScale.Crop
                 )
