@@ -8,13 +8,20 @@ import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.Month
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.YearMonth
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.atTime
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaDayOfWeek
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toJavaMonth
 import kotlinx.datetime.toLocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -32,16 +39,13 @@ object DateUtil {
             DayOfWeek.SATURDAY
         )
     }
-
-    @OptIn(ExperimentalTime::class)
     fun getTodayDayAndDate(): String {
         val now = Clock.System.now()
             .toLocalDateTime(TimeZone.currentSystemDefault())
+            .toJavaLocalDateTime()
+        val formatter = DateTimeFormatter.ofPattern("EEEE, MMM d", Locale.getDefault())
 
-        val dayOfWeek = now.dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
-        val month = now.month.name.lowercase().substring(0, 3).replaceFirstChar { it.uppercase() }
-
-        return "$dayOfWeek, $month ${now.day}"
+        return now.format(formatter)
     }
 
     fun defaultHabitFrequency() : List<DayOfWeek> {
@@ -153,5 +157,19 @@ object DateUtil {
         val endOfDay = this.atTime(23, 59, 59, 999_999_999)
         return endOfDay.toInstant(TimeZone.currentSystemDefault())
             .toLocalDateTime(TimeZone.currentSystemDefault())
+    }
+
+    fun Month.toLocale() : String{
+        return this.toJavaMonth().getDisplayName(
+            java.time.format.TextStyle.FULL,
+            Locale.getDefault()
+        )
+    }
+
+    fun DayOfWeek.toLocale(style : TextStyle) : String {
+        return this.toJavaDayOfWeek().getDisplayName(
+            style,
+            Locale.getDefault()
+        )
     }
 }

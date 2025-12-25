@@ -29,10 +29,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.add_daily_log.components.AddNoteItem
 import com.charan.habitdiary.presentation.add_daily_log.components.DateTimeRow
 import com.charan.habitdiary.presentation.add_daily_log.components.HabitDetailsCard
@@ -93,8 +95,8 @@ fun AddDailyLogScreen(
 
     if(state.showRationaleForCameraPermission){
         RationaleDialog(
-            title = "Camera Permission Required",
-            message = "This app requires camera access to take photos for your daily journal entries.",
+            title = stringResource(R.string.camera_permission_required),
+            message = stringResource(R.string.camera_permission_description),
             onDismissRequest = {
                 viewModel.onEvent(DailyLogEvent.ToggleShowRationaleForCameraPermission(false))
             },
@@ -115,8 +117,8 @@ fun AddDailyLogScreen(
             onDismiss = {
                 viewModel.onEvent(DailyLogEvent.OnConfirmMediaItemDelete(false))
             },
-            title = "Delete Image",
-            message = "Are you sure you want to delete the image? This action cannot be undone."
+            title = stringResource(R.string.delete_image),
+            message = stringResource(R.string.delete_image_confirmation_description)
         )
     }
 
@@ -220,7 +222,7 @@ fun AddDailyLogScreen(
         topBar = {
             MediumFlexibleTopAppBar(
                 title = {
-                    Text("Add Daily Journal")
+                    Text(if(state.isEdit) stringResource(R.string.edit_daily_log) else stringResource(R.string.add_daily_log))
                 },
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
@@ -231,7 +233,7 @@ fun AddDailyLogScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back_button)
                         )
                     }
                 },
@@ -257,7 +259,7 @@ fun AddDailyLogScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.AttachFile,
-                                contentDescription = "Add Photo"
+                                contentDescription = stringResource(R.string.add_image)
                             )
                         }
                     }
@@ -266,7 +268,7 @@ fun AddDailyLogScreen(
         },
         bottomBar = {
             ActionButtonRow(
-                saveButtonText = "Save Log",
+                saveButtonText = stringResource(R.string.save_log),
                 showDeleteButton = state.isEdit,
                 onSave = {
                     viewModel.onEvent(DailyLogEvent.OnSaveDailyLogClick)

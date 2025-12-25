@@ -7,6 +7,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.charan.habitdiary.R
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 
@@ -28,7 +30,7 @@ fun SelectDateDialog(
                     datePickerState.selectedDateMillis
                 )
             }) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
         }
 

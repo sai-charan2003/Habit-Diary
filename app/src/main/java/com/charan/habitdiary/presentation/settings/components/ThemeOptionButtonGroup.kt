@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.data.model.enums.ThemeOption
@@ -57,7 +58,7 @@ fun ThemeOptionButtonGroup(
                     )
                     Spacer(Modifier.size(ToggleButtonDefaults.IconSpacing))
                 }
-                Text(option.toString())
+                Text(stringResource(option.getLocaleString()))
             }
         }
     }

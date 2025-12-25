@@ -31,11 +31,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.calendar.LogCalendarScreen
 import com.charan.habitdiary.presentation.home.HomeScreen
 import com.charan.habitdiary.presentation.settings.SettingsScreen
@@ -141,7 +143,7 @@ fun BottomBarNavigation(
                         )
                     },
                     label = {
-                        Text(item.title)
+                        Text(stringResource(item.title))
                     }
                 )
             }
@@ -220,23 +222,23 @@ fun BottomBarNavigation(
 }
 
 enum class BottomNavItem(
-    val title: String,
+    val title: Int,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
 ) {
     HOME(
-        title = "Home",
+        title = R.string.home,
         selectedIcon = Icons.Rounded.Home,
         unselectedIcon = Icons.Outlined.Home,
 
         ),
     CALENDAR(
-        title = "Calendar",
+        title = R.string.calendar,
         selectedIcon = Icons.Rounded.CalendarMonth,
         unselectedIcon = Icons.Outlined.CalendarMonth,
     ),
     SETTINGS(
-        title = "Settings",
+        title = R.string.settings,
         selectedIcon = Icons.Rounded.Settings,
         unselectedIcon = Icons.Outlined.Settings,
     )

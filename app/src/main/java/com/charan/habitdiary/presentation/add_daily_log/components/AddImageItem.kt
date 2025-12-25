@@ -27,10 +27,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.charan.habitdiary.R
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -78,7 +80,7 @@ private fun CarouselImageItem(
             val item = mediaPath[index]
             AsyncImage(
                 model = item,
-                contentDescription = "Log Entry Image",
+                contentDescription = stringResource(R.string.add_image),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
@@ -98,7 +100,7 @@ private fun CarouselImageItem(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.AddAPhoto,
-                    contentDescription = "Add Photo",
+                    contentDescription = stringResource(R.string.add_image),
                     tint = Color.Gray,
                     modifier = Modifier.size(48.dp)
                 )

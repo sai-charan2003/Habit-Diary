@@ -32,11 +32,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.video.VideoFrameDecoder
+import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.media_viewer.MiniVideoPlayer
 import com.charan.habitdiary.presentation.media_viewer.VideoViewer
 import com.charan.habitdiary.utils.isVideo
@@ -95,7 +97,7 @@ fun CustomCarouselImageItem(
                     AsyncImage(
                         model = item,
                         imageLoader = imageLoader,
-                        contentDescription = "Media preview",
+                        contentDescription = stringResource(R.string.media_preview),
                         modifier = Modifier
                             .fillMaxSize()
                             .clickable { onImageOpen(item) },
@@ -112,7 +114,7 @@ fun CustomCarouselImageItem(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Close,
-                            contentDescription = "Remove",
+                            contentDescription = stringResource(R.string.remove_button),
                             modifier = Modifier.size(18.dp)
                         )
                     }

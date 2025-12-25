@@ -13,9 +13,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.common.components.CustomListItem
 import com.charan.habitdiary.presentation.settings.components.SectionHeader
 import com.charan.habitdiary.presentation.settings.components.SettingsRowItem
@@ -46,7 +48,7 @@ fun SettingsScreen(
         topBar = {
             MediumFlexibleTopAppBar(
                 title = {
-                    Text("Settings")
+                    Text(stringResource(R.string.settings))
                 },
                 scrollBehavior = scrollBehavior
             )
@@ -61,12 +63,12 @@ fun SettingsScreen(
         ) {
             item {
                 SectionHeader(
-                    title = "Appearance",
+                    title = stringResource(R.string.appearance),
                 )
                 CustomListItem(
                     indexItem = IndexItem.FIRST,
                     content = {
-                        Text("Theme")
+                        Text(stringResource(R.string.theme))
                         ThemeOptionButtonGroup(
                             selectedTheme = state.selectedThemeOption
                         ) {
@@ -76,7 +78,7 @@ fun SettingsScreen(
                     }
                 )
                 SettingsSwitchItem(
-                    title = "Use Dynamic Color",
+                    title = stringResource(R.string.use_dynamic_color),
                     index = IndexItem.LAST,
                     isChecked = state.isDynamicColorsEnabled,
                     onCheckedChange = {
@@ -88,11 +90,11 @@ fun SettingsScreen(
 
             item {
                 SectionHeader(
-                    "General"
+                    stringResource(R.string.general)
                 )
 
                 SettingsSwitchItem(
-                    title = "24-Hour Time Format",
+                    title = stringResource(R.string.hour_format_24),
                     index = IndexItem.FIRST_AND_LAST,
                     isChecked = state.is24HourFormat,
                     onCheckedChange = {
@@ -103,12 +105,12 @@ fun SettingsScreen(
 
             item {
                 SectionHeader(
-                    "About"
+                    stringResource(R.string.about)
                 )
                 CustomListItem(
                     indexItem = IndexItem.FIRST,
                     content = {
-                        Text("Open Source Libraries")
+                        Text(stringResource(R.string.open_source_libraries))
                     },
                     onClick = {
                         viewModel.onEvent(SettingsScreenEvent.OnAboutLibrariesClick)
@@ -119,7 +121,7 @@ fun SettingsScreen(
                     indexItem = IndexItem.LAST,
                     content = {
                         SettingsRowItem(
-                            title = "App Version",
+                            title = stringResource(R.string.app_version),
                             trailingContent = {
                                 Text(state.appVersion)
                             }

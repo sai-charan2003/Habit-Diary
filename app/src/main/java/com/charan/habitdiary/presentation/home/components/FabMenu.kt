@@ -12,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.charan.habitdiary.R
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -23,12 +25,12 @@ fun FabMenu(
 ) {
     val items = listOf(
         FabMenuItem(
-            label = "Add Habit",
+            label = stringResource(R.string.add_habit),
             icon = Icons.Rounded.Add,
             onClick = onAddHabitClick
         ),
         FabMenuItem(
-            label = "Add Daily Log",
+            label = stringResource(R.string.add_daily_log),
             icon = Icons.Rounded.Add,
             onClick = onAddDailyLogClick
         )
@@ -43,7 +45,7 @@ fun FabMenu(
             ) {
                 Icon(
                     imageVector = if (isExpanded) Icons.Rounded.Close else Icons.Rounded.Add,
-                    contentDescription = "Menu toggle",
+                    contentDescription = stringResource(R.string.add_entry),
                     tint = if (isExpanded)
                         MaterialTheme.colorScheme.onPrimary
                     else

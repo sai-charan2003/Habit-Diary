@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.utils.DateUtil
@@ -23,10 +24,10 @@ fun ScheduleHabitComponent(
     onDayToggle: (DayOfWeek) -> Unit,
     daysInitials: List<DayOfWeek> = DateUtil.getDaysOfWeek()
 ) {
-    SectionContainer(title = "When will you do this?") {
+    SectionContainer(title = stringResource(com.charan.habitdiary.R.string.when_will_you_do_this)) {
 
         LabelActionListItem(
-            label = "Time",
+            label = stringResource(com.charan.habitdiary.R.string.time),
             icon = { Icon(Icons.Rounded.Schedule, contentDescription = null) },
             tailingContent = {
                 TextButton(onClick = onTimeClick) {
@@ -37,7 +38,9 @@ fun ScheduleHabitComponent(
 
         Spacer(Modifier.height(20.dp))
 
-        Text("Repeat", style = MaterialTheme.typography.bodyLarge)
+        Text(
+            stringResource(com.charan.habitdiary.R.string.repeat),
+            style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(8.dp))
 
         SelectDaysItem(
@@ -59,10 +62,10 @@ private fun SelectDaysItem(
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
             imageVector = Icons.Rounded.Repeat,
-            contentDescription = "Repeat Icon"
+            contentDescription = stringResource(com.charan.habitdiary.R.string.repeat_icon)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = "Days")
+        Text(text = stringResource(com.charan.habitdiary.R.string.days))
     }
 
     Spacer(modifier = Modifier.height(8.dp))
