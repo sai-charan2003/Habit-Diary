@@ -1,7 +1,9 @@
 package com.charan.habitdiary
 
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -11,11 +13,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination
+import androidx.navigation3.runtime.NavKey
 import com.charan.habitdiary.data.model.enums.ThemeOption
 import com.charan.habitdiary.data.repository.DataStoreRepository
+import com.charan.habitdiary.presentation.navigation.Destinations
 import com.charan.habitdiary.presentation.navigation.RootNavigation
 import com.charan.habitdiary.ui.theme.HabitDiaryTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +32,11 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject lateinit var dataStore : DataStoreRepository
     private val keepScreen = mutableStateOf(true)
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val deepLinkStack = intent?.data?.let {
+            DeepLinkHandler.resolve(it)
+        }
         super.onCreate(savedInstanceState)
         installSplashScreen().setKeepOnScreenCondition {
             keepScreen.value
@@ -63,11 +73,33 @@ class MainActivity : ComponentActivity() {
             ) {
                 Surface {
                     RootNavigation(
-                        onBoardingCompleted = onBoardingCompleted.value
+                        onBoardingCompleted = onBoardingCompleted.value,
+                        deepLinkNavKey = deepLinkStack
                     )
                 }
 
             }
+        }
+    }
+}
+
+object DeepLinkHandler {
+    private val ADDHABIT_URI = "add-habit"
+    private val DAILYLOG_URI = "daily-log"
+
+    fun resolve(uri: Uri): List<NavKey>? {
+        val pathSegments = uri.pathSegments
+
+        return when {
+            pathSegments.firstOrNull() == ADDHABIT_URI-> {
+                val habitId = pathSegments.getOrNull(1)?.toIntOrNull()
+                listOf(Destinations.BottomBarNav, Destinations.AddHabit(habitId))
+            }
+            pathSegments.firstOrNull() == DAILYLOG_URI -> {
+                val logId = pathSegments.getOrNull(1)?.toIntOrNull()
+                listOf(Destinations.BottomBarNav, Destinations.AddDailyLog(logId))
+            }
+            else -> null
         }
     }
 }
