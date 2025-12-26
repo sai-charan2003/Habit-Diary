@@ -3,6 +3,7 @@ package com.charan.habitdiary.presentation.common.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -28,8 +29,9 @@ fun ActionButtonRow(
 ) {
     Row(
         modifier = Modifier
+            .navigationBarsPadding()
             .fillMaxWidth()
-            .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 20.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 5.dp)
     ) {
         Button(
             onClick = onSave,
