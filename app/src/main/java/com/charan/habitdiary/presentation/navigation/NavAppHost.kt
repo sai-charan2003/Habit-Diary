@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
@@ -16,15 +17,20 @@ import com.charan.habitdiary.presentation.settings.about_libraries.AboutLibrarie
 
 @Composable
 fun RootNavigation(
-    onBoardingCompleted : Boolean = true
+    onBoardingCompleted : Boolean = true,
+    deepLinkNavKey : List<NavKey>? = null
 ) {
     val backStack = rememberNavBackStack(Destinations.BottomBarNav)
-    LaunchedEffect(onBoardingCompleted) {
-        if(onBoardingCompleted){
-            backStack.add(Destinations.BottomBarNav)
-        } else {
+    LaunchedEffect(deepLinkNavKey, onBoardingCompleted) {
+        if (deepLinkNavKey != null) {
             backStack.clear()
-            backStack.add(Destinations.OnBoardingScreenNav)
+            deepLinkNavKey.forEach { backStack.add(it) }
+        } else {
+            val currentIsOnboarding = backStack.contains(Destinations.OnBoardingScreenNav)
+            if (!onBoardingCompleted && !currentIsOnboarding) {
+                backStack.clear()
+                backStack.add(Destinations.OnBoardingScreenNav)
+            }
         }
     }
     NavDisplay(
