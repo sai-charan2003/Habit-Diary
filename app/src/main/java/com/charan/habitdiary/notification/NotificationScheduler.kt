@@ -89,6 +89,7 @@ class NotificationScheduler(
 
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra("habitId", habitId)
+            action = IntentActions.SHOW_NOTIFICATION.name
         }
 
         val pendingIntent = PendingIntent.getBroadcast(

@@ -44,6 +44,7 @@
     <string name="system">सिस्टम</string>
     <string name="light">लाइट</string>
     <string name="dark">डार्क</string>
+    <string name="mark_as_done">पूरा हुआ चिन्हित करें</string>
 
 
     <!-- Onboarding Screen Strings -->
