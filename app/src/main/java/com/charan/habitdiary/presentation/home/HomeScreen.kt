@@ -15,9 +15,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.common.components.SectionHeading
 import com.charan.habitdiary.presentation.home.components.EmptyStateItem
 import com.charan.habitdiary.presentation.home.components.FabMenu
@@ -53,7 +55,7 @@ fun HomeScreen(
         topBar = {
             MediumFlexibleTopAppBar(
                 title = {
-                    Text("Today")
+                    Text(stringResource(R.string.today))
 
                 },
                 subtitle = {
@@ -87,12 +89,12 @@ fun HomeScreen(
         ) {
             item {
                 SectionHeading(
-                    title = "Today's Habits",
+                    title = stringResource(R.string.today_habits),
                     modifier = Modifier.padding(vertical = 15.dp)
                 )
                 if (state.habits.isEmpty()) {
                     EmptyStateItem(
-                        "No habits for today"
+                        stringResource(R.string.no_habits_for_today)
                     )
                 }
             }
@@ -124,13 +126,13 @@ fun HomeScreen(
             }
             item {
                 SectionHeading(
-                    title = "Daily Journals",
+                    title = stringResource(R.string.daily_journals),
                     modifier = Modifier.padding(vertical = 15.dp)
                 )
 
                 if (state.dailyLogs.isEmpty()) {
                     EmptyStateItem(
-                        "No daily logs yet"
+                        stringResource(R.string.no_daily_logs_yet)
                     )
                 }
             }

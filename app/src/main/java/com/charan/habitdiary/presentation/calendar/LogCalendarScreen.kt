@@ -33,10 +33,14 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.charan.habitdiary.presentation.calendar.components.CustomWeekCalendar
 import com.charan.habitdiary.presentation.calendar.components.MonthCalendarView
+import com.charan.habitdiary.utils.DateUtil.toLocale
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.datetime.toJavaMonth
+import java.time.format.TextStyle
+import java.util.Locale
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class, ExperimentalMaterial3Api::class,
@@ -69,10 +73,14 @@ fun LogCalendarScreen(
         derivedStateOf {
             when (state.selectedCalendarView) {
                 CalendarViewType.WEEK -> {
-                    weekCalendarState.lastVisibleWeek.days.last().date.month
+                    weekCalendarState
+                        .lastVisibleWeek.days.last().date.month
+                        .toLocale()
                 }
                 CalendarViewType.MONTH -> {
-                    monthCalendarState.lastVisibleMonth.yearMonth.month
+                    monthCalendarState
+                        .lastVisibleMonth.yearMonth.month
+                        .toLocale()
                 }
             }
         }
@@ -104,7 +112,7 @@ fun LogCalendarScreen(
         topBar = {
             MediumFlexibleTopAppBar(
                 title = {
-                    Text(currentMonthTitle.name)
+                    Text(currentMonthTitle)
                 },
                 actions = {
                     ResetCalendarButton {

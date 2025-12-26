@@ -18,8 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.common.components.CustomListItem
 import com.charan.habitdiary.ui.theme.indexItemFor
 
@@ -34,17 +36,17 @@ fun ImagePickOptionsBottomSheet(
 ) {
     val imagePickOptions = listOf(
         ImagePickOptions(
-            title = "Take a Photo",
+            title = stringResource(R.string.take_a_photo),
             icon = Icons.Rounded.Camera,
             onClick = onImageFromCameraClick
         ),
         ImagePickOptions(
-            title = "Record a Video",
+            title = stringResource(R.string.record_a_video),
             icon = Icons.Rounded.Videocam,
             onClick = onCaptureVideo
         ),
         ImagePickOptions(
-            title = "Pick from Gallery",
+            title = stringResource(R.string.choose_from_gallery),
             icon = Icons.Rounded.Image,
             onClick = onImageFromGalleryClick
         ),

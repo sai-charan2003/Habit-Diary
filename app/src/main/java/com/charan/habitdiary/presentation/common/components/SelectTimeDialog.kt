@@ -7,6 +7,8 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDialog
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.charan.habitdiary.R
 import kotlinx.datetime.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,13 +37,13 @@ fun SelectTimeDialog(
                     )
                 )
             }) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
 
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Dismiss")
+                Text(stringResource(R.string.cancel))
             }
         },
 

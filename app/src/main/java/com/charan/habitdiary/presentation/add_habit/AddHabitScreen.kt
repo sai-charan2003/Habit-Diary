@@ -18,8 +18,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.add_habit.components.FormTextComponent
 import com.charan.habitdiary.presentation.add_habit.components.HabitReminderComponent
 import com.charan.habitdiary.presentation.add_habit.components.ScheduleHabitComponent
@@ -74,8 +76,8 @@ fun AddHabitScreen(
 
     if(state.showPermissionRationale){
         RationaleDialog(
-            title = "Notification Permission Required",
-            message = "This permission is needed to send you reminders for your habits.",
+            title = stringResource(R.string.notification_permission_required),
+            message = stringResource(R.string.notification_permission_description),
             onDismissRequest = {
                 viewModel.onEvent(AddHabitEvent.TogglePermissionRationale(false))
             },
@@ -135,7 +137,12 @@ fun AddHabitScreen(
     Scaffold(
         topBar = {
             MediumFlexibleTopAppBar(
-                title = { Text("Add New Habit") },
+                title = {
+                    Text(
+                        if(state.isEdit) stringResource(R.string.edit_habit)
+                        else stringResource(R.string.add_habit)
+                    )
+                },
                 navigationIcon = {
                     BackButton(
                         onBackClick = {
@@ -150,7 +157,7 @@ fun AddHabitScreen(
         },
         bottomBar = {
             ActionButtonRow(
-                saveButtonText = "Save Habit",
+                saveButtonText = stringResource(R.string.save_habit),
                 onSave = {
                     viewModel.onEvent(AddHabitEvent.OnSaveHabitClick)
                 },
@@ -171,8 +178,8 @@ fun AddHabitScreen(
         ) {
             item {
                 FormTextComponent(
-                    title = "Habit Name",
-                    textFieldLabel = "Enter Habit Name",
+                    title = stringResource(R.string.habit_name),
+                    textFieldLabel = stringResource(R.string.enter_habit_name),
                     textValue = state.habitTitle,
                     onTextChange = { viewModel.onEvent(AddHabitEvent.OnHabitNameChange(it)) }
                 )
@@ -180,8 +187,8 @@ fun AddHabitScreen(
                 Spacer(Modifier.height(20.dp))
 
                 FormTextComponent(
-                    title = "Habit Description",
-                    textFieldLabel = "Enter Habit Description",
+                    title = stringResource(R.string.habit_description),
+                    textFieldLabel = stringResource(R.string.enter_habit_description),
                     textValue = state.habitDescription,
                     onTextChange = { viewModel.onEvent(AddHabitEvent.OnHabitDescriptionChange(it)) }
                 )

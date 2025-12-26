@@ -15,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.charan.habitdiary.R
 
 @Composable
 fun DateTimeRow(
@@ -28,13 +30,13 @@ fun DateTimeRow(
 ) {
     val dateTimeItems = listOf(
         LabelValue(
-            label = "Date",
+            label = stringResource(R.string.date),
             value = date,
             icon = Icons.Rounded.CalendarMonth,
             onClick = onDateClick
         ),
         LabelValue(
-            label = "Time",
+            label = stringResource(R.string.time),
             value = time,
             icon = Icons.Rounded.AccessTime,
             onClick = onTimeClick
@@ -77,7 +79,7 @@ fun InfoCard(
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = "$label Icon"
+                contentDescription = label
             )
             Column(modifier = Modifier.padding(start = 8.dp)) {
                 Text(
