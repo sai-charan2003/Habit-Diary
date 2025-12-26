@@ -45,6 +45,7 @@
     <string name="system">System</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
+    <string name="mark_as_done">Mark as Done</string>
 
     <!-- Onboarding Screen Strings -->
     <string name="onboarding_welcome_title">Welcome to Habit Diary</string>
