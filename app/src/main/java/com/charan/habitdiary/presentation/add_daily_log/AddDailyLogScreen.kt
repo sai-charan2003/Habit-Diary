@@ -277,7 +277,7 @@ fun AddDailyLogScreen(
                     viewModel.onEvent(DailyLogEvent.OnToggleDeleteDialog(true))
                 },
                 isSaveEnabled = (state.dailyLogItemDetails.mediaItems.isNotEmpty()
-                        || state.dailyLogItemDetails.notesText.isNotEmpty()) || !state.isLoading
+                        || state.dailyLogItemDetails.notesText.isNotEmpty()) && !state.isLoading
             )
         }
     ) { innerPadding->
