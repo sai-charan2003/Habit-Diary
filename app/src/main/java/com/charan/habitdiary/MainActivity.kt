@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
 
 object DeepLinkHandler {
     private val ADDHABIT_URI = "add-habit"
-    private val DAILYLOG_URI = "daily-log"
+    private val DAILYLOG_URI = "add-daily-log"
 
     fun resolve(uri: Uri): List<NavKey>? {
         val pathSegments = uri.pathSegments
