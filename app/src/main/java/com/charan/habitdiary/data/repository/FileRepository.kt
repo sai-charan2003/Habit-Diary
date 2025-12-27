@@ -15,4 +15,8 @@ interface FileRepository {
     fun createVideoUri() : Uri
 
     fun clearCacheMedia()
+
+    fun saveMediaToDownloads(filePath : String) : Flow<ProcessState<Boolean>>
+
+    fun getMediaUri(filePath : String) : Uri
 }

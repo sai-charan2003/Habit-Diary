@@ -1,5 +1,8 @@
 package com.charan.habitdiary.presentation.media_viewer
 
+import android.annotation.SuppressLint
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -25,15 +28,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.charan.habitdiary.presentation.common.components.BackButton
+import com.charan.habitdiary.presentation.common.model.ToastMessage
+import com.charan.habitdiary.presentation.media_viewer.components.MediaActionButton
 import com.charan.habitdiary.utils.isVideo
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import kotlin.math.abs
 
+@SuppressLint("LocalContextGetResourceValueCall")
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ImageViewerScreen(
@@ -41,21 +47,72 @@ fun ImageViewerScreen(
     currentImage: String,
     onBack: () -> Unit
 ) {
+    val viewModel = hiltViewModel<MediaViewerViewModel>()
+    val state = viewModel.state.collectAsStateWithLifecycle()
     val pageState = rememberPagerState(pageCount = { allImages.size })
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     LaunchedEffect(currentImage) {
         pageState.scrollToPage(allImages.indexOf(currentImage))
     }
-    val context  = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when(effect){
+                is MediaViewerEffect.ShowToast -> {
+                    val string = when(effect.message){
+                        is ToastMessage.Res -> {
+                            context.getString(effect.message.resId)
+                        }
+                        is ToastMessage.Text -> {
+                            effect.message.text
+                        }
+                    }
+                    Toast.makeText(context,string, Toast.LENGTH_SHORT).show()
+                }
+
+                is MediaViewerEffect.ShareMedia -> {
+                        val shareIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_STREAM, effect.filePath)
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            type = context.contentResolver.getType(effect.filePath)
+                        }
+
+                        val chooser = Intent.createChooser(shareIntent, "Share via")
+                        context.startActivity(chooser)
+                    }
+
+            }
+
+        }
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {},
-                navigationIcon = { BackButton(onBackClick = onBack) }
+                navigationIcon = { BackButton(onBackClick = onBack) },
+                actions = {
+                    MediaActionButton(
+                        onShareClick = {
+                            viewModel.onEvent(MediaViewerEvents.ShareMedia(
+                                filePath = allImages[pageState.currentPage],
+                            ))
+
+
+                        },
+                        onSaveClick = {
+                            viewModel.onEvent(MediaViewerEvents.DownloadMedia(
+                                filePath = allImages[pageState.currentPage],
+                            ))
+
+                        },
+                        isDownloading = state.value.isDownloading
+                    )
+                }
             )
-        }
+        },
     ) { padding ->
         HorizontalPager(
             state = pageState,

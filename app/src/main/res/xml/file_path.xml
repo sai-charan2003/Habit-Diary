@@ -1,9 +1,9 @@
 <paths>
     <files-path
-        name="images"
+        name="internal_files"
         path="." />
 
     <cache-path
-        name="images"
+        name="cache_files"
         path="."/>
 </paths>
