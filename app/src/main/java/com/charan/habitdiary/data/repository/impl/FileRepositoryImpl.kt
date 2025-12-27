@@ -2,6 +2,8 @@ package com.charan.habitdiary.data.repository.impl
 
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
+import android.os.Environment.getExternalStoragePublicDirectory
 import android.util.Log
 import androidx.core.content.FileProvider
 import com.charan.habitdiary.data.repository.FileRepository
@@ -95,5 +97,37 @@ class FileRepositoryImpl(
         } catch (e: Exception) {
             Log.e("FileRepositoryImpl", "Error clearing cache media: ${e.message}")
         }
+    }
+
+    override fun saveMediaToDownloads(filePath: String): Flow<ProcessState<Boolean>> =flow{
+        emit(ProcessState.Loading())
+        try {
+            println("Saving media to downloads....")
+            val sourceFile = File(filePath)
+            val downloadsDir = File(
+                getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS
+                ), "HabitDiary"
+            )
+            if (!downloadsDir.exists()) {
+                downloadsDir.mkdirs()
+            }
+            val destFile = File(downloadsDir, sourceFile.name)
+            sourceFile.copyTo(destFile, overwrite = true)
+            println("Media saved to downloads: ${destFile.absolutePath}")
+            emit(ProcessState.Success(true))
+        } catch (e: Exception) {
+            emit(ProcessState.Error(e.message ?: "Unexpected error"))
+        }
+
+    }
+
+    override fun getMediaUri(filePath: String): Uri {
+        val file = File(filePath)
+        return FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.provider",
+            file
+        )
     }
 }
