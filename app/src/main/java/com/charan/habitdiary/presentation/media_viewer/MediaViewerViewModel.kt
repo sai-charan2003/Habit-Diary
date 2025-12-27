@@ -26,25 +26,25 @@ class MediaViewerViewModel @Inject constructor(
 
     fun onEvent(event : MediaViewerEvents) {
         when(event){
-            is MediaViewerEvents.DownloadImage -> {
-                downloadImage(filePath = event.filePath)
+            is MediaViewerEvents.DownloadMedia -> {
+                downloadMedia(filePath = event.filePath)
 
             }
 
-            is MediaViewerEvents.ShareImage -> {
-                handelShareImage(event.filePath)
+            is MediaViewerEvents.ShareMedia -> {
+                handelShareMedia(event.filePath)
 
             }
         }
     }
 
-    private fun handelShareImage(filePath : String) = viewModelScope.launch {
+    private fun handelShareMedia(filePath : String) = viewModelScope.launch {
         val fileUri = fileRepository.getMediaUri(filePath)
-        sendEffect(MediaViewerEffect.ShareImage(fileUri))
+        sendEffect(MediaViewerEffect.ShareMedia(fileUri))
 
     }
 
-    private fun downloadImage(filePath : String) = viewModelScope.launch {
+    private fun downloadMedia(filePath : String) = viewModelScope.launch {
         fileRepository.saveMediaToDownloads(filePath).collectLatest { state->
             when(state){
                 is ProcessState.Error -> {
