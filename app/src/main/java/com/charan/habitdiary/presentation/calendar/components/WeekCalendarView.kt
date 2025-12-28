@@ -14,7 +14,7 @@ fun CustomWeekCalendar(
     onClick : (LocalDate) -> Unit,
     currentDate : LocalDate,
     visibleMonth : Month,
-    datesWithLogs : List<LocalDate>
+    datesWithLogs : Set<LocalDate>
 ) {
     LaunchedEffect(Unit) {
         calendarState.animateScrollToWeek(selectedDate)

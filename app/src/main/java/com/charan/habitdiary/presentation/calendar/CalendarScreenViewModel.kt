@@ -141,7 +141,7 @@ class CalendarScreenViewModel @Inject constructor(
                     habitLocalRepository.getLoggedDatesInRange(range.first.getStartOfDay(), range.second.getEndOfDay())
                 }
                 .collectLatest { dates ->
-                    _state.update { it.copy(datesWithLogs = dates) }
+                    _state.update { it.copy(datesWithLogs = dates.toSet()) }
                 }
         }
     }

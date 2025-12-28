@@ -15,7 +15,7 @@ fun MonthCalendarView(
     selectedDate : LocalDate,
     onClick :(LocalDate) -> Unit,
     visibleMonth : Month,
-    datesWithLogs : List<LocalDate>
+    datesWithLogs : Set<LocalDate>
 ) {
     LaunchedEffect(Unit) {
         state.animateScrollToMonth(selectedDate.yearMonth)
