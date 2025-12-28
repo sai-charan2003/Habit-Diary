@@ -131,7 +131,7 @@ class HabitLocalRepositoryImpl(
     override fun getLoggedDatesInRange(
         start: LocalDateTime,
         end: LocalDateTime
-    ): Flow<List<LocalDate>> = flow{
-        emitAll(dailyLogDao.getLoggedDatesInRange(start,end))
+    ): Flow<List<LocalDate>> {
+        return dailyLogDao.getLoggedDatesInRange(start,end)
     }
 }
