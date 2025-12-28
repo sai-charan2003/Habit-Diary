@@ -19,8 +19,12 @@ data class LogCalendarState(
     val currentDate : LocalDate = LocalDate.now(),
     val startOfDate : LocalDate = currentDate.minusMonths(100),
     val endOfDate : LocalDate = currentDate.plusMonths(1),
-    val dailyLogItem : List<DailyLogItemUIState> = emptyList()
+    val dailyLogItem : List<DailyLogItemUIState> = emptyList(),
+    val datesWithLogs: Set<LocalDate> = emptySet(),
+    val visibleStartOfDate : LocalDate = startOfDate,
+    val visibleEndOfDate : LocalDate = endOfDate
 )
+
 
 
 enum class CalendarViewType{

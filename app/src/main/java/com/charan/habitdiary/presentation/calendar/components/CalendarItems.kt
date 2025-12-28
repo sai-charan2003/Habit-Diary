@@ -9,11 +9,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,74 +27,65 @@ import java.time.format.TextStyle
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MonthDayItem(
+fun CalendarDayItem(
     date: String,
     isSelected: Boolean,
     onClick: () -> Unit,
     hasContent: Boolean = false,
     isToday: Boolean,
-    isCurrentMonth : Boolean = true
+    isCurrentMonth: Boolean = true
 ) {
-
     val circleModifier = Modifier
+        .size(35.dp)
         .padding(3.dp)
-        .size(40.dp)
         .clip(CircleShape)
         .clickable(onClick = onClick)
 
     val modifier =
         when {
-            isSelected -> {
-                circleModifier
-                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f))
-            }
-            isToday -> {
-                circleModifier
-                    .border(
-                    width = 2.dp,
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                    shape = CircleShape
-                )
-            }
-            else -> {
-                circleModifier
-            }
+            isSelected -> circleModifier.background(
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f)
+            )
+            isToday -> circleModifier.border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                shape = CircleShape
+            )
+            else -> circleModifier
         }
 
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Column(
             modifier = modifier,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Text(
                 text = date,
-                style = if(isCurrentMonth) {
+                style = if (isCurrentMonth) {
                     MaterialTheme.typography.titleSmallEmphasized
                 } else {
                     MaterialTheme.typography.titleSmallEmphasized.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
                     )
-                },
+                }
             )
-
-            if (hasContent) {
-                Spacer(modifier = Modifier.height(3.dp))
-                Box(
-                    modifier = Modifier
-                        .size(6.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer
-                            else MaterialTheme.colorScheme.primary
-                        )
-                )
-            }
+        }
+        if (hasContent && !isSelected) {
+            Box(
+                modifier = Modifier
+                    .size(4.dp)
+                    .clip(CircleShape)
+                    .background(
+                        MaterialTheme.colorScheme.primary
+                    )
+            )
+        } else{
+            Spacer(modifier = Modifier.size(4.dp))
         }
     }
 }
@@ -105,9 +94,10 @@ fun MonthDayItem(
 
 
 
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MonthHeaderView(
+fun CalendarHeaderItem(
     dayOfWeek : List<DayOfWeek>
 ) {
     Row(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp)) {

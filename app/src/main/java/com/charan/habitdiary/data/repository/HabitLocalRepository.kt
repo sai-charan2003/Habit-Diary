@@ -56,4 +56,9 @@ interface HabitLocalRepository {
 
 
     fun upsetDailyLogMediaEntities(mediaEntity: List<DailyLogMediaEntity>)
+
+    fun getLoggedDatesInRange(
+        start: LocalDateTime,
+        end: LocalDateTime
+    ): Flow<List<LocalDate>>
 }

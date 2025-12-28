@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.charan.habitdiary.data.repository.DataStoreRepository
 import com.charan.habitdiary.data.repository.HabitLocalRepository
+import com.charan.habitdiary.presentation.calendar.LogCalendarEffect.*
 import com.charan.habitdiary.presentation.mapper.toDailyLogUIStateList
 import com.charan.habitdiary.utils.DateUtil.getEndOfDay
 import com.charan.habitdiary.utils.DateUtil.getStartOfDay
@@ -22,9 +23,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
-import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 
@@ -40,6 +38,7 @@ class CalendarScreenViewModel @Inject constructor(
     val effect = _effect.asSharedFlow()
     init {
         fetchDailyLogsForDate()
+        getLoggedDatesInRange()
     }
 
 
@@ -59,8 +58,23 @@ class CalendarScreenViewModel @Inject constructor(
             }
 
             is CalendarScreenEvents.OnNavigateToAddDailyLogScreen -> {
-                sendEffect(LogCalendarEffect.OnNavigateToAddDailyLogScreen(event.id))
+                sendEffect(OnNavigateToAddDailyLogScreen(event.id))
             }
+
+            is CalendarScreenEvents.OnVisibleDateRangeChange -> {
+                handleDateRangeChange(event.startDate, event.endDate)
+
+
+            }
+        }
+    }
+
+    private fun handleDateRangeChange(startDate: LocalDate, endDate: LocalDate) {
+        _state.update {
+            it.copy(
+                visibleStartOfDate = startDate,
+                visibleEndOfDate = endDate
+            )
         }
     }
 
@@ -117,5 +131,20 @@ class CalendarScreenViewModel @Inject constructor(
                 _state.update { it.copy(dailyLogItem = uiList) }
             }
     }
+
+    private fun getLoggedDatesInRange() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state
+                .map { it.visibleStartOfDate to it.visibleEndOfDate }
+                .distinctUntilChanged()
+                .flatMapLatest { range ->
+                    habitLocalRepository.getLoggedDatesInRange(range.first.getStartOfDay(), range.second.getEndOfDay())
+                }
+                .collectLatest { dates ->
+                    _state.update { it.copy(datesWithLogs = dates.toSet()) }
+                }
+        }
+    }
+
 
 }
