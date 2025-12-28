@@ -11,6 +11,8 @@ import com.charan.habitdiary.data.local.model.HabitWithDone
 import com.charan.habitdiary.data.repository.HabitLocalRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
@@ -124,5 +126,12 @@ class HabitLocalRepositoryImpl(
 
     override fun upsetDailyLogMediaEntities(mediaEntity: List<DailyLogMediaEntity>) {
         dailyLogMediaDao.upsertMedia(mediaEntity)
+    }
+
+    override fun getLoggedDatesInRange(
+        start: LocalDateTime,
+        end: LocalDateTime
+    ): Flow<List<LocalDate>> = flow{
+        emitAll(dailyLogDao.getLoggedDatesInRange(start,end))
     }
 }

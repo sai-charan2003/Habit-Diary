@@ -13,7 +13,8 @@ fun CustomWeekCalendar(
     selectedDate : LocalDate,
     onClick : (LocalDate) -> Unit,
     currentDate : LocalDate,
-    visibleMonth : Month
+    visibleMonth : Month,
+    datesWithLogs : List<LocalDate>
 ) {
     LaunchedEffect(Unit) {
         calendarState.animateScrollToWeek(selectedDate)
@@ -21,17 +22,18 @@ fun CustomWeekCalendar(
     WeekCalendar(
         state = calendarState,
         weekHeader = {
-            MonthHeaderView(it.days.map { it.date.dayOfWeek })
+            CalendarHeaderItem(it.days.map { it.date.dayOfWeek })
         },
         dayContent = {
-            MonthDayItem(
+            CalendarDayItem(
                 date = it.date.day.toString(),
                 isSelected = selectedDate == it.date,
                 isToday = currentDate == it.date,
                 onClick = {
                     onClick(it.date)
                 },
-                isCurrentMonth = it.date.month == visibleMonth
+                isCurrentMonth = it.date.month == visibleMonth,
+                hasContent = datesWithLogs.contains(it.date)
             )
         }
     )

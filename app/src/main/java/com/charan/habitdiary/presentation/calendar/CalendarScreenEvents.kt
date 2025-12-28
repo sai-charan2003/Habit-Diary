@@ -12,4 +12,6 @@ sealed class CalendarScreenEvents {
 
     data class OnNavigateToAddDailyLogScreen(val id : Int) : CalendarScreenEvents()
 
+    data class OnVisibleDateRangeChange(val startDate: LocalDate, val endDate: LocalDate) : CalendarScreenEvents()
+
 }

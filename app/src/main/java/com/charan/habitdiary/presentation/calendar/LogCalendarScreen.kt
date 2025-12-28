@@ -38,9 +38,6 @@ import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.datetime.toJavaMonth
-import java.time.format.TextStyle
-import java.util.Locale
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class, ExperimentalMaterial3Api::class,
@@ -85,6 +82,24 @@ fun LogCalendarScreen(
             }
         }
     }
+    LaunchedEffect(
+        weekCalendarState.firstVisibleWeek,
+        monthCalendarState.firstVisibleMonth,
+        state.selectedCalendarView) {
+        viewModel.onEvent(
+            CalendarScreenEvents.OnVisibleDateRangeChange(
+                startDate = when(state.selectedCalendarView){
+                    CalendarViewType.WEEK -> weekCalendarState.firstVisibleWeek.days.first().date
+                    CalendarViewType.MONTH -> monthCalendarState.firstVisibleMonth.yearMonth.days.first
+                },
+                endDate = when(state.selectedCalendarView){
+                    CalendarViewType.WEEK -> weekCalendarState.lastVisibleWeek.days.last().date
+                    CalendarViewType.MONTH -> monthCalendarState.lastVisibleMonth.yearMonth.days.last
+                }
+            )
+        )
+    }
+
 
 
     LaunchedEffect(Unit) {
@@ -152,7 +167,8 @@ fun LogCalendarScreen(
                     },
                     currentDate = state.currentDate,
                     selectedDate = state.selectedDate,
-                    visibleMonth = weekCalendarState.lastVisibleWeek.days.last().date.month
+                    visibleMonth = weekCalendarState.lastVisibleWeek.days.last().date.month,
+                    datesWithLogs = state.datesWithLogs
                 )
             }
             AnimatedVisibility(
@@ -167,7 +183,8 @@ fun LogCalendarScreen(
                     onClick = { date ->
                         viewModel.onEvent(CalendarScreenEvents.OnDateSelected(date))
                     },
-                    visibleMonth = monthCalendarState.lastVisibleMonth.yearMonth.month
+                    visibleMonth = monthCalendarState.lastVisibleMonth.yearMonth.month,
+                    datesWithLogs = state.datesWithLogs
                 )
             }
 
