@@ -22,11 +22,14 @@ interface DailyLogDao {
     @Update
     fun updateDailyLog(dailyLog: DailyLogEntity)
 
-    @Insert
-    fun insertDailyLogs(dailyLogs: List<DailyLogEntity>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertDailyLogs(dailyLogs: List<DailyLogEntity>) : List<Long>
 
     @Query("SELECT * FROM daily_log_entity ORDER BY createdAt DESC")
-    fun getAllDailyLogs(): Flow<List<DailyLogEntity>>
+    fun getAllDailyLogsFlow(): Flow<List<DailyLogEntity>>
+
+    @Query("SELECT * FROM daily_log_entity ORDER BY createdAt DESC")
+    fun getAllDailyLogs(): List<DailyLogEntity>
 
     @Transaction
     @Query("SELECT * FROM daily_log_entity WHERE createdAt >= :startOfDay and createdAt <= :endOfDay and isDeleted = 0 ORDER BY createdAt DESC")

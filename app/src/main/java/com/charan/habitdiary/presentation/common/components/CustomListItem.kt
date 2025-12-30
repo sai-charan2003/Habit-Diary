@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,12 +21,12 @@ import com.charan.habitdiary.ui.theme.roundedListItemCorners
 @Composable
 fun CustomListItem(
     indexItem: IndexItem,
-    content : @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
+    tailingContent: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     contentPaddingValues: PaddingValues = PaddingValues(10.dp),
-    onClick : (() -> Unit)? = null
+    onClick: (() -> Unit)? = null
 ) {
-
     Surface(
         shape = roundedListItemCorners(indexItem),
         modifier = Modifier
@@ -35,16 +36,33 @@ fun CustomListItem(
         enabled = onClick != null,
         onClick = { onClick?.invoke() }
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 60.dp)
-                .padding(contentPaddingValues),
-            content = content,
-            verticalArrangement = Arrangement.Center
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Main content takes weight
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = 60.dp)
+                    .padding(contentPaddingValues),
+                content = content,
+                verticalArrangement = Arrangement.Center
+            )
+
+            // Trailing content
+            if (tailingContent != null) {
+                Column(
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .align(androidx.compose.ui.Alignment.CenterVertically)
+                ) {
+                    tailingContent()
+                }
+            }
+        }
     }
 
     Spacer(Modifier.height(2.dp))
-
 }
+

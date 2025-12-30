@@ -17,11 +17,17 @@ import java.lang.Exception
 class FileRepositoryImpl(
     private val context : Context
 ) : FileRepository {
+
+    companion object {
+        const val HABIT_DIARY_MEDIA_DIR = "habit_diary_media"
+        // v0.1.0 was using this directory name
+        const val HABIT_DIARY_IMAGES = "habit_diary_images"
+    }
     override fun saveImagesToCache(imageUri: Uri) =
-        saveMediaInternal(File(context.cacheDir, "habit_diary_media"), imageUri)
+        saveMediaInternal(File(context.cacheDir, HABIT_DIARY_MEDIA_DIR), imageUri)
 
     override fun saveMedia(imageUri: Uri) =
-        saveMediaInternal(File(context.filesDir, "habit_diary_media"), imageUri)
+        saveMediaInternal(File(context.filesDir, HABIT_DIARY_MEDIA_DIR), imageUri)
 
 
 
@@ -90,7 +96,7 @@ class FileRepositoryImpl(
     override fun clearCacheMedia() {
         try {
             println("Clearing cache media directory")
-            val cacheDir = File(context.cacheDir, "habit_diary_media")
+            val cacheDir = File(context.cacheDir, HABIT_DIARY_MEDIA_DIR)
             if (cacheDir.exists()) {
                 cacheDir.deleteRecursively()
             }

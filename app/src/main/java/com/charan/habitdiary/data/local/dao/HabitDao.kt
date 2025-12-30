@@ -14,6 +14,9 @@ interface HabitDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsetHabit(habit: HabitEntity) : Long
 
+    @Insert
+    fun insertHabits(habits: List<HabitEntity>) : List<Long>
+
     @Query("SELECT * FROM habit_entity ORDER BY createdAt DESC")
     fun getAllHabitsFlow(): Flow<List<HabitEntity>>
 

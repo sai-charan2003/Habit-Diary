@@ -1,9 +1,15 @@
 package com.charan.habitdiary.presentation.settings
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularWavyProgressIndicator
+import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -13,17 +19,21 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.charan.habitdiary.R
+import com.charan.habitdiary.data.repository.impl.BackupRepositoryImpl
+import com.charan.habitdiary.data.repository.impl.BackupRepositoryImpl.Companion.FILE_TYPE
 import com.charan.habitdiary.presentation.common.components.CustomListItem
 import com.charan.habitdiary.presentation.settings.components.SectionHeader
 import com.charan.habitdiary.presentation.settings.components.SettingsRowItem
 import com.charan.habitdiary.presentation.settings.components.SettingsSwitchItem
 import com.charan.habitdiary.presentation.settings.components.ThemeOptionButtonGroup
 import com.charan.habitdiary.ui.theme.IndexItem
+import com.charan.habitdiary.utils.showToast
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -34,13 +44,47 @@ fun SettingsScreen(
     val viewModel = hiltViewModel<SettingsViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val context = LocalContext.current
+    val createDocument = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument(
+            FILE_TYPE
+        )
+    ) {
+        if(it != null){
+            viewModel.onEvent(SettingsScreenEvent.BackupData(it))
+        }
+    }
+    val pickedFile =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.OpenDocument()
+        ) { uri ->
+            if(uri !=null) {
+                viewModel.onEvent(SettingsScreenEvent.RestoreBackup(uri))
+            }
+        }
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when(effect){
                 SettingsScreenEffect.NavigateToLibrariesScreen -> {
                     navigateToAboutLibraries()
                 }
-                else ->{}
+
+                is SettingsScreenEffect.LaunchCreateDocument -> {
+                    createDocument.launch(effect.fileName)
+                }
+
+                SettingsScreenEffect.OnBack -> {
+
+                }
+
+                is SettingsScreenEffect.ShowToast -> {
+                    context.showToast(effect.message)
+
+                }
+
+                SettingsScreenEffect.LaunchOpenDocument -> {
+                    pickedFile.launch(arrayOf(FILE_TYPE))
+                }
             }
         }
     }
@@ -99,6 +143,45 @@ fun SettingsScreen(
                     isChecked = state.is24HourFormat,
                     onCheckedChange = {
                         viewModel.onEvent(SettingsScreenEvent.OnTimeFormatChange(it))
+                    }
+                )
+            }
+
+            item {
+                SectionHeader(
+                    stringResource(R.string.backup)
+                )
+                CustomListItem(
+                    indexItem = IndexItem.FIRST,
+                    content = {
+                        Text(stringResource(R.string.export_data))
+                    },
+                    onClick = {
+                        viewModel.onEvent(SettingsScreenEvent.OnExportDataClick)
+                    },
+                    tailingContent = {
+                        if(state.isExporting){
+                            ContainedLoadingIndicator(
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+                    }
+
+                )
+                CustomListItem(
+                    indexItem = IndexItem.LAST,
+                    content = {
+                        Text(stringResource(R.string.import_data))
+                    },
+                    onClick = {
+                        viewModel.onEvent(SettingsScreenEvent.OnImportDataClick)
+                    },
+                    tailingContent = {
+                        if(state.isImporting){
+                            ContainedLoadingIndicator(
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
                     }
                 )
             }

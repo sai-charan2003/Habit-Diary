@@ -6,9 +6,11 @@ import com.charan.habitdiary.data.local.dao.DailyLogDao
 import com.charan.habitdiary.data.local.dao.DailyLogMediaDao
 import com.charan.habitdiary.data.local.dao.HabitDao
 import com.charan.habitdiary.data.local.entity.DailyLogMediaEntity
+import com.charan.habitdiary.data.repository.BackupRepository
 import com.charan.habitdiary.data.repository.DataStoreRepository
 import com.charan.habitdiary.data.repository.FileRepository
 import com.charan.habitdiary.data.repository.HabitLocalRepository
+import com.charan.habitdiary.data.repository.impl.BackupRepositoryImpl
 import com.charan.habitdiary.data.repository.impl.DateStoreRepositoryImpl
 import com.charan.habitdiary.data.repository.impl.FileRepositoryImpl
 import com.charan.habitdiary.data.repository.impl.HabitLocalRepositoryImpl
@@ -83,5 +85,17 @@ class AppModule {
     fun provideDataStoreRepository(
         @ApplicationContext context: Context
     ): DataStoreRepository = DateStoreRepositoryImpl(context)
+
+    @Provides
+    @Singleton
+    fun provideBackupRepository(
+        @ApplicationContext context: Context,
+        habitLocalRepository: HabitLocalRepository,
+        notificationScheduler: NotificationScheduler
+    ) : BackupRepository= BackupRepositoryImpl(
+        context,
+        habitLocalRepository,
+        notificationScheduler
+    )
 
 }

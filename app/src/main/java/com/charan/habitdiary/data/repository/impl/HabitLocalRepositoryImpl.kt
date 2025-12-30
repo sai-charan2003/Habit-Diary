@@ -11,8 +11,6 @@ import com.charan.habitdiary.data.local.model.HabitWithDone
 import com.charan.habitdiary.data.repository.HabitLocalRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
@@ -48,7 +46,10 @@ class HabitLocalRepositoryImpl(
         return habitDao.getAllHabits()
     }
 
-    override fun getAllDailyLogs(): Flow<List<DailyLogEntity>> {
+    override fun getAllDailyLogsFlow(): Flow<List<DailyLogEntity>> {
+        return dailyLogDao.getAllDailyLogsFlow()
+    }
+    override fun getAllDailyLogs(): List<DailyLogEntity> {
         return dailyLogDao.getAllDailyLogs()
     }
 
@@ -133,5 +134,16 @@ class HabitLocalRepositoryImpl(
         end: LocalDateTime
     ): Flow<List<LocalDate>> {
         return dailyLogDao.getLoggedDatesInRange(start,end)
+    }
+
+    override fun getAllMedia(): List<DailyLogMediaEntity> {
+        return dailyLogMediaDao.getAllMedia()
+    }
+
+    override fun insertDailyLogs(dailyLogs: List<DailyLogEntity>): List<Long> {
+        return dailyLogDao.insertDailyLogs(dailyLogs)
+    }
+    override fun insertHabits(habits: List<HabitEntity>) : List<Long> {
+        return habitDao.insertHabits(habits)
     }
 }

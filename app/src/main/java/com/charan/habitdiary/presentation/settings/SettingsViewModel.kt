@@ -1,21 +1,30 @@
 package com.charan.habitdiary.presentation.settings
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.charan.habitdiary.BuildConfig
+import com.charan.habitdiary.R
 import com.charan.habitdiary.data.model.enums.ThemeOption
+import com.charan.habitdiary.data.repository.BackupRepository
 import com.charan.habitdiary.data.repository.DataStoreRepository
+import com.charan.habitdiary.presentation.common.model.ToastMessage
+import com.charan.habitdiary.presentation.settings.SettingsScreenEffect.*
+import com.charan.habitdiary.utils.ProcessState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val dataStore : DataStoreRepository
+    private val dataStore : DataStoreRepository,
+    private val backupRepository: BackupRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsState())
     val state = _state.asStateFlow()
@@ -46,10 +55,27 @@ class SettingsViewModel @Inject constructor(
             }
 
             SettingsScreenEvent.OnAboutLibrariesClick -> {
-                sendEvent(SettingsScreenEffect.NavigateToLibrariesScreen)
+                sendEvent(NavigateToLibrariesScreen)
             }
             SettingsScreenEvent.OnBack -> {
-                sendEvent(SettingsScreenEffect.OnBack)
+                sendEvent(OnBack)
+            }
+
+            is SettingsScreenEvent.BackupData -> {
+                backupData(event.uri)
+
+            }
+            SettingsScreenEvent.OnExportDataClick -> {
+                sendEvent(LaunchCreateDocument(backupRepository.fileName))
+            }
+
+            SettingsScreenEvent.OnImportDataClick -> {
+                sendEvent(LaunchOpenDocument)
+
+            }
+
+            is SettingsScreenEvent.RestoreBackup -> {
+                importData(event.uri)
             }
         }
     }
@@ -111,6 +137,72 @@ class SettingsViewModel @Inject constructor(
                 appVersion = appVersion
             )
         }
+    }
+
+    private fun backupData(uri : Uri)= viewModelScope.launch(Dispatchers.IO) {
+        backupRepository.backupData(uri).collectLatest { state ->
+            when(state){
+                is ProcessState.Error -> {
+                    _state.update {
+                        it.copy(
+                            isExporting = false
+                        )
+                    }
+                    sendEvent(SettingsScreenEffect.ShowToast(ToastMessage.Text(state.exception)))
+
+                }
+                is ProcessState.Loading -> {
+                    _state.update {
+                        it.copy(
+                            isExporting = true
+                        )
+                    }
+                }
+
+                ProcessState.NotDetermined ->{}
+                is ProcessState.Success<*> -> {
+                    _state.update {
+                        it.copy(
+                            isExporting = false
+                        )
+                    }
+                    sendEvent(SettingsScreenEffect.ShowToast(ToastMessage.Res(R.string.backup_restored)))
+                }
+            }
+        }
+    }
+
+    private fun importData(uri : Uri) = viewModelScope.launch(Dispatchers.IO) {
+        backupRepository.importData(uri).collectLatest { state->
+            when(state){
+                is ProcessState.Error -> {
+                    _state.update {
+                        it.copy(
+                            isImporting = false
+                        )
+                    }
+                    sendEvent(SettingsScreenEffect.ShowToast(ToastMessage.Text(state.exception)))
+                }
+                is ProcessState.Loading -> {
+                    _state.update {
+                        it.copy(
+                            isImporting = true
+                        )
+                    }
+                }
+                ProcessState.NotDetermined -> {}
+                is ProcessState.Success<*> -> {
+                    _state.update {
+                        it.copy(
+                            isImporting = false
+                        )
+                    }
+                    sendEvent(SettingsScreenEffect.ShowToast(ToastMessage.Res(R.string.backup_restored)))
+                }
+            }
+
+        }
+
     }
 
 }
