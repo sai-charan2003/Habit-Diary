@@ -1,5 +1,6 @@
 package com.charan.habitdiary.presentation.settings
 
+import android.net.Uri
 import com.charan.habitdiary.data.model.enums.ThemeOption
 
 sealed class SettingsScreenEvent {
@@ -11,4 +12,12 @@ sealed class SettingsScreenEvent {
     data object OnAboutLibrariesClick : SettingsScreenEvent()
 
     data object OnBack : SettingsScreenEvent()
+
+    data object OnExportDataClick : SettingsScreenEvent()
+
+    data class BackupData(val uri : Uri) : SettingsScreenEvent()
+
+    data class RestoreBackup(val uri : Uri) : SettingsScreenEvent()
+
+    data object OnImportDataClick : SettingsScreenEvent()
 }

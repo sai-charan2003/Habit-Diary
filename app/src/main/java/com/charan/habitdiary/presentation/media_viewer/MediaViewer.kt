@@ -34,6 +34,7 @@ import com.charan.habitdiary.presentation.common.components.BackButton
 import com.charan.habitdiary.presentation.common.model.ToastMessage
 import com.charan.habitdiary.presentation.media_viewer.components.MediaActionButton
 import com.charan.habitdiary.utils.isVideo
+import com.charan.habitdiary.utils.showToast
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
@@ -60,15 +61,7 @@ fun ImageViewerScreen(
         viewModel.effect.collectLatest { effect ->
             when(effect){
                 is MediaViewerEffect.ShowToast -> {
-                    val string = when(effect.message){
-                        is ToastMessage.Res -> {
-                            context.getString(effect.message.resId)
-                        }
-                        is ToastMessage.Text -> {
-                            effect.message.text
-                        }
-                    }
-                    Toast.makeText(context,string, Toast.LENGTH_SHORT).show()
+                    context.showToast(effect.message)
                 }
 
                 is MediaViewerEffect.ShareMedia -> {

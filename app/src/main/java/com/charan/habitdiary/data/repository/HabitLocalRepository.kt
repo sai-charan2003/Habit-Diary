@@ -24,7 +24,9 @@ interface HabitLocalRepository {
 
     fun getAllHabits(): List<HabitEntity>
 
-    fun getAllDailyLogs(): Flow<List<DailyLogEntity>>
+    fun getAllDailyLogsFlow(): Flow<List<DailyLogEntity>>
+
+    fun getAllDailyLogs(): List<DailyLogEntity>
 
     fun getDailyLogsInRange(
         startOfDay: LocalDateTime = DateUtil.todayStartOfDay(),
@@ -56,6 +58,12 @@ interface HabitLocalRepository {
 
 
     fun upsetDailyLogMediaEntities(mediaEntity: List<DailyLogMediaEntity>)
+
+    fun getAllMedia() : List<DailyLogMediaEntity>
+
+    fun insertDailyLogs(dailyLogs: List<DailyLogEntity>) : List<Long>
+
+    fun insertHabits(habits: List<HabitEntity>) : List<Long>
 
     fun getLoggedDatesInRange(
         start: LocalDateTime,
