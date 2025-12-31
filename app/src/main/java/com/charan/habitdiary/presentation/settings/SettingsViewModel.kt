@@ -117,8 +117,8 @@ class SettingsViewModel @Inject constructor(
     }
 
 
-    private fun handleUseSystemFont(useGoogleSans : Boolean) = viewModelScope.launch {
-        dataStore.setSystemFontState(useGoogleSans)
+    private fun handleUseSystemFont(useSystemFont : Boolean) = viewModelScope.launch {
+        dataStore.setSystemFontState(useSystemFont)
     }
 
     private fun changeTimeFormat(is24HourFormat : Boolean) = viewModelScope.launch{

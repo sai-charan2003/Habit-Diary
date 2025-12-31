@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
             val initialTheme = if(isSystemInDarkTheme()) ThemeOption.DARK else ThemeOption.LIGHT
             val themeData = dataStore.getTheme.collectAsStateWithLifecycle(initialValue = initialTheme)
             val dynamicColorsEnabled = dataStore.getDynamicColorsState.collectAsStateWithLifecycle(initialValue = true)
-            val isSystemFont = dataStore.getSystemFontState.collectAsStateWithLifecycle(initialValue = false)
+            val isSystemFont = dataStore.getSystemFontState.collectAsStateWithLifecycle(initialValue = true)
             val onBoardingCompleted = remember {
                 mutableStateOf(true)
             }
