@@ -20,4 +20,8 @@ interface DataStoreRepository {
     suspend fun setOnBoardingCompleted(isCompleted : Boolean)
 
     val getOnBoardingCompleted : Flow<Boolean>
+
+    suspend fun setSystemFontState(useSystemFont : Boolean)
+
+    val getSystemFontState : Flow<Boolean>
 }

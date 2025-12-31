@@ -33,9 +33,7 @@ class SettingsViewModel @Inject constructor(
     val effect = _effect.asSharedFlow()
 
     init {
-        observeTheme()
-        observeDynamicColorsState()
-        observeTimeFormat()
+        observeSettingsDataStore()
         getAppVersion()
     }
 
@@ -77,48 +75,61 @@ class SettingsViewModel @Inject constructor(
             is SettingsScreenEvent.RestoreBackup -> {
                 importData(event.uri)
             }
+
+            is SettingsScreenEvent.OnUseSystemFontChange -> {
+                handleUseSystemFont(event.useSystemFont)
+            }
         }
+    }
+
+    private fun observeSettingsDataStore() {
+        viewModelScope.launch {
+            dataStore.getSystemFontState.collect { systemFontState ->
+                _state.update {
+                    it.copy(isSystemFontEnabled = systemFontState)
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            dataStore.getIs24HourFormat.collect { is24HourFormat ->
+                _state.update {
+                    it.copy(is24HourFormat = is24HourFormat)
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            dataStore.getTheme.collect { themeOption ->
+                _state.update {
+                    it.copy(selectedThemeOption = themeOption)
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            dataStore.getDynamicColorsState.collect { isEnabled ->
+                _state.update {
+                    it.copy(isDynamicColorsEnabled = isEnabled)
+                }
+            }
+        }
+    }
+
+
+    private fun handleUseSystemFont(useSystemFont : Boolean) = viewModelScope.launch {
+        dataStore.setSystemFontState(useSystemFont)
     }
 
     private fun changeTimeFormat(is24HourFormat : Boolean) = viewModelScope.launch{
         dataStore.setIs24HourFormat(is24HourFormat)
     }
 
-    private fun observeTimeFormat() = viewModelScope.launch {
-        dataStore.getIs24HourFormat.collect{ is24HourFormat ->
-            _state.update {
-                it.copy(
-                    is24HourFormat = is24HourFormat
-                )
-            }
-        }
-    }
 
     private fun changeTheme(theme : ThemeOption) = viewModelScope.launch{
         dataStore.setTheme(
             theme
         )
-    }
-
-    private fun observeTheme() = viewModelScope.launch {
-        dataStore.getTheme.collect{ themeOption ->
-            _state.update {
-                it.copy(
-                    selectedThemeOption = themeOption
-                )
-            }
-        }
-    }
-
-    private fun observeDynamicColorsState() = viewModelScope.launch {
-        dataStore.getDynamicColorsState.collect{ isEnabled ->
-            _state.update {
-                it.copy(
-                    isDynamicColorsEnabled = isEnabled
-                )
-            }
-        }
-
     }
 
     private fun setDynamicColorsState(isEnabled : Boolean) = viewModelScope.launch {
