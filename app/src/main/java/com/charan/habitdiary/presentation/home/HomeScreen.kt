@@ -1,11 +1,13 @@
 package com.charan.habitdiary.presentation.home
 
 import DayLogEntryItem
+import android.graphics.fonts.FontVariationAxis
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -16,6 +18,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,7 +33,9 @@ import com.charan.habitdiary.presentation.home.components.FabMenu
 import com.charan.habitdiary.presentation.home.components.HabitItemCard
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class,
+    ExperimentalTextApi::class
+)
 @Composable
 fun HomeScreen(
     onAddHabitClick : (id : Int?) -> Unit,
@@ -55,7 +64,9 @@ fun HomeScreen(
         topBar = {
             MediumFlexibleTopAppBar(
                 title = {
-                    Text(stringResource(R.string.today))
+                    Text(
+                        stringResource(R.string.today),
+                    )
 
                 },
                 subtitle = {

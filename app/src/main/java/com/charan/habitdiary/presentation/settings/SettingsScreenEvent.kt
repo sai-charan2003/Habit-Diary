@@ -9,6 +9,8 @@ sealed class SettingsScreenEvent {
 
     data class OnDynamicColorsChange(val isEnabled : Boolean) : SettingsScreenEvent()
 
+    data class OnUseSystemFontChange(val useSystemFont : Boolean) : SettingsScreenEvent()
+
     data object OnAboutLibrariesClick : SettingsScreenEvent()
 
     data object OnBack : SettingsScreenEvent()

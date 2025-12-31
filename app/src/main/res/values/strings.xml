@@ -35,6 +35,7 @@
     <string name="appearance">Appearance</string>
     <string name="theme">Theme</string>
     <string name="use_dynamic_color">Use Dynamic Color</string>
+    <string name="use_system_font">Use System Font</string>
     <string name="general">General</string>
     <string name="hour_format_24">24 Hour Format</string>
     <string name="about">About</string>

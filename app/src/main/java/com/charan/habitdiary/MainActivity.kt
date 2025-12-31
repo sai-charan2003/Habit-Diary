@@ -3,7 +3,6 @@ package com.charan.habitdiary
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -13,11 +12,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavDestination
 import androidx.navigation3.runtime.NavKey
 import com.charan.habitdiary.data.model.enums.ThemeOption
 import com.charan.habitdiary.data.repository.DataStoreRepository
@@ -52,6 +49,7 @@ class MainActivity : ComponentActivity() {
             val initialTheme = if(isSystemInDarkTheme()) ThemeOption.DARK else ThemeOption.LIGHT
             val themeData = dataStore.getTheme.collectAsStateWithLifecycle(initialValue = initialTheme)
             val dynamicColorsEnabled = dataStore.getDynamicColorsState.collectAsStateWithLifecycle(initialValue = true)
+            val isSystemFont = dataStore.getSystemFontState.collectAsStateWithLifecycle(initialValue = false)
             val onBoardingCompleted = remember {
                 mutableStateOf(true)
             }
@@ -69,7 +67,8 @@ class MainActivity : ComponentActivity() {
             }
             HabitDiaryTheme(
                 darkTheme = isDarkMode,
-                dynamicColor = dynamicColorsEnabled.value
+                dynamicColor = dynamicColorsEnabled.value,
+                isSystemFont = isSystemFont.value
             ) {
                 Surface {
                     RootNavigation(
