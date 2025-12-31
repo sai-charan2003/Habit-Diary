@@ -77,7 +77,7 @@ class SettingsViewModel @Inject constructor(
             }
 
             is SettingsScreenEvent.OnUseSystemFontChange -> {
-                handleUseGoogleSansFontChange(event.useSystemFont)
+                handleUseSystemFont(event.useSystemFont)
             }
         }
     }
@@ -117,7 +117,7 @@ class SettingsViewModel @Inject constructor(
     }
 
 
-    private fun handleUseGoogleSansFontChange(useGoogleSans : Boolean) = viewModelScope.launch {
+    private fun handleUseSystemFont(useGoogleSans : Boolean) = viewModelScope.launch {
         dataStore.setSystemFontState(useGoogleSans)
     }
 

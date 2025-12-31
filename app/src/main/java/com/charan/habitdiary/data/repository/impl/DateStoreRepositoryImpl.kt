@@ -23,7 +23,7 @@ class DateStoreRepositoryImpl(
 
         private val KEY_ON_BOARDING_COMPLETED = booleanPreferencesKey("on_boarding_completed")
 
-        private val KEY_USE_GOOGLE_SANS_FONT = booleanPreferencesKey("use_google_sans_font")
+        private val KEY_SYSTEM_FONT = booleanPreferencesKey("system_font")
     }
 
 
@@ -78,15 +78,15 @@ class DateStoreRepositoryImpl(
             isCompleted
         }
 
-    override suspend fun setSystemFontState(useGoogleSans: Boolean) {
+    override suspend fun setSystemFontState(useSystemFont: Boolean) {
         context.dataStore.edit { preferences ->
-            preferences[KEY_USE_GOOGLE_SANS_FONT] = useGoogleSans
+            preferences[KEY_SYSTEM_FONT] = useSystemFont
         }
     }
 
     override val getSystemFontState: Flow<Boolean>
         get() = context.dataStore.data.map { pref ->
-            val useGoogleSans = pref[KEY_USE_GOOGLE_SANS_FONT] ?: false
-            useGoogleSans
+            val useSystemFont = pref[KEY_SYSTEM_FONT] ?: true
+            useSystemFont
         }
 }
