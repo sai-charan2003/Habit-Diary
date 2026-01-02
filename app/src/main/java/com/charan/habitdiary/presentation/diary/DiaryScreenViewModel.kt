@@ -1,10 +1,10 @@
-package com.charan.habitdiary.presentation.calendar
+package com.charan.habitdiary.presentation.diary
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.charan.habitdiary.data.repository.DataStoreRepository
 import com.charan.habitdiary.data.repository.HabitLocalRepository
-import com.charan.habitdiary.presentation.calendar.LogCalendarEffect.*
+import com.charan.habitdiary.presentation.diary.DiaryScreenEffect.*
 import com.charan.habitdiary.presentation.mapper.toDailyLogUIStateList
 import com.charan.habitdiary.utils.DateUtil.getEndOfDay
 import com.charan.habitdiary.utils.DateUtil.getStartOfDay
@@ -27,14 +27,14 @@ import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 
 @HiltViewModel
-class CalendarScreenViewModel @Inject constructor(
+class DiaryScreenViewModel @Inject constructor(
     private val habitLocalRepository: HabitLocalRepository,
     private val dataStoreRepo: DataStoreRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(LogCalendarState())
+    private val _state = MutableStateFlow(DiaryScreenState())
     val state = _state.asStateFlow()
 
-    private val _effect = MutableSharedFlow<LogCalendarEffect>()
+    private val _effect = MutableSharedFlow<DiaryScreenEffect>()
     val effect = _effect.asSharedFlow()
     init {
         fetchDailyLogsForDate()
@@ -42,26 +42,26 @@ class CalendarScreenViewModel @Inject constructor(
     }
 
 
-    fun onEvent(event: CalendarScreenEvents) {
+    fun onEvent(event: DiaryScreenEvents) {
         when (event) {
-            is CalendarScreenEvents.OnDateSelected -> {
+            is DiaryScreenEvents.OnDateSelected -> {
                 selectDateChange(event.date)
             }
 
-            is CalendarScreenEvents.OnCalendarViewTypeChange -> {
+            is DiaryScreenEvents.OnDiaryViewTypeChange -> {
                 calendarViewChange(event.viewType)
-                sendEffect(LogCalendarEffect.ScrollToSelectedDate)
+                sendEffect(ScrollToSelectedDate)
             }
 
-            CalendarScreenEvents.OnScrollToCurrentDate -> {
+            DiaryScreenEvents.OnScrollToCurrentDate -> {
                 scrollToCurrentDate()
             }
 
-            is CalendarScreenEvents.OnNavigateToAddDailyLogScreen -> {
+            is DiaryScreenEvents.OnNavigateToAddDailyLogScreen -> {
                 sendEffect(OnNavigateToAddDailyLogScreen(event.id))
             }
 
-            is CalendarScreenEvents.OnVisibleDateRangeChange -> {
+            is DiaryScreenEvents.OnVisibleDateRangeChange -> {
                 handleDateRangeChange(event.startDate, event.endDate)
 
 
@@ -93,7 +93,7 @@ class CalendarScreenViewModel @Inject constructor(
                 selectedDate = it.currentDate
             )
         }
-        sendEffect(LogCalendarEffect.ScrollToCurrentDate)
+        sendEffect(DiaryScreenEffect.ScrollToCurrentDate)
     }
 
     fun calendarViewChange(viewType : CalendarViewType) = viewModelScope.launch {
@@ -105,7 +105,7 @@ class CalendarScreenViewModel @Inject constructor(
 
     }
 
-    private fun sendEffect(effect : LogCalendarEffect) = viewModelScope.launch{
+    private fun sendEffect(effect : DiaryScreenEffect) = viewModelScope.launch{
             _effect.emit(effect)
     }
 
@@ -132,6 +132,7 @@ class CalendarScreenViewModel @Inject constructor(
             }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getLoggedDatesInRange() {
         viewModelScope.launch(Dispatchers.IO) {
             _state

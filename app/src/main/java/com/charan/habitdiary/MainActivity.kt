@@ -96,7 +96,7 @@ object DeepLinkHandler {
             }
             pathSegments.firstOrNull() == DAILYLOG_URI -> {
                 val logId = pathSegments.getOrNull(1)?.toIntOrNull()
-                listOf(Destinations.BottomBarNav, Destinations.AddDailyLog(logId))
+                listOf(Destinations.BottomBarNav, Destinations.AddDailyLog(logId,null))
             }
             else -> null
         }

@@ -1,4 +1,4 @@
-package com.charan.habitdiary.presentation.home.components
+package com.charan.habitdiary.presentation.habits.components
 
 
 import androidx.compose.foundation.Canvas
@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -81,8 +82,12 @@ fun HabitItemCard(
             }
 
             if (time.isNotBlank() || reminder.isNotBlank()) {
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                )
                 Row(
-                    modifier = Modifier.padding(top = 16.dp),
+                    modifier = Modifier,
                     horizontalArrangement = Arrangement.spacedBy(20.dp),
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
@@ -100,6 +105,8 @@ fun HabitItemCard(
                             text = reminder
                         )
                     }
+
+
                 }
             }
         }
@@ -165,6 +172,20 @@ fun RoundCheckbox(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun HabitItemCardPreview() {
+    HabitItemCard(
+        title = "Morning Jog",
+        description = "Jog for 30 minutes",
+        time = "6:00 AM",
+        reminder = "5:45 AM",
+        isCompleted = false,
+        onCompletedChange = {},
+        onClick = {}
+    )
 }
 
 

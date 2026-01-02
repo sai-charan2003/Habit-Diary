@@ -1,4 +1,4 @@
-package com.charan.habitdiary.presentation.home.components
+package com.charan.habitdiary.presentation.habits.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add

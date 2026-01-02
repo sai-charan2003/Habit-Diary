@@ -1,4 +1,4 @@
-package com.charan.habitdiary.presentation.calendar
+package com.charan.habitdiary.presentation.diary
 
 import DayLogEntryItem
 import androidx.compose.animation.AnimatedVisibility
@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.CalendarMonth
 import androidx.compose.material.icons.rounded.CalendarViewWeek
 import androidx.compose.material.icons.rounded.Event
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MediumFlexibleTopAppBar
@@ -28,27 +30,30 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.charan.habitdiary.presentation.calendar.components.CustomWeekCalendar
-import com.charan.habitdiary.presentation.calendar.components.MonthCalendarView
+import com.charan.habitdiary.R
+import com.charan.habitdiary.presentation.diary.components.CustomWeekCalendar
+import com.charan.habitdiary.presentation.diary.components.MonthCalendarView
 import com.charan.habitdiary.utils.DateUtil.toLocale
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.datetime.LocalDate
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class, ExperimentalMaterial3Api::class,
     ExperimentalMaterial3ExpressiveApi::class
 )
 @Composable
-fun LogCalendarScreen(
-    onNavigateToDailyLogScreen : (id : Int) -> Unit,
-    onImageOpen  : (allImages : List<String>, currentImage : String) -> Unit
+fun DiaryScreen(
+    onNavigateToDailyLogScreen : (id : Int?,date : LocalDate?) -> Unit,
+    onImageOpen  : (allImages : List<String>, currentImage : String) -> Unit,
 ){
-    val viewModel = hiltViewModel<CalendarScreenViewModel>()
+    val viewModel = hiltViewModel<DiaryScreenViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val weekCalendarState = rememberWeekCalendarState(
@@ -87,7 +92,7 @@ fun LogCalendarScreen(
         monthCalendarState.firstVisibleMonth,
         state.selectedCalendarView) {
         viewModel.onEvent(
-            CalendarScreenEvents.OnVisibleDateRangeChange(
+            DiaryScreenEvents.OnVisibleDateRangeChange(
                 startDate = when(state.selectedCalendarView){
                     CalendarViewType.WEEK -> weekCalendarState.firstVisibleWeek.days.first().date
                     CalendarViewType.MONTH -> monthCalendarState.firstVisibleMonth.yearMonth.days.first
@@ -105,7 +110,7 @@ fun LogCalendarScreen(
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when(effect){
-                LogCalendarEffect.ScrollToCurrentDate -> {
+                DiaryScreenEffect.ScrollToCurrentDate -> {
                     when(state.selectedCalendarView){
                         CalendarViewType.WEEK -> {
 
@@ -116,8 +121,8 @@ fun LogCalendarScreen(
                         }
                     }
                 }
-                is LogCalendarEffect.OnNavigateToAddDailyLogScreen -> {
-                    onNavigateToDailyLogScreen(effect.id)
+                is DiaryScreenEffect.OnNavigateToAddDailyLogScreen -> {
+                    onNavigateToDailyLogScreen(effect.id,state.selectedDate)
                 }
                 else -> {}
             }
@@ -131,12 +136,12 @@ fun LogCalendarScreen(
                 },
                 actions = {
                     ResetCalendarButton {
-                        viewModel.onEvent(CalendarScreenEvents.OnScrollToCurrentDate)
+                        viewModel.onEvent(DiaryScreenEvents.OnScrollToCurrentDate)
                     }
                     CalendarViewToggleButton(
                         selectedView = state.selectedCalendarView,
                         onToggle = {
-                            viewModel.onEvent(CalendarScreenEvents.OnCalendarViewTypeChange(
+                            viewModel.onEvent(DiaryScreenEvents.OnDiaryViewTypeChange(
                                 if(state.selectedCalendarView == CalendarViewType.WEEK)
                                     CalendarViewType.MONTH
                                 else
@@ -149,6 +154,18 @@ fun LogCalendarScreen(
                 },
                 scrollBehavior = scrollBehavior
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    viewModel.onEvent(DiaryScreenEvents.OnNavigateToAddDailyLogScreen(null))
+                }
+            ) {
+                Icon(
+                    Icons.Rounded.Add,
+                    contentDescription = stringResource(R.string.add_daily_log)
+                )
+            }
         }
     ) { innerPadding->
         Column(
@@ -163,11 +180,11 @@ fun LogCalendarScreen(
                 CustomWeekCalendar(
                     calendarState = weekCalendarState,
                     onClick = { date ->
-                        viewModel.onEvent(CalendarScreenEvents.OnDateSelected(date))
+                        viewModel.onEvent(DiaryScreenEvents.OnDateSelected(date))
                     },
                     currentDate = state.currentDate,
                     selectedDate = state.selectedDate,
-                    visibleMonth = weekCalendarState.lastVisibleWeek.days.last().date.month,
+                    visibleMonth = state.currentDate.month,
                     datesWithLogs = state.datesWithLogs
                 )
             }
@@ -181,9 +198,9 @@ fun LogCalendarScreen(
                     currentDate = state.currentDate,
                     selectedDate = state.selectedDate,
                     onClick = { date ->
-                        viewModel.onEvent(CalendarScreenEvents.OnDateSelected(date))
+                        viewModel.onEvent(DiaryScreenEvents.OnDateSelected(date))
                     },
-                    visibleMonth = monthCalendarState.lastVisibleMonth.yearMonth.month,
+                    visibleMonth = state.currentDate.month,
                     datesWithLogs = state.datesWithLogs
                 )
             }
@@ -202,7 +219,7 @@ fun LogCalendarScreen(
                         mediaPath = log.mediaPaths,
                         onClick = {
                             viewModel.onEvent(
-                                CalendarScreenEvents.OnNavigateToAddDailyLogScreen(
+                                DiaryScreenEvents.OnNavigateToAddDailyLogScreen(
                                     log.id
                                 )
                             )

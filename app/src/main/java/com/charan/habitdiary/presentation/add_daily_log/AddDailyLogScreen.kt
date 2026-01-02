@@ -49,6 +49,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class,
     ExperimentalPermissionsApi::class
@@ -57,11 +58,12 @@ import kotlinx.coroutines.flow.collectLatest
 fun AddDailyLogScreen(
     onNavigateBack : () -> Unit,
     logId : Int? = null,
-    onImageOpen : (allImages : List<String>, currentImage : String) -> Unit
+    date : LocalDate?= null,
+    onImageOpen : (allImages : List<String>, currentImage : String) -> Unit,
 ) {
     val viewModel = hiltViewModel<DailyLogViewModel, DailyLogViewModel.Factory>(
         creationCallback = { factory ->
-            factory.create(logId)
+            factory.create(logId,date)
         }
     )
     val state by viewModel.state.collectAsStateWithLifecycle()

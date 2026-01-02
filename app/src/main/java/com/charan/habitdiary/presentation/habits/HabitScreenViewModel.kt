@@ -1,11 +1,10 @@
-package com.charan.habitdiary.presentation.home
+package com.charan.habitdiary.presentation.habits
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.charan.habitdiary.data.repository.DataStoreRepository
 import com.charan.habitdiary.data.repository.HabitLocalRepository
-import com.charan.habitdiary.presentation.home.HomeScreenEffect.*
+import com.charan.habitdiary.presentation.habits.HabitScreenEffect.*
 import com.charan.habitdiary.presentation.mapper.toDailyLogEntity
 import com.charan.habitdiary.presentation.mapper.toDailyLogUIStateList
 import com.charan.habitdiary.presentation.mapper.toHabitUIState
@@ -25,15 +24,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
+class HabitScreenViewModel @Inject constructor(
     private val habitLocalRepository: HabitLocalRepository,
     private val dataStoreRepo : DataStoreRepository
 
 ): ViewModel() {
-    private val _state = MutableStateFlow(HomeScreenState())
+    private val _state = MutableStateFlow(HabitScreenState())
     val state = _state.asStateFlow()
 
-    private val _effect = MutableSharedFlow<HomeScreenEffect>()
+    private val _effect = MutableSharedFlow<HabitScreenEffect>()
     val effect  = _effect.asSharedFlow()
     init {
         getHabits()
@@ -47,34 +46,34 @@ class HomeScreenViewModel @Inject constructor(
 
     }
 
-    fun onEvent(event : HomeScreenEvent){
+    fun onEvent(event : HabitScreenEvent){
         when(event){
-            is HomeScreenEvent.OnFabExpandToggle -> {
+            is HabitScreenEvent.OnFabExpandToggle -> {
                 _state.value = state.value.copy(
                     isFabExpanded = !state.value.isFabExpanded
                 )
             }
 
-            HomeScreenEvent.OnAddDailyLogClick -> {
+            HabitScreenEvent.OnAddDailyLogClick -> {
                 sendEffect(OnNavigateToAddDailyLogScreen(null))
 
             }
 
-            HomeScreenEvent.OnAddHabitClick ->{
+            HabitScreenEvent.OnAddHabitClick ->{
                 sendEffect(OnNavigateToAddHabitScreen(null))
 
             }
 
-            is HomeScreenEvent.OnHabitCheckToggle -> {
+            is HabitScreenEvent.OnHabitCheckToggle -> {
                 onAddHabitClick(event.habit,event.isChecked)
 
             }
 
-            is HomeScreenEvent.OnDailyLogEdit -> {
+            is HabitScreenEvent.OnDailyLogEdit -> {
                 sendEffect(OnNavigateToAddDailyLogScreen(event.id))
             }
 
-            is HomeScreenEvent.OnEditHabit -> {
+            is HabitScreenEvent.OnEditHabit -> {
                 sendEffect(OnNavigateToAddHabitScreen(event.id))
             }
         }
@@ -108,7 +107,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
 
-    private fun sendEffect(effect : HomeScreenEffect) = viewModelScope.launch {
+    private fun sendEffect(effect : HabitScreenEffect) = viewModelScope.launch {
         _effect.emit(effect)
     }
 

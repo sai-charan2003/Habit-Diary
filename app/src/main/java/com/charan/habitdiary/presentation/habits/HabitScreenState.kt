@@ -1,9 +1,8 @@
-package com.charan.habitdiary.presentation.home
+package com.charan.habitdiary.presentation.habits
 
 import com.charan.habitdiary.presentation.common.model.DailyLogItemUIState
-import kotlinx.datetime.LocalTime
 
-data class HomeScreenState(
+data class HabitScreenState(
     val habits : List<HabitItemUIState> = emptyList(),
     val dailyLogs : List<DailyLogItemUIState> = emptyList(),
     val isLoading : Boolean = false,
