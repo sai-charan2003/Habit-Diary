@@ -1,6 +1,7 @@
 package com.charan.habitdiary.presentation.navigation
 
 import androidx.navigation3.runtime.NavKey
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
 sealed class BottomBarNavDestinations : NavKey{
@@ -22,7 +23,7 @@ sealed class Destinations : NavKey {
     data class AddHabit(val id : Int?) : Destinations()
 
     @Serializable
-    data class AddDailyLog(val id : Int?) : Destinations()
+    data class AddDailyLog(val id : Int?, val date : LocalDate?) : Destinations()
 
     @Serializable
     data object LibrariesScreenNav : Destinations()

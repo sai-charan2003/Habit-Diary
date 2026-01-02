@@ -1,4 +1,4 @@
-package com.charan.habitdiary.presentation.calendar.components
+package com.charan.habitdiary.presentation.diary.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

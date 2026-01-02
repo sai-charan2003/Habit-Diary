@@ -24,11 +24,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
 @HiltViewModel(assistedFactory = DailyLogViewModel.Factory::class)
 class DailyLogViewModel @AssistedInject constructor(
     @Assisted val logId : Int?,
+    @Assisted val date : LocalDate?,
     private val habitLocalRepository: HabitLocalRepository,
     private val fileRepository: FileRepository,
     private val permissionManager: PermissionManager,
@@ -37,7 +39,7 @@ class DailyLogViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(logId: Int?) : DailyLogViewModel
+        fun create(logId: Int?, date : LocalDate?) : DailyLogViewModel
     }
 
 
@@ -200,7 +202,7 @@ class DailyLogViewModel @AssistedInject constructor(
             _state.update {
                 it.copy(
                     dailyLogItemDetails = it.dailyLogItemDetails.copy(
-                        date = DateUtil.getCurrentDate(),
+                        date = date ?: DateUtil.getCurrentDate(),
                         time = DateUtil.getCurrentTime()
                     )
                 )

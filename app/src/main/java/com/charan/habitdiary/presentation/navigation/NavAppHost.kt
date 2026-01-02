@@ -49,8 +49,8 @@ fun RootNavigation(
                         onAddHabitNav = {
                             backStack.add(Destinations.AddHabit(id = it))
                         },
-                        onAddDailyLogNav = {
-                            backStack.add(Destinations.AddDailyLog(id = it))
+                        onAddDailyLogNav = { id, date->
+                            backStack.add(Destinations.AddDailyLog(id = id, date))
                         },
                         onNavigateToAboutLibraries = {
                             backStack.add(Destinations.LibrariesScreenNav)

@@ -1,13 +1,14 @@
-package com.charan.habitdiary.presentation.home
+package com.charan.habitdiary.presentation.habits
 
-import DayLogEntryItem
-import android.graphics.fonts.FontVariationAxis
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -19,42 +20,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.common.components.SectionHeading
-import com.charan.habitdiary.presentation.home.components.EmptyStateItem
-import com.charan.habitdiary.presentation.home.components.FabMenu
-import com.charan.habitdiary.presentation.home.components.HabitItemCard
+import com.charan.habitdiary.presentation.habits.components.EmptyStateItem
+import com.charan.habitdiary.presentation.habits.components.HabitItemCard
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class,
     ExperimentalTextApi::class
 )
 @Composable
-fun HomeScreen(
+fun HabitScreen(
     onAddHabitClick : (id : Int?) -> Unit,
     onAddDailyLog : (id : Int?) -> Unit,
     onImageOpen : (allImages : List<String>, currentImage : String) -> Unit,
 
 ) {
-    val viewModel = hiltViewModel<HomeScreenViewModel>()
+    val viewModel = hiltViewModel<HabitScreenViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when(effect){
 
-                is HomeScreenEffect.OnNavigateToAddHabitScreen -> {
+                is HabitScreenEffect.OnNavigateToAddHabitScreen -> {
                     onAddHabitClick(effect.id)
                 }
 
-                is HomeScreenEffect.OnNavigateToAddDailyLogScreen -> {
+                is HabitScreenEffect.OnNavigateToAddDailyLogScreen -> {
                     onAddDailyLog(effect.id)
                 }
             }
@@ -76,25 +72,22 @@ fun HomeScreen(
             )
         },
         floatingActionButton = {
-            FabMenu(
-                onAddHabitClick = {
-                    viewModel.onEvent(HomeScreenEvent.OnAddHabitClick)
-                },
-                onFabClick = {
-                    viewModel.onEvent(HomeScreenEvent.OnFabExpandToggle)
-
-                },
-                onAddDailyLogClick = {
-                    viewModel.onEvent(HomeScreenEvent.OnAddDailyLogClick)
-                },
-                isExpanded = state.isFabExpanded
-
-            )
+            FloatingActionButton(
+                onClick = {
+                    viewModel.onEvent(HabitScreenEvent.OnAddHabitClick)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Add,
+                    contentDescription = stringResource(R.string.add_habit)
+                )
+            }
         }
     ) { innerPadding->
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
+                .fillMaxSize()
                 .padding(horizontal = 16.dp)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
@@ -103,12 +96,17 @@ fun HomeScreen(
                     title = stringResource(R.string.today_habits),
                     modifier = Modifier.padding(vertical = 15.dp)
                 )
-                if (state.habits.isEmpty()) {
+            }
+
+            if (state.habits.isEmpty()) {
+                item {
                     EmptyStateItem(
-                        stringResource(R.string.no_habits_for_today)
+                        text = stringResource(R.string.no_habits_for_today),
+                        modifier = Modifier.fillParentMaxSize()
                     )
                 }
             }
+
             items(state.habits.size){
                 val habit = state.habits[it]
                 HabitItemCard(
@@ -116,7 +114,7 @@ fun HomeScreen(
                     description = habit.habitDescription,
                     onCompletedChange = { checked->
                         viewModel.onEvent(
-                            HomeScreenEvent.OnHabitCheckToggle(
+                            HabitScreenEvent.OnHabitCheckToggle(
                                 habit = habit,
                                 isChecked = checked
                             )
@@ -125,7 +123,7 @@ fun HomeScreen(
                     isCompleted = habit.isDone,
                     onClick = {
                         viewModel.onEvent(
-                            HomeScreenEvent.OnEditHabit(
+                            HabitScreenEvent.OnEditHabit(
                                 habit.id
                             )
                         )
@@ -133,45 +131,8 @@ fun HomeScreen(
                     time = habit.habitTime,
                     reminder = habit.habitReminderTime ?: ""
 
-                )
-            }
-            item {
-                SectionHeading(
-                    title = stringResource(R.string.daily_journals),
-                    modifier = Modifier.padding(vertical = 15.dp)
-                )
-
-                if (state.dailyLogs.isEmpty()) {
-                    EmptyStateItem(
-                        stringResource(R.string.no_daily_logs_yet)
                     )
                 }
-            }
-
-            items(state.dailyLogs.size) {
-                val dailyLog = state.dailyLogs[it]
-                DayLogEntryItem(
-                    note = dailyLog.logNote,
-                    time = dailyLog.createdAt,
-                    mediaPath = dailyLog.mediaPaths,
-                    onClick = {
-                        viewModel.onEvent(
-                            HomeScreenEvent.OnDailyLogEdit(
-                                dailyLog.id
-                            )
-                        )
-                    },
-                    habitName = dailyLog.habitName ?: "",
-                    onImageClick = {
-                        onImageOpen(
-                            dailyLog.mediaPaths,
-                            it
-                        )
-                    }
-
-                )
-            }
-
 
         }
 

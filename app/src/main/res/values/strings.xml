@@ -53,6 +53,8 @@
     <string name="import_data">Import Data</string>
     <string name="backup_saved">Backup saved successfully</string>
     <string name="backup_restored">Backup Restored</string>
+    <string name="habits">Habits</string>
+    <string name="diary">Diary</string>
 
     <!-- Onboarding Screen Strings -->
     <string name="onboarding_welcome_title">Welcome to Habit Diary</string>

@@ -10,7 +10,7 @@ import com.charan.habitdiary.presentation.add_daily_log.DailyLogMediaItem
 import com.charan.habitdiary.presentation.add_daily_log.DailyLogState
 import com.charan.habitdiary.presentation.add_habit.AddHabitState
 import com.charan.habitdiary.presentation.common.model.DailyLogItemUIState
-import com.charan.habitdiary.presentation.home.HabitItemUIState
+import com.charan.habitdiary.presentation.habits.HabitItemUIState
 import com.charan.habitdiary.utils.DateUtil
 import com.charan.habitdiary.utils.DateUtil.toFormattedString
 import kotlinx.datetime.LocalDateTime

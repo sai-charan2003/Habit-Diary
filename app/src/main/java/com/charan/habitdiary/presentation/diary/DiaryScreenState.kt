@@ -1,4 +1,4 @@
-package com.charan.habitdiary.presentation.calendar
+package com.charan.habitdiary.presentation.diary
 
 import com.charan.habitdiary.presentation.common.model.DailyLogItemUIState
 import com.charan.habitdiary.utils.DateUtil
@@ -10,7 +10,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.YearMonth
 import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
-data class LogCalendarState(
+data class DiaryScreenState(
     val selectedDate : LocalDate = DateUtil.getCurrentDate(),
     val selectedCalendarView : CalendarViewType = CalendarViewType.WEEK,
     val currentMonth : YearMonth  = YearMonth.now(),
