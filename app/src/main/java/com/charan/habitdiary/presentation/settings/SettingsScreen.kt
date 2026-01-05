@@ -5,9 +5,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccessTime
+import androidx.compose.material.icons.rounded.Code
+import androidx.compose.material.icons.rounded.ColorLens
+import androidx.compose.material.icons.rounded.Contrast
+import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.FontDownload
+import androidx.compose.material.icons.rounded.Upload
+import androidx.compose.material.icons.rounded.WorkspacePremium
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -108,15 +118,24 @@ fun SettingsScreen(
                 )
                 CustomListItem(
                     indexItem = IndexItem.FIRST,
-                    content = {
+                    headLineContent = {
                         Text(stringResource(R.string.theme))
+
+                    },
+                    supportingContent = {
                         ThemeOptionButtonGroup(
                             selectedTheme = state.selectedThemeOption
                         ) {
                             viewModel.onEvent(SettingsScreenEvent.OnThemeChange(it))
                         }
-
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Rounded.Contrast,
+                            contentDescription = stringResource(R.string.theme)
+                        )
                     }
+
                 )
                 SettingsSwitchItem(
                     title = stringResource(R.string.use_dynamic_color),
@@ -124,7 +143,8 @@ fun SettingsScreen(
                     isChecked = state.isDynamicColorsEnabled,
                     onCheckedChange = {
                         viewModel.onEvent(SettingsScreenEvent.OnDynamicColorsChange(it))
-                    }
+                    },
+                    leadingIcon = Icons.Rounded.ColorLens
                 )
 
                 SettingsSwitchItem(
@@ -133,7 +153,8 @@ fun SettingsScreen(
                     isChecked = state.isSystemFontEnabled,
                     onCheckedChange = {
                         viewModel.onEvent(SettingsScreenEvent.OnUseSystemFontChange(it))
-                    }
+                    },
+                    leadingIcon = Icons.Rounded.FontDownload
 
                 )
 
@@ -152,7 +173,8 @@ fun SettingsScreen(
                     isChecked = state.is24HourFormat,
                     onCheckedChange = {
                         viewModel.onEvent(SettingsScreenEvent.OnTimeFormatChange(it))
-                    }
+                    },
+                    leadingIcon = Icons.Rounded.AccessTime
                 )
             }
 
@@ -162,35 +184,47 @@ fun SettingsScreen(
                 )
                 CustomListItem(
                     indexItem = IndexItem.FIRST,
-                    content = {
+                    headLineContent = {
                         Text(stringResource(R.string.export_data))
                     },
                     onClick = {
                         viewModel.onEvent(SettingsScreenEvent.OnExportDataClick)
                     },
-                    tailingContent = {
+                    trailingContent = {
                         if(state.isExporting){
                             ContainedLoadingIndicator(
                                 modifier = Modifier.size(30.dp)
                             )
                         }
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Rounded.Upload,
+                            contentDescription = stringResource(R.string.export_data)
+                        )
                     }
 
                 )
                 CustomListItem(
                     indexItem = IndexItem.LAST,
-                    content = {
+                    headLineContent = {
                         Text(stringResource(R.string.import_data))
                     },
                     onClick = {
                         viewModel.onEvent(SettingsScreenEvent.OnImportDataClick)
                     },
-                    tailingContent = {
+                    trailingContent = {
                         if(state.isImporting){
                             ContainedLoadingIndicator(
                                 modifier = Modifier.size(30.dp)
                             )
                         }
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Rounded.Download,
+                            contentDescription = stringResource(R.string.import_data)
+                        )
                     }
                 )
             }
@@ -201,22 +235,32 @@ fun SettingsScreen(
                 )
                 CustomListItem(
                     indexItem = IndexItem.FIRST,
-                    content = {
+                    headLineContent = {
                         Text(stringResource(R.string.open_source_libraries))
                     },
                     onClick = {
                         viewModel.onEvent(SettingsScreenEvent.OnAboutLibrariesClick)
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Rounded.WorkspacePremium,
+                            contentDescription = stringResource(R.string.open_source_libraries)
+                        )
                     }
                 )
 
                 CustomListItem(
                     indexItem = IndexItem.LAST,
-                    content = {
-                        SettingsRowItem(
-                            title = stringResource(R.string.app_version),
-                            trailingContent = {
-                                Text(state.appVersion)
-                            }
+                    headLineContent = {
+                        Text(stringResource(R.string.app_version))
+                    },
+                    trailingContent = {
+                        Text(state.appVersion)
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Rounded.Code,
+                            contentDescription = stringResource(R.string.app_version)
                         )
                     }
                 )

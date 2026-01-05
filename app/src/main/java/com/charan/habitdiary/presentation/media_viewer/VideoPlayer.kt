@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.VolumeOff
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.VolumeOff
@@ -211,7 +213,7 @@ fun MiniVideoPlayer(
 
         ) {
             Icon(
-                imageVector = if(muteState.showMuted) Icons.Rounded.VolumeOff else Icons.Rounded.VolumeUp,
+                imageVector = if(muteState.showMuted) Icons.AutoMirrored.Rounded.VolumeOff else Icons.AutoMirrored.Rounded.VolumeUp,
                 contentDescription = "Toggle Mute",
                 modifier = Modifier.padding(4.dp)
             )
