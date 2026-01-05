@@ -54,6 +54,15 @@ interface DailyLogDao {
     @Query("SELECT DISTINCT createdAt FROM daily_log_entity WHERE createdAt >= :start and createdAt <= :end and isDeleted = 0")
     fun getLoggedDatesInRange(start: LocalDateTime, end: LocalDateTime): Flow<List<LocalDate>>
 
+    @Query("""
+    SELECT *
+    FROM daily_log_entity
+    WHERE habitId = :habitId
+      AND isDeleted = 0
+    ORDER BY createdAt DESC
+""")
+    fun getAllLogsForHabitId(habitId: Int): Flow<List<DailyLogEntity>>
+
 
 
 }

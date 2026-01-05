@@ -1,5 +1,6 @@
 package com.charan.habitdiary.presentation.navigation
 
+import android.util.Log
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,6 +12,8 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.charan.habitdiary.presentation.add_daily_log.AddDailyLogScreen
 import com.charan.habitdiary.presentation.add_habit.AddHabitScreen
+import com.charan.habitdiary.presentation.habit_stats.HabitStatState
+import com.charan.habitdiary.presentation.habit_stats.HabitStatsScreen
 import com.charan.habitdiary.presentation.media_viewer.ImageViewerScreen
 import com.charan.habitdiary.presentation.on_boarding.OnBoardingScreen
 import com.charan.habitdiary.presentation.settings.about_libraries.AboutLibrariesScreen
@@ -57,6 +60,10 @@ fun RootNavigation(
                         },
                         onImageOpen = { allImages, currentImage ->
                             backStack.add(Destinations.ImageViewerScreenNav(allImages,currentImage))
+                        },
+                        onHabitStats = { habitId ->
+                            backStack.add(Destinations.HabitStatsScreeNav(habitId))
+
                         }
 
                     )
@@ -80,6 +87,9 @@ fun RootNavigation(
                                 allImagesPaths,
                                 currentImage
                             ))
+                        },
+                        onHabitOpen = {
+                            backStack.add(Destinations.HabitStatsScreeNav(it))
                         }
                     )
                 }
@@ -105,6 +115,21 @@ fun RootNavigation(
                         currentImage = key.currentImage,
                         onBack = {
                             backStack.removeLastOrNull()
+                        }
+                    )
+                }
+
+                is Destinations.HabitStatsScreeNav -> NavEntry(key){
+                    HabitStatsScreen(
+                        habitId = key.habitId,
+                        onNavigateBack = {
+                            backStack.removeLastOrNull()
+                        },
+                        onAddLog = {
+                            backStack.add(Destinations.AddDailyLog(it, null))
+                        },
+                        onEditHabit = {
+                            backStack.add(Destinations.AddHabit(it))
                         }
                     )
                 }

@@ -41,5 +41,8 @@ interface HabitDao {
     @Query("UPDATE habit_entity SET isDeleted = 1 WHERE id = :id")
     fun deleteHabit(id: Int)
 
+    @Query("SELECT * FROM habit_entity WHERE id = :id")
+    fun getHabitByIdFLow(id: Int): Flow<HabitEntity>
+
 
 }

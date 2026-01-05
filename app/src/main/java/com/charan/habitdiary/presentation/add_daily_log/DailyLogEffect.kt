@@ -12,4 +12,6 @@ sealed class DailyLogEffect {
     data object OnRequestCameraPermission : DailyLogEffect()
 
     data object OnTakeVideo : DailyLogEffect()
+
+    data class OnNavigateToHabitScreen(val habitId : Int) : DailyLogEffect()
 }

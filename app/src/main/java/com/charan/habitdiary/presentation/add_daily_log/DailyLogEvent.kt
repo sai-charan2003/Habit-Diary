@@ -44,4 +44,6 @@ sealed class DailyLogEvent {
 
     data class OnPermissionResult(val isGranted : Boolean) : DailyLogEvent()
 
+    data object OnNavigateToHabitScreen : DailyLogEvent()
+
 }

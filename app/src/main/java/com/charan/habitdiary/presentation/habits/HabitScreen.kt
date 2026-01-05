@@ -34,11 +34,11 @@ import kotlinx.coroutines.flow.collectLatest
 )
 @Composable
 fun HabitScreen(
-    onAddHabitClick : (id : Int?) -> Unit,
+    onHabitDetails : (id : Int?) -> Unit,
     onAddDailyLog : (id : Int?) -> Unit,
-    onImageOpen : (allImages : List<String>, currentImage : String) -> Unit,
+    onHabitStats : (id : Int)-> Unit
 
-) {
+    ) {
     val viewModel = hiltViewModel<HabitScreenViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -47,11 +47,15 @@ fun HabitScreen(
             when(effect){
 
                 is HabitScreenEffect.OnNavigateToAddHabitScreen -> {
-                    onAddHabitClick(effect.id)
+                    onHabitDetails(effect.id)
                 }
 
                 is HabitScreenEffect.OnNavigateToAddDailyLogScreen -> {
                     onAddDailyLog(effect.id)
+                }
+
+                is HabitScreenEffect.OnNavigateToHabitStatsScreen -> {
+                    onHabitStats(effect.habitId)
                 }
             }
         }
@@ -123,7 +127,7 @@ fun HabitScreen(
                     isCompleted = habit.isDone,
                     onClick = {
                         viewModel.onEvent(
-                            HabitScreenEvent.OnEditHabit(
+                            HabitScreenEvent.OnHabitStatsScreen(
                                 habit.id
                             )
                         )

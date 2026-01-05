@@ -83,7 +83,8 @@ class HabitLocalRepositoryImpl(
                 HabitWithDone(
                     habitEntity = habit,
                     isDone = log != null,
-                    logId = log?.id
+                    logId = log?.id,
+                    created = log?.createdAt
                 )
             }
         }
@@ -145,5 +146,9 @@ class HabitLocalRepositoryImpl(
     }
     override fun insertHabits(habits: List<HabitEntity>) : List<Long> {
         return habitDao.insertHabits(habits)
+    }
+
+    override fun getAllLogsWithHabitId(habitId: Int): Flow<List<DailyLogEntity>> {
+        return dailyLogDao.getAllLogsForHabitId(habitId)
     }
 }

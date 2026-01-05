@@ -69,4 +69,6 @@ interface HabitLocalRepository {
         start: LocalDateTime,
         end: LocalDateTime
     ): Flow<List<LocalDate>>
+
+    fun getAllLogsWithHabitId(habitId: Int): Flow<List<DailyLogEntity>>
 }

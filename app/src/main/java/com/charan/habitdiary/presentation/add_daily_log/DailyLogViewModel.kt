@@ -120,6 +120,10 @@ class DailyLogViewModel @AssistedInject constructor(
             is DailyLogEvent.OnPermissionResult -> {
                 handlePermissionResult(event.isGranted)
             }
+
+            is DailyLogEvent.OnNavigateToHabitScreen ->{
+                sendEffect(DailyLogEffect.OnNavigateToHabitScreen(_state.value.dailyLogItemDetails.habitId ?: return))
+            }
         }
     }
 

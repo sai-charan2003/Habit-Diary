@@ -23,7 +23,8 @@ import com.charan.habitdiary.R
 @Composable
 fun HabitDetailsCard(
     habitTitle: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick : () -> Unit = { }
 ) {
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
@@ -32,7 +33,11 @@ fun HabitDetailsCard(
             containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+        onClick = {
+            onClick()
+
+        }
     ) {
         Column(
             modifier = Modifier

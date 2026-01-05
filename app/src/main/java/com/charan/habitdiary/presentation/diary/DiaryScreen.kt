@@ -36,7 +36,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.diary.components.CustomWeekCalendar
-import com.charan.habitdiary.presentation.diary.components.MonthCalendarView
+import com.charan.habitdiary.presentation.common.components.MonthCalendarView
 import com.charan.habitdiary.utils.DateUtil.toLocale
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
@@ -184,7 +184,7 @@ fun DiaryScreen(
                     },
                     currentDate = state.currentDate,
                     selectedDate = state.selectedDate,
-                    visibleMonth = state.currentDate.month,
+                    visibleMonth = weekCalendarState.lastVisibleWeek.days.last().date.month,
                     datesWithLogs = state.datesWithLogs
                 )
             }
@@ -200,7 +200,7 @@ fun DiaryScreen(
                     onClick = { date ->
                         viewModel.onEvent(DiaryScreenEvents.OnDateSelected(date))
                     },
-                    visibleMonth = state.currentDate.month,
+                    visibleMonth = monthCalendarState.lastVisibleMonth.yearMonth.month,
                     datesWithLogs = state.datesWithLogs
                 )
             }
