@@ -39,7 +39,7 @@ fun customListItemShapes(
                     shape =
                         defaultBaseShape.copy(
                             bottomStart = overrideShape.bottomStart,
-                            bottomEnd = overrideShape.bottomStart,
+                            bottomEnd = overrideShape.bottomEnd,
                         )
                 )
             } else {
