@@ -34,4 +34,7 @@ sealed class Destinations : NavKey {
     @Serializable
     data class ImageViewerScreenNav(val allImagePaths : List<String>,val currentImage : String) : Destinations()
 
+    @Serializable
+    data class HabitStatsScreeNav(val habitId : Int) : Destinations()
+
 }

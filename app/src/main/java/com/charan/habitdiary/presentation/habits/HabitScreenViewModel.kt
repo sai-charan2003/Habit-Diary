@@ -9,6 +9,7 @@ import com.charan.habitdiary.presentation.mapper.toDailyLogEntity
 import com.charan.habitdiary.presentation.mapper.toDailyLogUIStateList
 import com.charan.habitdiary.presentation.mapper.toHabitUIState
 import com.charan.habitdiary.utils.DateUtil
+import dagger.assisted.AssistedFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -73,8 +74,8 @@ class HabitScreenViewModel @Inject constructor(
                 sendEffect(OnNavigateToAddDailyLogScreen(event.id))
             }
 
-            is HabitScreenEvent.OnEditHabit -> {
-                sendEffect(OnNavigateToAddHabitScreen(event.id))
+            is HabitScreenEvent.OnHabitStatsScreen -> {
+                sendEffect(OnNavigateToHabitStatsScreen(event.id))
             }
         }
     }

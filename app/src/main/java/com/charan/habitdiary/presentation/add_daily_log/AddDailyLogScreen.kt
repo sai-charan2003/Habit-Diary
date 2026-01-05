@@ -35,6 +35,7 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.charan.habitdiary.R
+import com.charan.habitdiary.presentation.add_daily_log.DailyLogEvent.*
 import com.charan.habitdiary.presentation.add_daily_log.components.AddNoteItem
 import com.charan.habitdiary.presentation.add_daily_log.components.DateTimeRow
 import com.charan.habitdiary.presentation.add_daily_log.components.HabitDetailsCard
@@ -59,6 +60,7 @@ fun AddDailyLogScreen(
     onNavigateBack : () -> Unit,
     logId : Int? = null,
     date : LocalDate?= null,
+    onHabitOpen : (habitId : Int) -> Unit,
     onImageOpen : (allImages : List<String>, currentImage : String) -> Unit,
 ) {
     val viewModel = hiltViewModel<DailyLogViewModel, DailyLogViewModel.Factory>(
@@ -172,7 +174,7 @@ fun AddDailyLogScreen(
 
                 is DailyLogEffect.OnRequestCameraPermission -> {
                     if(cameraPermission.status.shouldShowRationale){
-                        viewModel.onEvent(DailyLogEvent.ToggleShowRationaleForCameraPermission(true))
+                        viewModel.onEvent(ToggleShowRationaleForCameraPermission(true))
                     } else {
                         cameraPermission.launchPermissionRequest()
                     }
@@ -181,6 +183,10 @@ fun AddDailyLogScreen(
 
                 DailyLogEffect.OnTakeVideo -> {
                     captureVideo.launch(state.tempVideoPath.toUri())
+                }
+
+                is DailyLogEffect.OnNavigateToHabitScreen -> {
+                    onHabitOpen(it.habitId)
                 }
             }
         }
@@ -293,6 +299,9 @@ fun AddDailyLogScreen(
                 item {
                     HabitDetailsCard(
                         habitTitle = state.dailyLogItemDetails.habitName ?: "",
+                        onClick = {
+                            viewModel.onEvent(DailyLogEvent.OnNavigateToHabitScreen)
+                        }
 
                     )
                 }

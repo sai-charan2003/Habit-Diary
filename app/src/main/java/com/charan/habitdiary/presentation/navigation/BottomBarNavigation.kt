@@ -49,6 +49,7 @@ fun BottomBarNavigation(
     onAddDailyLogNav : (id : Int? , date : LocalDate?) -> Unit,
     onNavigateToAboutLibraries : () -> Unit,
     onImageOpen : (allImage : List<String>,currentImage : String) -> Unit,
+    onHabitStats : (id : Int) -> Unit,
 
 ) {
     val bottomBarBackStack = rememberNavBackStack(BottomBarNavDestinations.Home)
@@ -165,7 +166,7 @@ fun BottomBarNavigation(
                 when (key) {
                     is BottomBarNavDestinations.Home -> NavEntry(key) {
                         HabitScreen(
-                            onAddHabitClick = { id->
+                            onHabitDetails = { id->
                                 onAddHabitNav(
                                     id
                                 )
@@ -178,11 +179,9 @@ fun BottomBarNavigation(
                                 )
 
                             },
-                            onImageOpen = { allImages, currentImage ->
-                                onImageOpen(
-                                    allImages,
-                                    currentImage
-
+                            onHabitStats = { id ->
+                                onHabitStats(
+                                    id
                                 )
                             }
 

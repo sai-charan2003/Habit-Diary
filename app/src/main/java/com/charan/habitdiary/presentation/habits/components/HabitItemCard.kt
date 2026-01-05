@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -141,10 +142,11 @@ private fun HabitInfoItem(
 @Composable
 fun RoundCheckbox(
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit
+    onCheckedChange: (Boolean) -> Unit,
+    strokeColor : Color = MaterialTheme.colorScheme.outline,
+    fillColor: Color = MaterialTheme.colorScheme.primary
 ) {
-    val strokeColor = MaterialTheme.colorScheme.outline
-    val fillColor = MaterialTheme.colorScheme.primary
+
 
     Box(
         modifier = Modifier

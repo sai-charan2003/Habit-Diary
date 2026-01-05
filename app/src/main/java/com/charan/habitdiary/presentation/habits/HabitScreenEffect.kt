@@ -4,4 +4,6 @@ sealed class HabitScreenEffect {
     data class OnNavigateToAddHabitScreen(val id : Int?) : HabitScreenEffect()
 
     data class OnNavigateToAddDailyLogScreen(val id : Int?) : HabitScreenEffect()
+
+    data class OnNavigateToHabitStatsScreen(val habitId : Int) : HabitScreenEffect()
 }

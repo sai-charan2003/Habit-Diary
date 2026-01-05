@@ -1,4 +1,4 @@
-package com.charan.habitdiary.presentation.diary.components
+package com.charan.habitdiary.presentation.common.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,62 +33,79 @@ fun CalendarDayItem(
     onClick: () -> Unit,
     hasContent: Boolean = false,
     isToday: Boolean,
-    isCurrentMonth: Boolean = true
+    isCurrentMonth: Boolean = true,
+    isHabitDone: Boolean = false
 ) {
-    val circleModifier = Modifier
-        .size(35.dp)
-        .padding(3.dp)
-        .clip(CircleShape)
-        .clickable(onClick = onClick)
+    val textColor = when {
+        isSelected -> MaterialTheme.colorScheme.onPrimaryContainer
+        !isCurrentMonth -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+        isHabitDone -> MaterialTheme.colorScheme.onSecondaryContainer
+        else -> MaterialTheme.colorScheme.onSurface
+    }
+    val backgroundModifier =
+        Modifier
+            .size(35.dp)
+            .padding(3.dp)
+            .clip(CircleShape)
+            .clickable(onClick = onClick)
+            .then(
+                when {
+                    isSelected -> Modifier.background(
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f)
+                    )
 
-    val modifier =
-        when {
-            isSelected -> circleModifier.background(
-                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f)
+                    isHabitDone -> Modifier.background(
+                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.9f)
+                    )
+
+                    else -> Modifier
+                }
             )
-            isToday -> circleModifier.border(
-                width = 2.dp,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
-                shape = CircleShape
+            .then(
+                if (isToday && !isSelected) {
+                    Modifier.border(
+                        width = 2.dp,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        shape = CircleShape
+                    )
+                } else {
+                    Modifier
+                }
             )
-            else -> circleModifier
-        }
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 5.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
-            modifier = modifier,
+            modifier = backgroundModifier,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = date,
-                style = if (isCurrentMonth) {
-                    MaterialTheme.typography.titleSmallEmphasized
-                } else {
-                    MaterialTheme.typography.titleSmallEmphasized.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-                    )
-                }
+                style = MaterialTheme.typography.titleSmallEmphasized,
+                color = textColor
             )
         }
+
         if (hasContent && !isSelected) {
             Box(
                 modifier = Modifier
                     .size(4.dp)
                     .clip(CircleShape)
-                    .background(
-                        MaterialTheme.colorScheme.primary
-                    )
+                    .background(MaterialTheme.colorScheme.primary)
             )
-        } else{
+        } else {
             Spacer(modifier = Modifier.size(4.dp))
         }
     }
 }
+
+
 
 
 

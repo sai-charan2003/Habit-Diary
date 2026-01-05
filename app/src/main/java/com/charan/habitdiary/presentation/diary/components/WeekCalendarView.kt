@@ -2,6 +2,8 @@ package com.charan.habitdiary.presentation.diary.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import com.charan.habitdiary.presentation.common.components.CalendarDayItem
+import com.charan.habitdiary.presentation.common.components.CalendarHeaderItem
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.WeekCalendarState
 import kotlinx.datetime.LocalDate
