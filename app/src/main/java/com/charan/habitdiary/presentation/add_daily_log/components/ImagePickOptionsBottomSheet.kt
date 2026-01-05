@@ -65,23 +65,19 @@ fun ImagePickOptionsBottomSheet(
         ) {
             imagePickOptions.forEachIndexed { index, option ->
                 CustomListItem(
-                    content = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = option.icon,
-                                contentDescription = option.title,
-                                modifier = Modifier.padding(end = 8.dp)
-                            )
-                            Text(option.title)
-                        }
+                    headLineContent = {
+                        Text(option.title)
                     },
                     indexItem = imagePickOptions.indexItemFor(index),
                     onClick = {
                         option.onClick()
                     },
-                    contentPaddingValues = PaddingValues(20.dp)
+                    leadingContent = {
+                        Icon(
+                            imageVector = option.icon,
+                            contentDescription = option.title,
+                        )
+                    }
 
                 )
             }

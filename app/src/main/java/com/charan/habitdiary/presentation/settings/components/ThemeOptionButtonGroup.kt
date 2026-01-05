@@ -22,6 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.data.model.enums.ThemeOption
@@ -36,28 +39,25 @@ fun ThemeOptionButtonGroup(
 
     FlowRow(
         modifier = modifier
-            .padding(horizontal = 8.dp)
-            .fillMaxWidth(),
+            .padding(horizontal = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        ThemeOption.entries.forEach { option ->
+        ThemeOption.entries.forEachIndexed { index,option ->
             val isSelected = option == selectedTheme
 
             TonalToggleButton(
                 checked = isSelected,
                 onCheckedChange = { onSelectTheme(option) },
                 modifier = Modifier
-            ) {
-                if (isSelected) {
-                    Icon(
-                        imageVector = Icons.Rounded.Done,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(ToggleButtonDefaults.IconSize)
-                    )
-                    Spacer(Modifier.size(ToggleButtonDefaults.IconSpacing))
+                    .weight(1f),
+                shapes =
+                when (index) {
+                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                    ThemeOption.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                 }
+            ) {
                 Text(stringResource(option.getLocaleString()))
             }
         }
