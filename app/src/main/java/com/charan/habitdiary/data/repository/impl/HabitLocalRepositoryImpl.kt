@@ -70,11 +70,9 @@ class HabitLocalRepositoryImpl(
 
 
 
-    override fun getTodayHabits(
-        currentDayOfWeek: DayOfWeek,
-    ): Flow<List<HabitWithDone>> {
+    override fun getActiveHabits(): Flow<List<HabitWithDone>> {
         return combine(
-            habitDao.getTodayHabits(currentDayOfWeek),
+            habitDao.getActiveHabitsFlow(),
             getLoggedHabitIdsForRange()
         ) { habits, dailyLogs ->
             val logMap = dailyLogs.associateBy { it.habitId }
@@ -150,5 +148,23 @@ class HabitLocalRepositoryImpl(
 
     override fun getAllLogsWithHabitId(habitId: Int): Flow<List<DailyLogEntity>> {
         return dailyLogDao.getAllLogsForHabitId(habitId)
+    }
+
+    override fun getTodayHabits(currentDayOfWeek: DayOfWeek): Flow<List<HabitWithDone>> {
+        return combine(
+            habitDao.getTodayHabits(currentDayOfWeek),
+            getLoggedHabitIdsForRange()
+        ) { habits, dailyLogs ->
+            val logMap = dailyLogs.associateBy { it.habitId }
+            habits.map { habit ->
+                val log = logMap[habit.id]
+                HabitWithDone(
+                    habitEntity = habit,
+                    isDone = log != null,
+                    logId = log?.id,
+                    created = log?.createdAt
+                )
+            }
+        }
     }
 }

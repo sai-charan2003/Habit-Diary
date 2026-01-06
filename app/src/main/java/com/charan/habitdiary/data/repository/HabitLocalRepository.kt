@@ -33,7 +33,7 @@ interface HabitLocalRepository {
         endOfDay: LocalDateTime = DateUtil.todayEndOfDay()
     ): Flow<List<DailyLogWithHabit>>
 
-    fun getTodayHabits(currentDayOfWeek: DayOfWeek = DateUtil.getCurrentDayOfWeek()): Flow<List<HabitWithDone>>
+    fun getActiveHabits(): Flow<List<HabitWithDone>>
 
     fun getDailyLogWithId(id: Int): DailyLogEntity
 
@@ -71,4 +71,6 @@ interface HabitLocalRepository {
     ): Flow<List<LocalDate>>
 
     fun getAllLogsWithHabitId(habitId: Int): Flow<List<DailyLogEntity>>
+
+    fun getTodayHabits(currentDayOfWeek: DayOfWeek = DateUtil.getCurrentDayOfWeek()): Flow<List<HabitWithDone>>
 }

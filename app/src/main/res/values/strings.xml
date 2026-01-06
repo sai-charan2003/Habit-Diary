@@ -55,6 +55,11 @@
     <string name="backup_restored">Backup Restored</string>
     <string name="habits">Habits</string>
     <string name="diary">Diary</string>
+    <string name="daily">Daily</string>
+    <string name="weekdays">Weekdays</string>
+    <string name="weekends">Weekends</string>
+    <string name="current">Current</string>
+    <string name="best">Best</string>
 
     <!-- Onboarding Screen Strings -->
     <string name="onboarding_welcome_title">Welcome to Habit Diary</string>
@@ -65,10 +70,11 @@
     <string name="onboarding_daily_log_description">Log your daily activities with notes and images.</string>
 
     <string name="today_habits">Today’s Habits</string>
+    <string name="all_habits">All Habits</string>
     <string name="add_habit">Add Habit</string>
     <string name="save_habit">Save Habit</string>
     <string name="edit_habit">Edit Habit</string>
-    <string name="no_habits_for_today">No habits for today</string>
+    <string name="no_habits_for_today">No habits</string>
     <string name="habit_completed">Habit Completed</string>
     <string name="habit_name">Habit Name</string>
     <string name="enter_habit_name">Enter Habit Name</string>
