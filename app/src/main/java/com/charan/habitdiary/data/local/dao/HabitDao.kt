@@ -44,5 +44,8 @@ interface HabitDao {
     @Query("SELECT * FROM habit_entity WHERE id = :id")
     fun getHabitByIdFLow(id: Int): Flow<HabitEntity>
 
+    @Query("SELECT * FROM habit_entity WHERE isDeleted = 0 ORDER BY createdAt DESC")
+    fun getActiveHabitsFlow(): Flow<List<HabitEntity>>
+
 
 }

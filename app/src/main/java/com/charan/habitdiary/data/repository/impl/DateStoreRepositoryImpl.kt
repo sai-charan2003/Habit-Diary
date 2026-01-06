@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.charan.habitdiary.data.model.enums.HabitSortType
 import com.charan.habitdiary.data.model.enums.ThemeOption
 import com.charan.habitdiary.data.repository.DataStoreRepository
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +25,8 @@ class DateStoreRepositoryImpl(
         private val KEY_ON_BOARDING_COMPLETED = booleanPreferencesKey("on_boarding_completed")
 
         private val KEY_SYSTEM_FONT = booleanPreferencesKey("system_font")
+
+        private val KEY_HABIT_SORT_TYPE = stringPreferencesKey("habit_sort_type")
     }
 
 
@@ -89,4 +92,16 @@ class DateStoreRepositoryImpl(
             val useSystemFont = pref[KEY_SYSTEM_FONT] ?: true
             useSystemFont
         }
+
+    override val habitSortType: Flow<HabitSortType>
+        get() = context.dataStore.data.map { pref ->
+            val sortTypeString = pref[KEY_HABIT_SORT_TYPE] ?: HabitSortType.ALL_HABITS.name
+            HabitSortType.valueOf(sortTypeString)
+        }
+
+    override suspend fun setHabitSortType(sortType: HabitSortType) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_HABIT_SORT_TYPE] = sortType.name
+        }
+    }
 }

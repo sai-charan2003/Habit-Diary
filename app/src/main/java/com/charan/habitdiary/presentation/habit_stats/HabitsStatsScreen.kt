@@ -34,9 +34,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.common.components.BackButton
 import com.charan.habitdiary.presentation.habit_stats.components.CalendarCard
 import com.charan.habitdiary.presentation.habit_stats.components.SelectedDateContentItem
@@ -137,7 +139,7 @@ fun HabitStatsScreen(
                 actions = {
                     FilledTonalIconButton(
                         onClick = {
-                            viewModel.onEvent(HabitStatEvent.OnAddLog)
+                            viewModel.onEvent(HabitStatEvent.OnEditHabitClick)
                         },
                         modifier = Modifier.size(
                             IconButtonDefaults.
@@ -147,7 +149,7 @@ fun HabitStatsScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Edit,
-                            contentDescription = "Edit Habit"
+                            contentDescription = stringResource(R.string.edit_habit)
                         )
                     }
                 }
@@ -169,7 +171,7 @@ fun HabitStatsScreen(
                 ) {
                     StreakStatCard(
                         modifier = Modifier.weight(1f),
-                        title = "Current",
+                        title = stringResource(R.string.current),
                         value = state.currentStreak,
                         icon = Icons.Default.LocalFireDepartment,
                         iconTint = MaterialTheme.colorScheme.primary
@@ -177,7 +179,7 @@ fun HabitStatsScreen(
 
                     StreakStatCard(
                         modifier = Modifier.weight(1f),
-                        title = "Best",
+                        title = stringResource(R.string.best),
                         value = state.bestStreak,
                         icon = Icons.Default.EmojiEvents,
                         iconTint = MaterialTheme.colorScheme.tertiary

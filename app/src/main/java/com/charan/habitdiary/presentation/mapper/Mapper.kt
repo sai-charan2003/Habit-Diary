@@ -36,7 +36,8 @@ fun HabitWithDone.toHabitUIState(is24HourFormat: Boolean) : HabitItemUIState {
         habitTime = this.habitEntity.habitTime.toFormattedString(is24HourFormat),
         isDone = this.isDone,
         logId = this.logId,
-        habitReminderTime = this.habitEntity.habitReminder?.toFormattedString(is24HourFormat)
+        habitReminderTime = this.habitEntity.habitReminder?.toFormattedString(is24HourFormat),
+        habitFrequency = this.habitEntity.habitFrequency
     )
 }
 
