@@ -60,7 +60,7 @@ class NotificationHelper(private val context: Context) {
 
         val openHabitStatsIntent = PendingIntent.getActivity(
             context,
-            habitId,
+            habitId * 1000,
             openHabitStatScreen,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
