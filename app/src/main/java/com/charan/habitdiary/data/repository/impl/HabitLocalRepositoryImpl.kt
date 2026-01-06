@@ -167,4 +167,8 @@ class HabitLocalRepositoryImpl(
             }
         }
     }
+
+    override fun getHabitWithIdFlow(id: Int): Flow<HabitEntity> {
+        return habitDao.getHabitByIdFLow(id)
+    }
 }

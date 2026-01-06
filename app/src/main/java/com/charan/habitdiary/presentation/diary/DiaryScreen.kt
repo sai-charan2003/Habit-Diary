@@ -19,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.charan.habitdiary.R
+import com.charan.habitdiary.presentation.common.components.CustomMediumTopBar
 import com.charan.habitdiary.presentation.diary.components.CustomWeekCalendar
 import com.charan.habitdiary.presentation.common.components.MonthCalendarView
 import com.charan.habitdiary.utils.DateUtil.toLocale
@@ -52,7 +54,7 @@ import kotlin.time.ExperimentalTime
 fun DiaryScreen(
     onNavigateToDailyLogScreen : (id : Int?,date : LocalDate?) -> Unit,
     onImageOpen  : (allImages : List<String>, currentImage : String) -> Unit,
-){
+) {
     val viewModel = hiltViewModel<DiaryScreenViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -79,6 +81,7 @@ fun DiaryScreen(
                         .lastVisibleWeek.days.last().date.month
                         .toLocale()
                 }
+
                 CalendarViewType.MONTH -> {
                     monthCalendarState
                         .lastVisibleMonth.yearMonth.month
@@ -90,14 +93,15 @@ fun DiaryScreen(
     LaunchedEffect(
         weekCalendarState.firstVisibleWeek,
         monthCalendarState.firstVisibleMonth,
-        state.selectedCalendarView) {
+        state.selectedCalendarView
+    ) {
         viewModel.onEvent(
             DiaryScreenEvents.OnVisibleDateRangeChange(
-                startDate = when(state.selectedCalendarView){
+                startDate = when (state.selectedCalendarView) {
                     CalendarViewType.WEEK -> weekCalendarState.firstVisibleWeek.days.first().date
                     CalendarViewType.MONTH -> monthCalendarState.firstVisibleMonth.yearMonth.days.first
                 },
-                endDate = when(state.selectedCalendarView){
+                endDate = when (state.selectedCalendarView) {
                     CalendarViewType.WEEK -> weekCalendarState.lastVisibleWeek.days.last().date
                     CalendarViewType.MONTH -> monthCalendarState.lastVisibleMonth.yearMonth.days.last
                 }
@@ -109,31 +113,32 @@ fun DiaryScreen(
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
-            when(effect){
+            when (effect) {
                 DiaryScreenEffect.ScrollToCurrentDate -> {
-                    when(state.selectedCalendarView){
+                    when (state.selectedCalendarView) {
                         CalendarViewType.WEEK -> {
 
                             weekCalendarState.animateScrollToWeek(state.currentDate)
                         }
+
                         CalendarViewType.MONTH -> {
                             monthCalendarState.animateScrollToMonth(state.currentMonth)
                         }
                     }
                 }
+
                 is DiaryScreenEffect.OnNavigateToAddDailyLogScreen -> {
-                    onNavigateToDailyLogScreen(effect.id,state.selectedDate)
+                    onNavigateToDailyLogScreen(effect.id, state.selectedDate)
                 }
+
                 else -> {}
             }
         }
     }
     Scaffold(
         topBar = {
-            MediumFlexibleTopAppBar(
-                title = {
-                    Text(currentMonthTitle)
-                },
+            CustomMediumTopBar(
+                title = currentMonthTitle,
                 actions = {
                     ResetCalendarButton {
                         viewModel.onEvent(DiaryScreenEvents.OnScrollToCurrentDate)
@@ -141,12 +146,13 @@ fun DiaryScreen(
                     CalendarViewToggleButton(
                         selectedView = state.selectedCalendarView,
                         onToggle = {
-                            viewModel.onEvent(DiaryScreenEvents.OnDiaryViewTypeChange(
-                                if(state.selectedCalendarView == CalendarViewType.WEEK)
-                                    CalendarViewType.MONTH
-                                else
-                                    CalendarViewType.WEEK
-                            )
+                            viewModel.onEvent(
+                                DiaryScreenEvents.OnDiaryViewTypeChange(
+                                    if (state.selectedCalendarView == CalendarViewType.WEEK)
+                                        CalendarViewType.MONTH
+                                    else
+                                        CalendarViewType.WEEK
+                                )
                             )
                         }
                     )
@@ -167,7 +173,7 @@ fun DiaryScreen(
                 )
             }
         }
-    ) { innerPadding->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -238,18 +244,22 @@ fun DiaryScreen(
         }
 
 
-        }
-
     }
 
+}
 
 
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun CalendarViewToggleButton(
     selectedView: CalendarViewType,
     onToggle: () -> Unit
 ) {
-    IconButton(onClick = onToggle) {
+    IconButton(
+        onClick = onToggle,
+        shapes = IconButtonDefaults.shapes()
+    ) {
         Icon(
             imageVector = when (selectedView) {
                 CalendarViewType.WEEK -> Icons.Rounded.CalendarViewWeek
@@ -260,11 +270,15 @@ private fun CalendarViewToggleButton(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ResetCalendarButton(
     onResetClick : () ->Unit
 ){
-    IconButton(onClick = onResetClick) {
+    IconButton(
+        onClick = onResetClick,
+        shapes = IconButtonDefaults.shapes()
+    ) {
         Icon(
             imageVector = Icons.Rounded.Event,
             contentDescription = "Reset Calendar to Current Date"

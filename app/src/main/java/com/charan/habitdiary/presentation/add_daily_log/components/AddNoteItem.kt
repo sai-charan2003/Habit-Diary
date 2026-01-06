@@ -30,7 +30,7 @@ fun AddNoteItem(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 5.dp),
-        textStyle = MaterialTheme.typography.bodyMedium.copy(
+        textStyle = MaterialTheme.typography.bodyMediumEmphasized.copy(
             color = MaterialTheme.colorScheme.onSurface
         ),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),

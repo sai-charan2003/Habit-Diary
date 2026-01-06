@@ -27,6 +27,7 @@ import com.charan.habitdiary.presentation.add_habit.components.HabitReminderComp
 import com.charan.habitdiary.presentation.add_habit.components.ScheduleHabitComponent
 import com.charan.habitdiary.presentation.common.components.ActionButtonRow
 import com.charan.habitdiary.presentation.common.components.BackButton
+import com.charan.habitdiary.presentation.common.components.CustomMediumTopBar
 import com.charan.habitdiary.presentation.common.components.DeleteWarningDialog
 import com.charan.habitdiary.presentation.common.components.RationaleDialog
 import com.charan.habitdiary.presentation.common.components.SelectTimeDialog
@@ -136,20 +137,12 @@ fun AddHabitScreen(
 
     Scaffold(
         topBar = {
-            MediumFlexibleTopAppBar(
-                title = {
-                    Text(
-                        if(state.isEdit) stringResource(R.string.edit_habit)
-                        else stringResource(R.string.add_habit)
-                    )
-                },
-                navigationIcon = {
-                    BackButton(
-                        onBackClick = {
-                            viewModel.onEvent(AddHabitEvent.OnNavigateBack)
-                        }
-                    )
-
+            CustomMediumTopBar(
+                title = if(state.isEdit) stringResource(R.string.edit_habit)
+                else stringResource(R.string.add_habit),
+                showBackButton = true,
+                onBackClick = {
+                    viewModel.onEvent(AddHabitEvent.OnNavigateBack)
                 },
                 scrollBehavior = scrollBehavior
 

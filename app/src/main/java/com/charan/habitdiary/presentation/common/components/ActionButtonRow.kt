@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -18,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.R
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ActionButtonRow(
     saveButtonText : String = stringResource(R.string.save),
@@ -36,6 +38,7 @@ fun ActionButtonRow(
         Button(
             onClick = onSave,
             modifier = Modifier.weight(1f),
+            shapes = ButtonDefaults.shapes(),
             enabled = isSaveEnabled
         ) {
             Text(saveButtonText)
@@ -50,7 +53,8 @@ fun ActionButtonRow(
                     .weight(1f),
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.error
-                )
+                ),
+                shapes = ButtonDefaults.shapes()
 
             ) {
                 Text(deleteButtonText)

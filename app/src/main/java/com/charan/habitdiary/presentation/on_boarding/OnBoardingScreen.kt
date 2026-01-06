@@ -121,7 +121,7 @@ fun OnBoardingScreen(
                         stringResource(R.string.getting_started)
                     else
                         stringResource(R.string.next),
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.labelLargeEmphasized
                 )
             }
         }
@@ -176,7 +176,7 @@ fun OnBoardingPageItem(pageData: OnBoardingPage) {
         Spacer(modifier = Modifier.height(48.dp))
         Text(
             text = stringResource(pageData.title),
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineMediumEmphasized,
             textAlign = TextAlign.Center,
             modifier = Modifier
         )
@@ -184,7 +184,7 @@ fun OnBoardingPageItem(pageData: OnBoardingPage) {
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(pageData.description),
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.bodyLargeEmphasized,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier

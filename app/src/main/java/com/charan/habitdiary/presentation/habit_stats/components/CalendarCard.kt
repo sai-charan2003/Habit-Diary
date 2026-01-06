@@ -64,7 +64,7 @@ fun CalendarCard(
             ) {
                 Text(
                     text = visibleMonth.toLocale(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleMediumEmphasized,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )

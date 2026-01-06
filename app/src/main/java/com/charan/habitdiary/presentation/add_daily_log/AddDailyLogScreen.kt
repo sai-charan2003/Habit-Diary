@@ -42,6 +42,7 @@ import com.charan.habitdiary.presentation.add_daily_log.components.HabitDetailsC
 import com.charan.habitdiary.presentation.add_daily_log.components.ImagePickOptionsBottomSheet
 import com.charan.habitdiary.presentation.common.components.ActionButtonRow
 import com.charan.habitdiary.presentation.common.components.CustomCarouselImageItem
+import com.charan.habitdiary.presentation.common.components.CustomMediumTopBar
 import com.charan.habitdiary.presentation.common.components.DeleteWarningDialog
 import com.charan.habitdiary.presentation.common.components.RationaleDialog
 import com.charan.habitdiary.presentation.common.components.SelectDateDialog
@@ -228,22 +229,13 @@ fun AddDailyLogScreen(
 
     Scaffold(
         topBar = {
-            MediumFlexibleTopAppBar(
-                title = {
-                    Text(if(state.isEdit) stringResource(R.string.edit_daily_log) else stringResource(R.string.add_daily_log))
-                },
+            CustomMediumTopBar(
+                title = if(state.isEdit) stringResource(R.string.edit_daily_log) else stringResource(R.string.add_daily_log)
+                ,
                 scrollBehavior = scrollBehavior,
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            viewModel.onEvent(DailyLogEvent.OnBackClick)
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back_button)
-                        )
-                    }
+                showBackButton = true,
+                onBackClick = {
+                    viewModel.onEvent(DailyLogEvent.OnBackClick)
                 },
                 actions = {
                     if(state.isLoading){

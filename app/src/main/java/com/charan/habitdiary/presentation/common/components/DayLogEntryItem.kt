@@ -92,13 +92,13 @@ fun LogEntryCard(
             if(habitName.isNotEmpty()){
                 Text(
                     text = stringResource(com.charan.habitdiary.R.string.habit_completed),
-                    style = MaterialTheme.typography.labelSmall.copy(
+                    style = MaterialTheme.typography.labelSmallEmphasized.copy(
                         color = MaterialTheme.colorScheme.primary
                     )
                 )
                 Text(
                     text = habitName,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = MaterialTheme.typography.titleMediumEmphasized.copy(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -117,10 +117,10 @@ fun LogEntryCard(
             if (note.isNotEmpty()) {
                 Text(
                     text = note,
-                    style = MaterialTheme.typography.bodyLarge.copy(
+                    style = MaterialTheme.typography.bodyLargeEmphasized.copy(
                         fontWeight = FontWeight.Normal,
                         color = MaterialTheme.colorScheme.onSurface,
-                        lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.4f
+                        lineHeight = MaterialTheme.typography.bodyLargeEmphasized.lineHeight * 1.2f
                     )
                 )
             }

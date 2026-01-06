@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.charan.habitdiary.R
 import com.charan.habitdiary.data.repository.impl.BackupRepositoryImpl.Companion.FILE_TYPE
 import com.charan.habitdiary.presentation.common.components.CustomListItem
+import com.charan.habitdiary.presentation.common.components.CustomMediumTopBar
 import com.charan.habitdiary.presentation.settings.components.SectionHeader
 import com.charan.habitdiary.presentation.settings.components.SettingsRowItem
 import com.charan.habitdiary.presentation.settings.components.SettingsSwitchItem
@@ -97,10 +98,8 @@ fun SettingsScreen(
     }
     Scaffold(
         topBar = {
-            MediumFlexibleTopAppBar(
-                title = {
-                    Text(stringResource(R.string.settings))
-                },
+            CustomMediumTopBar(
+                title = stringResource(R.string.settings),
                 scrollBehavior = scrollBehavior
             )
 

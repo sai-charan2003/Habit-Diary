@@ -60,6 +60,7 @@
     <string name="weekends">Weekends</string>
     <string name="current">Current</string>
     <string name="best">Best</string>
+    <string name="no_repeat">No Repeat</string>
 
     <!-- Onboarding Screen Strings -->
     <string name="onboarding_welcome_title">Welcome to Habit Diary</string>
