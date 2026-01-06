@@ -27,6 +27,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.common.components.CustomDropDown
+import com.charan.habitdiary.presentation.common.components.CustomMediumTopBar
 import com.charan.habitdiary.presentation.common.components.SectionHeading
 import com.charan.habitdiary.presentation.habits.components.EmptyStateItem
 import com.charan.habitdiary.presentation.habits.components.HabitItemCard
@@ -68,16 +69,9 @@ fun HabitScreen(
     }
     Scaffold(
         topBar = {
-            MediumFlexibleTopAppBar(
-                title = {
-                    Text(
-                        stringResource(R.string.today),
-                    )
-
-                },
-                subtitle = {
-                    Text(state.todayDate)
-                },
+            CustomMediumTopBar(
+                title = stringResource(R.string.today),
+                subTitle = state.todayDate,
                 scrollBehavior = scrollBehavior
             )
         },
@@ -145,7 +139,7 @@ fun HabitScreen(
                         )
                     },
                     time = habit.habitTime,
-                    reminder = habit.habitReminderTime ?: "",
+                    reminder = "",
                     habitDays = habit.habitFrequency
 
                     )

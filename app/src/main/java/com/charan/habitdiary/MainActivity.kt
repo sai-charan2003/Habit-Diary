@@ -86,6 +86,8 @@ object DeepLinkHandler {
     private val ADDHABIT_URI = "add-habit"
     private val DAILYLOG_URI = "add-daily-log"
 
+    val HABIT_STATS_URI = "habit-stats"
+
     fun resolve(uri: Uri): List<NavKey>? {
         val pathSegments = uri.pathSegments
 
@@ -97,6 +99,10 @@ object DeepLinkHandler {
             pathSegments.firstOrNull() == DAILYLOG_URI -> {
                 val logId = pathSegments.getOrNull(1)?.toIntOrNull()
                 listOf(Destinations.BottomBarNav, Destinations.AddDailyLog(logId,null))
+            }
+            pathSegments.firstOrNull() == HABIT_STATS_URI -> {
+                val habitId = pathSegments.getOrNull(1)?.toIntOrNull() ?: return null
+                listOf(Destinations.BottomBarNav, Destinations.HabitStatsScreeNav(habitId))
             }
             else -> null
         }

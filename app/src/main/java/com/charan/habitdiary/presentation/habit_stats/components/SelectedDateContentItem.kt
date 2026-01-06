@@ -75,7 +75,7 @@ fun SelectedDateContentItem(
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = date.toFormattedString(),
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.headlineSmallEmphasized,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -111,7 +111,7 @@ fun SelectedDateContentItem(
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "View Log",
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.bodyMediumEmphasized,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }

@@ -13,8 +13,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.utils.DateUtil
+import com.charan.habitdiary.utils.DateUtil.toLocale
 import kotlinx.datetime.DayOfWeek
+import java.time.format.TextStyle
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Suppress("NonSkippableComposable")
 @Composable
 fun ScheduleHabitComponent(
@@ -40,7 +43,7 @@ fun ScheduleHabitComponent(
 
         Text(
             stringResource(com.charan.habitdiary.R.string.repeat),
-            style = MaterialTheme.typography.bodyLarge)
+            style = MaterialTheme.typography.bodyLargeEmphasized)
         Spacer(Modifier.height(8.dp))
 
         SelectDaysItem(
@@ -86,7 +89,7 @@ private fun SelectDaysItem(
                     else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                 }
             ) {
-                Text(label.name.take(1))
+                Text(label.toLocale(TextStyle.NARROW_STANDALONE))
             }
         }
     }

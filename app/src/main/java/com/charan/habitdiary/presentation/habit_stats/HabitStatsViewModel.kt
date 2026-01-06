@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -43,7 +44,7 @@ class HabitStatsViewModel @AssistedInject constructor(
     private val _effect = MutableSharedFlow<HabitStatEffect>()
     val effect  = _effect.asSharedFlow()
     init {
-        fetchHabitStats()
+        observeHabitStats()
     }
 
     fun onEvent(event: HabitStatEvent) {
@@ -118,32 +119,29 @@ class HabitStatsViewModel @AssistedInject constructor(
 
     }
 
-    private fun fetchHabitStats() = viewModelScope.launch(Dispatchers.IO) {
-        val habit = habitLocalRepository.getHabitWithId(id = habitId)
-        _state.update { state->
-            state.copy(
-                habitId = habitId,
-                habitName = habit.habitName,
-                habitFrequency = habit.habitFrequency,
-                habitDescription = habit.habitDescription,
-                habitTime = habit.habitTime
-            )
-        }
-        observeLogs(habit)
-    }
+    private fun observeHabitStats() = viewModelScope.launch(Dispatchers.IO) {
+        combine(
+            habitLocalRepository.getHabitWithIdFlow(habitId),
+            habitLocalRepository.getAllLogsWithHabitId(habitId)
+        ) { habit, logs ->
+            habit to logs
+        }.collectLatest { (habit, logs) ->
 
-    private fun observeLogs(habit : HabitEntity) = viewModelScope.launch (Dispatchers.IO){
-        habitLocalRepository.getAllLogsWithHabitId(habitId).collectLatest {
-            _state.update { state->
+            _state.update { state ->
                 state.copy(
-                    currentStreak = it.getHabitStreak(habit.habitFrequency),
-                    bestStreak = it.getBestHabitStreak(habit.habitFrequency),
-                    datesWithHabitDone = it.map { log-> log.createdAt.date }.toSet(),
+                    habitId = habitId,
+                    habitName = habit.habitName,
+                    habitFrequency = habit.habitFrequency,
+                    habitDescription = habit.habitDescription,
+                    habitTime = habit.habitTime,
+                    currentStreak = logs.getHabitStreak(habit.habitFrequency),
+                    bestStreak = logs.getBestHabitStreak(habit.habitFrequency),
+                    datesWithHabitDone = logs.map { it.createdAt.date }.toSet()
                 )
             }
-
         }
     }
+
 
     private fun sendEffect(effect : HabitStatEffect) = viewModelScope.launch {
         _effect.emit(effect)

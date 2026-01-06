@@ -40,6 +40,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.common.components.BackButton
+import com.charan.habitdiary.presentation.common.components.CustomMediumTopBar
 import com.charan.habitdiary.presentation.habit_stats.components.CalendarCard
 import com.charan.habitdiary.presentation.habit_stats.components.SelectedDateContentItem
 import com.charan.habitdiary.presentation.habit_stats.components.StreakStatCard
@@ -128,14 +129,14 @@ fun HabitStatsScreen(
         sheetPeekHeight = 150.dp,
         sheetShape = MaterialTheme.shapes.largeIncreased,
         topBar = {
-            MediumFlexibleTopAppBar(
-                title = { Text(state.habitName) },
+            CustomMediumTopBar(
+                title = state.habitName,
                 scrollBehavior = scrollBehavior,
-                navigationIcon = {
-                    BackButton {
-                        viewModel.onEvent(HabitStatEvent.OnNavigateBackClick)
-                    }
+                showBackButton = true,
+                onBackClick = {
+                    viewModel.onEvent(HabitStatEvent.OnNavigateBackClick)
                 },
+
                 actions = {
                     FilledTonalIconButton(
                         onClick = {

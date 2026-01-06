@@ -9,6 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.charan.habitdiary.R
+import androidx.core.net.toUri
+import com.charan.habitdiary.DeepLinkHandler
 
 class NotificationHelper(private val context: Context) {
     private val notificationManager =
@@ -42,12 +44,28 @@ class NotificationHelper(private val context: Context) {
             action = IntentActions.MARK_AS_DONE.name
             putExtra("habitId", habitId)
         }
-        val actionIntent = PendingIntent.getBroadcast(
+        val markAsDoneActionIntent = PendingIntent.getBroadcast(
             context,
             habitId,
             markAsDoneIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+        val openHabitStatScreen = Intent(
+            Intent.ACTION_VIEW,
+            "habitdiary://app/${DeepLinkHandler.HABIT_STATS_URI}/$habitId".toUri()
+        ).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("habitId", habitId)
+        }
+
+        val openHabitStatsIntent = PendingIntent.getActivity(
+            context,
+            habitId,
+            openHabitStatScreen,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+
 
         val builder =
             Notification.Builder(context, HABIT_REMINDER_CHANNEL_ID)
@@ -57,11 +75,12 @@ class NotificationHelper(private val context: Context) {
             .setContentText(message)
             .setSmallIcon(R.drawable.notification_icon)
             .setAutoCancel(true)
+            .setContentIntent(openHabitStatsIntent)
             .addAction(
                 Notification.Action.Builder(
                     null,
                     "Mark as Done",
-                    actionIntent
+                    markAsDoneActionIntent
                 ).build()
             )
             .build()

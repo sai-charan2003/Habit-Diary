@@ -30,6 +30,7 @@ import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -52,9 +53,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.R
+import com.charan.habitdiary.utils.DateUtil.toLocale
 import kotlinx.datetime.DayOfWeek
+import java.time.format.TextStyle
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HabitItemCard(
     title: String,
@@ -79,9 +82,9 @@ fun HabitItemCard(
         habitDays.containsAll(listOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)) &&
                 habitDays.all { it >= DayOfWeek.SATURDAY } -> stringResource(R.string.weekends)
 
-        habitDays.isEmpty() -> "No repeat"
+        habitDays.isEmpty() -> stringResource(R.string.no_repeat)
         else -> habitDays.joinToString(", ") {
-            it.name.take(3).lowercase().replaceFirstChar { c -> c.uppercase() }
+            it.toLocale(TextStyle.SHORT_STANDALONE)
         }
     }
 
@@ -120,7 +123,7 @@ fun HabitItemCard(
                 ) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleLarge.copy(
+                        style = MaterialTheme.typography.titleLargeEmphasized.copy(
                             fontWeight = FontWeight.SemiBold
                         ),
                         maxLines = 2,
@@ -131,7 +134,7 @@ fun HabitItemCard(
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = description,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodyMediumEmphasized,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis
@@ -185,6 +188,7 @@ fun HabitItemCard(
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun HabitChip(
     icon: ImageVector,
@@ -209,7 +213,7 @@ private fun HabitChip(
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = text,
-                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
+                style = MaterialTheme.typography.labelSmallEmphasized.copy(fontWeight = FontWeight.Medium),
                 color = onColor.copy(alpha = 0.9f)
             )
         }
