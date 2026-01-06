@@ -17,6 +17,15 @@ import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.data.model.enums.HabitSortType
 import com.charan.habitdiary.presentation.common.components.CustomDropDown
 
+/**
+ * Renders a text button that shows the currently selected sort label and anchors a dropdown to choose a different habit sort.
+ *
+ * @param modifier Modifier applied to the TextButton.
+ * @param onClick Callback invoked when the button is clicked (typically toggles the dropdown).
+ * @param onSortSelected Called with the selected HabitSortType when the user picks an item from the dropdown.
+ * @param selectedSortTypeRes Resource ID of the currently selected sort label (string resource).
+ * @param isExpanded Controls whether the dropdown is visible.
+ */
 @Composable
 fun SortButton(
     modifier: Modifier = Modifier,

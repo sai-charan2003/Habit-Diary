@@ -28,6 +28,16 @@ fun List<HabitEntity>.toHabitUIList() : List<HabitItemUIState>{
     }
 }
 
+/**
+ * Converts a HabitWithDone into a HabitItemUIState for UI presentation.
+ *
+ * Times in the resulting UI state are formatted according to the `is24HourFormat` flag; `habitReminderTime`
+ * will be `null` if the source habit has no reminder set.
+ *
+ * @param is24HourFormat `true` to format times using a 24-hour clock, `false` to use a 12-hour clock.
+ * @return A `HabitItemUIState` populated with id, name, description, formatted `habitTime`, `isDone`, `logId`,
+ *         formatted `habitReminderTime` (or `null`), and `habitFrequency`.
+ */
 fun HabitWithDone.toHabitUIState(is24HourFormat: Boolean) : HabitItemUIState {
     return HabitItemUIState(
         id = this.habitEntity.id,

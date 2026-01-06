@@ -54,6 +54,20 @@ import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.R
 import kotlinx.datetime.DayOfWeek
 
+/**
+ * Displays a habit item as an elevated card containing title, optional description, completion control,
+ * and optional chips for time, reminder, and repeat schedule.
+ *
+ * The repeat label is derived from `habitDays` and will show `"daily"`, `"weekdays"`, `"weekends"`,
+ * `"No repeat"`, or a comma-separated list of three-letter day abbreviations.
+ *
+ * @param time Optional scheduled time shown as a chip when non-empty.
+ * @param reminder Optional reminder text shown as a chip when non-empty.
+ * @param isCompleted Whether the habit is currently marked completed; affects visuals and checkbox state.
+ * @param onCompletedChange Callback invoked with the new completion state when the checkbox is toggled.
+ * @param onClick Callback invoked when the card is clicked.
+ * @param habitDays List of DayOfWeek values used to compute the repeat descriptor shown on the repeat chip.
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun HabitItemCard(
@@ -185,6 +199,16 @@ fun HabitItemCard(
     }
 }
 
+/**
+ * Displays a compact rounded chip containing an icon and a label.
+ *
+ * The chip uses `color` as its semi-transparent background and `onColor` for the icon and text tints.
+ *
+ * @param icon The vector icon displayed at the start of the chip.
+ * @param text The label text shown next to the icon.
+ * @param color Background color for the chip (applied with reduced alpha).
+ * @param onColor Color used to tint the icon and text.
+ */
 @Composable
 private fun HabitChip(
     icon: ImageVector,
@@ -216,6 +240,15 @@ private fun HabitChip(
     }
 }
 
+/**
+ * A circular checkbox with an animated filled center that visually represents checked state and toggles when clicked.
+ *
+ * @param checked Whether the checkbox is currently checked.
+ * @param onCheckedChange Callback invoked with the new checked state when the user toggles the checkbox.
+ * @param modifier Optional [Modifier] for layout, drawing and gesture handling.
+ * @param strokeColor Color used for the checkbox outline or base when unchecked.
+ * @param fillColor Color used for the inner filled circle when checked.
+ */
 @Composable
 fun RoundCheckbox(
     checked: Boolean,
@@ -262,6 +295,12 @@ fun RoundCheckbox(
     }
 }
 
+/**
+ * Shows a preview of the HabitItemCard composable in two example states.
+ *
+ * The preview renders one incomplete habit scheduled for Monday/Wednesday/Friday and
+ * one completed habit scheduled for Saturday/Sunday to illustrate layout and styling.
+ */
 @Preview
 @Composable
 fun HabitItemCardPreview() {

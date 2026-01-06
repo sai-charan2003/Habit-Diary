@@ -35,6 +35,18 @@ import com.charan.habitdiary.utils.DateUtil.toLocale
 import kotlinx.coroutines.flow.collectLatest
 import java.time.format.TextStyle
 
+/**
+ * Composable that displays today's habits in a scrollable list with a collapsible top app bar, sorting controls, and actions to add or view habit details.
+ *
+ * The UI reacts to ViewModel state for the habit list, sort selection, and empty state. Navigation-related callbacks are invoked in response to view model effects:
+ * - calls `onHabitDetails` when navigating to the add/edit habit screen,
+ * - calls `onAddDailyLog` when navigating to the add daily log screen,
+ * - calls `onHabitStats` when navigating to a habit's statistics screen.
+ *
+ * @param onHabitDetails Callback invoked with an optional habit ID to navigate to the add/edit habit screen.
+ * @param onAddDailyLog Callback invoked with an optional habit ID to navigate to the add daily log screen.
+ * @param onHabitStats Callback invoked with a habit ID to navigate to the habit statistics screen.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class,
     ExperimentalTextApi::class
 )

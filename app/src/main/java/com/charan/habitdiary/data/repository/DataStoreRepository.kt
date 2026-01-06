@@ -22,11 +22,21 @@ interface DataStoreRepository {
 
     val getOnBoardingCompleted : Flow<Boolean>
 
-    suspend fun setSystemFontState(useSystemFont : Boolean)
+    /**
+ * Store the user's preference for using the system font.
+ *
+ * @param useSystemFont `true` to use the device's system font, `false` to use the app's default font.
+ */
+suspend fun setSystemFontState(useSystemFont : Boolean)
 
     val getSystemFontState : Flow<Boolean>
 
     val habitSortType : Flow<HabitSortType>
 
-    suspend fun setHabitSortType(sortType : HabitSortType)
+    /**
+ * Updates the stored habit sorting preference to the provided value.
+ *
+ * @param sortType The HabitSortType to persist as the new habit sorting preference.
+ */
+suspend fun setHabitSortType(sortType : HabitSortType)
 }

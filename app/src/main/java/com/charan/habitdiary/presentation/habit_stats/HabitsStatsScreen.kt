@@ -49,6 +49,16 @@ import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.core.minusMonths
 import com.kizitonwose.calendar.core.plusMonths
 
+/**
+ * Displays the statistics screen for a habit, including current/best streaks, an interactive calendar, and a bottom sheet with details for the selected date.
+ *
+ * The composable drives UI interactions (date selection, marking completion, navigating to add-log or edit-habit flows) by invoking the provided callbacks and dispatching events to its view model.
+ *
+ * @param habitId The id of the habit whose statistics are shown.
+ * @param onAddLog Callback invoked with a habit id when the UI requests navigation to the add-log screen.
+ * @param onNavigateBack Callback invoked when the UI requests navigation back.
+ * @param onEditHabit Callback invoked with a habit id when the UI requests navigation to the edit-habit screen.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HabitStatsScreen(

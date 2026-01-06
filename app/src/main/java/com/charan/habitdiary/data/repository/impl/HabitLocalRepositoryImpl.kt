@@ -70,6 +70,13 @@ class HabitLocalRepositoryImpl(
 
 
 
+    /**
+     * Produces a reactive list of active habits annotated with completion status.
+     *
+     * Each `HabitWithDone` has `isDone` set to `true` when a corresponding daily log exists within the repository's tracked range; `logId` and `created` reflect the matching daily log when present.
+     *
+     * @return A `Flow` that emits lists of `HabitWithDone` for active habits.
+     */
     override fun getActiveHabits(): Flow<List<HabitWithDone>> {
         return combine(
             habitDao.getActiveHabitsFlow(),
@@ -146,10 +153,24 @@ class HabitLocalRepositoryImpl(
         return habitDao.insertHabits(habits)
     }
 
+    /**
+     * Provides a reactive stream of all daily logs for a given habit.
+     *
+     * @param habitId The primary key of the habit whose logs are requested.
+     * @return A Flow that emits lists of DailyLogEntity belonging to the specified habit.
+     */
     override fun getAllLogsWithHabitId(habitId: Int): Flow<List<DailyLogEntity>> {
         return dailyLogDao.getAllLogsForHabitId(habitId)
     }
 
+    /**
+     * Produces a reactive list of habits scheduled for the given day, each annotated with completion metadata.
+     *
+     * Each emitted HabitWithDone has `isDone` set to `true` if a daily log exists for that habit in the repository's current log range; when present, `logId` and `created` contain the corresponding log's id and creation timestamp.
+     *
+     * @param currentDayOfWeek The day of week used to select habits scheduled for that day.
+     * @return A Flow that emits lists of HabitWithDone reflecting scheduled habits and their logged state.
+     */
     override fun getTodayHabits(currentDayOfWeek: DayOfWeek): Flow<List<HabitWithDone>> {
         return combine(
             habitDao.getTodayHabits(currentDayOfWeek),

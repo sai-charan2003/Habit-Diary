@@ -99,6 +99,11 @@ class DateStoreRepositoryImpl(
             HabitSortType.valueOf(sortTypeString)
         }
 
+    /**
+     * Persists the selected habit sort type to the application's DataStore preferences.
+     *
+     * @param sortType The habit sort type to persist.
+     */
     override suspend fun setHabitSortType(sortType: HabitSortType) {
         context.dataStore.edit { preferences ->
             preferences[KEY_HABIT_SORT_TYPE] = sortType.name

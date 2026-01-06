@@ -22,6 +22,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastForEachIndexed
 
+/**
+ * Displays a Material3 dropdown popup populated with the given items and highlights the selected item.
+ *
+ * @param items List of items represented by Android string resource IDs (each item must be castable to `Int` and will be passed to `stringResource`).
+ * @param selectedItem The currently selected item from `items`.
+ * @param onItemSelected Callback invoked with the item chosen by the user.
+ * @param isExpanded Controls whether the dropdown popup is shown.
+ * @param onDismiss Callback invoked when the dropdown is dismissed.
+ * @param containerColor Background color applied to the dropdown group and items.
+ */
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun<T> CustomDropDown(
