@@ -1,6 +1,7 @@
 package com.charan.habitdiary.presentation.add_daily_log
 
 import android.net.Uri
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
@@ -31,6 +33,7 @@ import kotlinx.datetime.LocalTime
 class DailyLogViewModel @AssistedInject constructor(
     @Assisted val logId : Int?,
     @Assisted val date : LocalDate?,
+    @Assisted val openCameraOnLaunch : Boolean?,
     private val habitLocalRepository: HabitLocalRepository,
     private val fileRepository: FileRepository,
     private val permissionManager: PermissionManager,
@@ -39,20 +42,23 @@ class DailyLogViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(logId: Int?, date : LocalDate?) : DailyLogViewModel
+        fun create(logId: Int?, date : LocalDate?, openCameraOnLaunch : Boolean?) : DailyLogViewModel
     }
 
 
     private val _state = MutableStateFlow(DailyLogState())
     val state: StateFlow<DailyLogState> = _state.asStateFlow()
 
-    private val _effect = MutableSharedFlow<DailyLogEffect>()
-    val effect: SharedFlow<DailyLogEffect> = _effect.asSharedFlow()
+    private val _effect = Channel<DailyLogEffect>(Channel.BUFFERED)
+    val effect = _effect.receiveAsFlow()
 
     init {
         initializeLog(logId)
         observeDateTimeChanges()
         observeHourFormat()
+        if(openCameraOnLaunch == true){
+            handleTakePhoto()
+        }
     }
 
     fun onEvent(event: DailyLogEvent) {
@@ -315,6 +321,7 @@ class DailyLogViewModel @AssistedInject constructor(
                 tempImagePath = uri.toString()
             )
         }
+        Log.d("TAG", "handleTakePhoto:")
         sendEffect(DailyLogEffect.OnTakePhoto)
     }
 
@@ -413,7 +420,7 @@ class DailyLogViewModel @AssistedInject constructor(
     }
 
     private fun sendEffect(effect: DailyLogEffect) = viewModelScope.launch {
-        _effect.emit(effect)
+        _effect.send(effect)
     }
 
     override fun onCleared() {

@@ -23,7 +23,7 @@ sealed class Destinations : NavKey {
     data class AddHabit(val id : Int?) : Destinations()
 
     @Serializable
-    data class AddDailyLog(val id : Int?, val date : LocalDate?) : Destinations()
+    data class AddDailyLog(val id : Int?, val date : LocalDate?,val openCameraOnLaunch : Boolean = false) : Destinations()
 
     @Serializable
     data object LibrariesScreenNav : Destinations()
