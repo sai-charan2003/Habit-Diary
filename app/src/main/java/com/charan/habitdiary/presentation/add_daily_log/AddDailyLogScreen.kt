@@ -1,6 +1,7 @@
 package com.charan.habitdiary.presentation.add_daily_log
 
 import android.Manifest
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -61,12 +62,13 @@ fun AddDailyLogScreen(
     onNavigateBack : () -> Unit,
     logId : Int? = null,
     date : LocalDate?= null,
+    openCameraOnLaunch : Boolean = false,
     onHabitOpen : (habitId : Int) -> Unit,
     onImageOpen : (allImages : List<String>, currentImage : String) -> Unit,
 ) {
     val viewModel = hiltViewModel<DailyLogViewModel, DailyLogViewModel.Factory>(
         creationCallback = { factory ->
-            factory.create(logId,date)
+            factory.create(logId,date,openCameraOnLaunch)
         }
     )
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -170,6 +172,7 @@ fun AddDailyLogScreen(
                 }
 
                 is DailyLogEffect.OnTakePhoto -> {
+                    Log.d("TAG", "AddDailyLogScreen: take")
                     captureImage.launch(state.tempImagePath.toUri())
                 }
 

@@ -61,6 +61,7 @@
     <string name="current">Current</string>
     <string name="best">Best</string>
     <string name="no_repeat">No Repeat</string>
+    <string name="capture_moment">Capture Moment</string>
 
     <!-- Onboarding Screen Strings -->
     <string name="onboarding_welcome_title">Welcome to Habit Diary</string>

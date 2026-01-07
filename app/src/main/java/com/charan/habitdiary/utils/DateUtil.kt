@@ -109,7 +109,6 @@ object DateUtil {
     }
 
     fun LocalDate.toFormattedString() : String{
-        Log.d("TAG", "toFormattedString: $this")
         val month = this.month.name.lowercase().substring(0, 3).replaceFirstChar { it.uppercase() }
         return "$month ${this.day}, ${this.year}"
     }
