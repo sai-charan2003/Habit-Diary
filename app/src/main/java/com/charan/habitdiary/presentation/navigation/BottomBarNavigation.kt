@@ -45,11 +45,11 @@ import kotlinx.datetime.LocalDate
 
 @Composable
 fun BottomBarNavigation(
-    onAddHabitNav : (Int?) -> Unit,
-    onAddDailyLogNav : (id : Int? , date : LocalDate?) -> Unit,
+    onAddHabitNav : (Long?) -> Unit,
+    onAddDailyLogNav : (Long : Long? , date : LocalDate?) -> Unit,
     onNavigateToAboutLibraries : () -> Unit,
     onImageOpen : (allImage : List<String>,currentImage : String) -> Unit,
-    onHabitStats : (id : Int) -> Unit,
+    onHabitStats : (id : Long) -> Unit,
 
 ) {
     val bottomBarBackStack = rememberNavBackStack(BottomBarNavDestinations.Home)

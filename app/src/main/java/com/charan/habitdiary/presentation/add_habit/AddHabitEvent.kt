@@ -5,7 +5,7 @@ import kotlinx.datetime.LocalTime
 
 sealed class AddHabitEvent {
 
-    data class InitializeHabit(val habitId : Int?) : AddHabitEvent()
+    data class InitializeHabit(val habitId : Long?) : AddHabitEvent()
 
     data class OnHabitNameChange(val habitName : String) : AddHabitEvent()
     data class OnHabitDescriptionChange(val habitDescription : String) : AddHabitEvent()

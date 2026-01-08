@@ -26,14 +26,14 @@ enum class PendingCameraAction {
 }
 
 data class DailyLogItemDetails(
-    val id: Int? = null,
+    val id: Long? = null,
     val notesText: String = "",
     val mediaItems: List<DailyLogMediaItem> = emptyList(),
     val formattedDateString: String = "",
     val formattedTimeString: String = "",
     val time: LocalTime = LocalTime(0,0),
     val date: LocalDate = LocalDate(1970,1,1),
-    val habitId: Int? = null,
+    val habitId: Long? = null,
     val habitName: String? = null,
     val habitDescription: String? = null
 )

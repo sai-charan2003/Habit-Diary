@@ -36,20 +36,20 @@ interface DailyLogDao {
     fun getDailyLogsInRange(startOfDay: LocalDateTime , endOfDay : LocalDateTime): Flow<List<DailyLogWithHabit>>
 
     @Query("SELECT * FROM daily_log_entity WHERE id = :id")
-    fun getDailyLogWithId(id: Int): DailyLogEntity
+    fun getDailyLogWithId(id: Long): DailyLogEntity
 
     @Transaction
     @Query("SELECT * FROM daily_log_entity WHERE id = :id")
-    fun getDailyLogsWithHabitWithId(id: Int): DailyLogWithHabit
+    fun getDailyLogsWithHabitWithId(id: Long): DailyLogWithHabit
 
     @Query("UPDATE daily_log_entity SET isDeleted = 1 WHERE id = :id")
-    fun deleteDailyLog(id: Int)
+    fun deleteDailyLog(id: Long)
 
     @Query("SELECT * FROM daily_log_entity WHERE createdAt >= :startOfDay and createdAt <= :endOfDay AND isDeleted = 0")
     fun getLoggedHabitIdsForToday(startOfDay: LocalDateTime,endOfDay : LocalDateTime): Flow<List<DailyLogEntity>>
 
     @Query("SELECT * FROM daily_log_entity WHERE habitId = :habitId AND createdAt >= :startOfDay and createdAt <= :endOfDay AND isDeleted = 0 LIMIT 1")
-    fun getLoggedHabitFromIdForRange(habitId : Int,startOfDay: LocalDateTime,endOfDay : LocalDateTime): DailyLogEntity?
+    fun getLoggedHabitFromIdForRange(habitId : Long,startOfDay: LocalDateTime,endOfDay : LocalDateTime): DailyLogEntity?
 
     @Query("SELECT DISTINCT createdAt FROM daily_log_entity WHERE createdAt >= :start and createdAt <= :end and isDeleted = 0")
     fun getLoggedDatesInRange(start: LocalDateTime, end: LocalDateTime): Flow<List<LocalDate>>
@@ -61,7 +61,7 @@ interface DailyLogDao {
       AND isDeleted = 0
     ORDER BY createdAt DESC
 """)
-    fun getAllLogsForHabitId(habitId: Int): Flow<List<DailyLogEntity>>
+    fun getAllLogsForHabitId(habitId: Long): Flow<List<DailyLogEntity>>
 
 
 

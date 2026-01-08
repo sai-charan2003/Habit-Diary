@@ -10,7 +10,7 @@ sealed class DiaryScreenEvents {
 
     data object OnScrollToCurrentDate : DiaryScreenEvents()
 
-    data class OnNavigateToAddDailyLogScreen(val id : Int?) : DiaryScreenEvents()
+    data class OnNavigateToAddDailyLogScreen(val id : Long?) : DiaryScreenEvents()
 
     data class OnVisibleDateRangeChange(val startDate: LocalDate, val endDate: LocalDate) : DiaryScreenEvents()
 

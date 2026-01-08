@@ -36,13 +36,13 @@ interface HabitDao {
 
 
     @Query("SELECT * FROM habit_entity WHERE id = :id")
-    fun getHabitWithId(id: Int): HabitEntity
+    fun getHabitWithId(id: Long): HabitEntity
 
     @Query("UPDATE habit_entity SET isDeleted = 1 WHERE id = :id")
-    fun deleteHabit(id: Int)
+    fun deleteHabit(id: Long)
 
     @Query("SELECT * FROM habit_entity WHERE id = :id")
-    fun getHabitByIdFLow(id: Int): Flow<HabitEntity>
+    fun getHabitByIdFLow(id: Long): Flow<HabitEntity>
 
     @Query("SELECT * FROM habit_entity WHERE isDeleted = 0 ORDER BY createdAt DESC")
     fun getActiveHabitsFlow(): Flow<List<HabitEntity>>

@@ -93,17 +93,17 @@ object DeepLinkHandler {
 
         return when {
             pathSegments.firstOrNull() == ADDHABIT_URI-> {
-                val habitId = uri.getQueryParameter("id")?.toIntOrNull()
+                val habitId = uri.getQueryParameter("id")?.toLongOrNull()
                 listOf(Destinations.BottomBarNav, Destinations.AddHabit(habitId))
             }
             pathSegments.firstOrNull() == DAILYLOG_URI -> {
-                val logId = uri.getQueryParameter("logId")?.toIntOrNull()
+                val logId = uri.getQueryParameter("logId")?.toLongOrNull()
                 val triggerCamera =
                     uri.getQueryParameter("openCameraOnLaunch")?.toBoolean() ?: false
                 listOf(Destinations.BottomBarNav, Destinations.AddDailyLog(logId,null, triggerCamera))
             }
             pathSegments.firstOrNull() == HABIT_STATS_URI -> {
-                val habitId = uri.getQueryParameter("id")?.toIntOrNull() ?: return null
+                val habitId = uri.getQueryParameter("id")?.toLongOrNull() ?: return null
                 listOf(Destinations.BottomBarNav, Destinations.HabitStatsScreeNav(habitId))
             }
             else -> null

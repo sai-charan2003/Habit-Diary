@@ -1,10 +1,10 @@
 package com.charan.habitdiary.presentation.common.model
 
 data class DailyLogItemUIState(
-    val id : Int,
+    val id : Long,
     val logNote : String,
     val mediaPaths : List<String>,
     val createdAt : String,
-    val habitId : Int?,
+    val habitId : Long?,
     val habitName : String?
 )

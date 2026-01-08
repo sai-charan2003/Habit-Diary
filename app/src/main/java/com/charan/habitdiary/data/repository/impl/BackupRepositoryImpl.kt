@@ -195,7 +195,7 @@ class BackupRepositoryImpl(
                 val ids = habitLocalRepository.insertHabits(insertHabits)
 
                 insertHabits.forEachIndexed { index, habit ->
-                    val newId = ids[index].toInt()
+                    val newId = ids[index]
                     if (habit.isReminderEnabled) {
                         notificationScheduler.scheduleReminder(
                             habitId = newId,
@@ -209,13 +209,13 @@ class BackupRepositoryImpl(
 
             }
 
-            val newDailyLogIdMap = mutableMapOf<Int, Int>()
+            val newDailyLogIdMap = mutableMapOf<Long, Long>()
             if (importedDailyLogs.isNotEmpty()) {
                 val insertDailyLogs = importedDailyLogs.map { it.copy(id = 0) }
                 val newIds = habitLocalRepository.insertDailyLogs(insertDailyLogs)
 
                 importedDailyLogs.forEachIndexed { index, oldEntity ->
-                    newDailyLogIdMap[oldEntity.id] = newIds[index].toInt()
+                    newDailyLogIdMap[oldEntity.id] = newIds[index]
                 }
             }
             if (importedMediaEntities.isNotEmpty()) {

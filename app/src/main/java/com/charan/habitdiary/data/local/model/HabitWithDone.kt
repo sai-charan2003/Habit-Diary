@@ -9,6 +9,6 @@ import kotlinx.serialization.Serializable
 data class HabitWithDone(
     @Embedded val habitEntity: HabitEntity,
     val isDone: Boolean,
-    val logId : Int?,
+    val logId : Long?,
     val created : LocalDateTime?
 )

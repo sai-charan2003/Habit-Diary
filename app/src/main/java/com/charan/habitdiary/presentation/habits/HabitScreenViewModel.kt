@@ -2,7 +2,6 @@ package com.charan.habitdiary.presentation.habits
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.charan.habitdiary.data.local.entity.HabitEntity
 import com.charan.habitdiary.data.local.model.HabitWithDone
 import com.charan.habitdiary.data.model.enums.HabitSortType
 import com.charan.habitdiary.data.repository.DataStoreRepository

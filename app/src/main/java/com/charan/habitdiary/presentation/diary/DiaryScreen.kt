@@ -52,7 +52,7 @@ import kotlin.time.ExperimentalTime
 )
 @Composable
 fun DiaryScreen(
-    onNavigateToDailyLogScreen : (id : Int?,date : LocalDate?) -> Unit,
+    onNavigateToDailyLogScreen : (id : Long?,date : LocalDate?) -> Unit,
     onImageOpen  : (allImages : List<String>, currentImage : String) -> Unit,
 ) {
     val viewModel = hiltViewModel<DiaryScreenViewModel>()

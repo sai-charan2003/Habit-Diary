@@ -25,7 +25,7 @@ class NotificationScheduler(
         context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     @OptIn(ExperimentalTime::class)
     fun scheduleReminder(
-        habitId: Int,
+        habitId: Long,
         time: LocalTime?,
         frequency: List<DayOfWeek>,
         isReminderEnabled: Boolean = false,
@@ -94,7 +94,7 @@ class NotificationScheduler(
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            habitId,
+            habitId.toInt(),
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -108,13 +108,13 @@ class NotificationScheduler(
 
 
     fun cancelReminder(
-        habitId : Int
+        habitId : Long
     ) {
 
         val intent = Intent(context, NotificationReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            habitId,
+            habitId.toInt(),
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

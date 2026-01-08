@@ -20,10 +20,10 @@ sealed class Destinations : NavKey {
     @Serializable
     data object BottomBarNav : Destinations()
     @Serializable
-    data class AddHabit(val id : Int?) : Destinations()
+    data class AddHabit(val id : Long?) : Destinations()
 
     @Serializable
-    data class AddDailyLog(val id : Int?, val date : LocalDate?,val openCameraOnLaunch : Boolean = false) : Destinations()
+    data class AddDailyLog(val id : Long?, val date : LocalDate?,val openCameraOnLaunch : Boolean = false) : Destinations()
 
     @Serializable
     data object LibrariesScreenNav : Destinations()
@@ -35,6 +35,6 @@ sealed class Destinations : NavKey {
     data class ImageViewerScreenNav(val allImagePaths : List<String>,val currentImage : String) : Destinations()
 
     @Serializable
-    data class HabitStatsScreeNav(val habitId : Int) : Destinations()
+    data class HabitStatsScreeNav(val habitId : Long) : Destinations()
 
 }
