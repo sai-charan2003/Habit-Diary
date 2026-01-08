@@ -46,7 +46,7 @@ import kotlinx.datetime.LocalDate
 @Composable
 fun BottomBarNavigation(
     onAddHabitNav : (Long?) -> Unit,
-    onAddDailyLogNav : (Long : Long? , date : LocalDate?) -> Unit,
+    onAddDailyLogNav : (id : Long? , date : LocalDate?) -> Unit,
     onNavigateToAboutLibraries : () -> Unit,
     onImageOpen : (allImage : List<String>,currentImage : String) -> Unit,
     onHabitStats : (id : Long) -> Unit,
