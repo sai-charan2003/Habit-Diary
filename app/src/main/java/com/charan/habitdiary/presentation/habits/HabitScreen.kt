@@ -41,9 +41,9 @@ import java.time.format.TextStyle
 )
 @Composable
 fun HabitScreen(
-    onHabitDetails : (id : Int?) -> Unit,
-    onAddDailyLog : (id : Int?) -> Unit,
-    onHabitStats : (id : Int)-> Unit
+    onHabitDetails : (id : Long?) -> Unit,
+    onAddDailyLog : (id : Long?) -> Unit,
+    onHabitStats : (id : Long)-> Unit
 
     ) {
     val viewModel = hiltViewModel<HabitScreenViewModel>()

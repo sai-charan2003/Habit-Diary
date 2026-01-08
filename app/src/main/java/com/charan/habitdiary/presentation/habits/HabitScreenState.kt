@@ -15,12 +15,12 @@ data class HabitScreenState(
 )
 
 data class HabitItemUIState(
-    val id : Int,
+    val id : Long,
     val habitName : String,
     val habitDescription : String,
     val habitTime : String,
     val isDone : Boolean = false,
-    val logId  : Int?,
+    val logId  : Long?,
     val habitReminderTime : String?,
     val habitFrequency : List<DayOfWeek> = emptyList()
 )

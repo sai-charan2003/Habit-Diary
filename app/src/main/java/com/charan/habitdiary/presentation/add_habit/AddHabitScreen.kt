@@ -43,7 +43,7 @@ import kotlinx.datetime.LocalTime
 @Composable
 fun AddHabitScreen(
     onNavigateBack : () -> Unit ,
-    habitId : Int? = null
+    habitId : Long? = null
 ) {
     val viewModel = hiltViewModel<AddHabitScreenViewModel>()
     val state by viewModel.state.collectAsState()

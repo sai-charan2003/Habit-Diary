@@ -14,10 +14,10 @@ import kotlinx.serialization.Serializable
 @Entity(tableName = "daily_log_entity")
 data class DailyLogEntity(
     @PrimaryKey(autoGenerate = true)
-    val id : Int = 0,
+    val id : Long = 0,
     val logNote : String,
     val imagePath : String,
     val createdAt : LocalDateTime,
     val isDeleted : Boolean = false,
-    val habitId : Int? = null
+    val habitId : Long? = null
 )

@@ -25,7 +25,7 @@ import kotlinx.serialization.Serializable
 data class DailyLogMediaEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val dailyLogId: Int,
+    val dailyLogId: Long,
     val mediaPath: String,
     val isDeleted : Boolean = false
 )

@@ -1,6 +1,5 @@
 package com.charan.habitdiary.notification
 
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -27,8 +26,8 @@ class NotificationReceiver : BroadcastReceiver() {
             try {
                 when(intent?.action){
                     IntentActions.SHOW_NOTIFICATION.name -> {
-                        val habitId = intent?.getIntExtra("habitId", -1) ?: -1
-                        if (habitId != -1 && appContext != null) {
+                        val habitId = intent?.getLongExtra("habitId", -1) ?: -1
+                        if (habitId != -1L && appContext != null) {
                             val habit = habitLocalRepository.getHabitWithId(habitId)
                             val habitLog = habitLocalRepository.getLoggedHabitFromIdForRange(habitId)
                             if(habitLog == null){
@@ -48,8 +47,8 @@ class NotificationReceiver : BroadcastReceiver() {
                     }
 
                     IntentActions.MARK_AS_DONE.name -> {
-                        val habitId = intent?.getIntExtra("habitId", -1) ?: -1
-                        if (habitId != -1) {
+                        val habitId = intent?.getLongExtra("habitId", -1) ?: -1
+                        if (habitId != -1L) {
                             val habit = habitLocalRepository.getHabitWithId(habitId)
                             val habitLog = habitLocalRepository.getLoggedHabitFromIdForRange(habitId)
                             if(habitLog == null){

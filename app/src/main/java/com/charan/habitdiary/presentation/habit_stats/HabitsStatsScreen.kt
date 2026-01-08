@@ -53,10 +53,10 @@ import com.kizitonwose.calendar.core.plusMonths
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HabitStatsScreen(
-    habitId : Int,
-    onAddLog : (habitId : Int)-> Unit,
+    habitId : Long,
+    onAddLog : (habitId : Long)-> Unit,
     onNavigateBack : () ->Unit,
-    onEditHabit : (habitId : Int) -> Unit
+    onEditHabit : (habitId : Long) -> Unit
 ) {
     val viewModel = hiltViewModel<HabitStatsViewModel, HabitStatsViewModel.Factory>(
         creationCallback = { factory ->

@@ -13,5 +13,5 @@ sealed class DailyLogEffect {
 
     data object OnTakeVideo : DailyLogEffect()
 
-    data class OnNavigateToHabitScreen(val habitId : Int) : DailyLogEffect()
+    data class OnNavigateToHabitScreen(val habitId : Long) : DailyLogEffect()
 }

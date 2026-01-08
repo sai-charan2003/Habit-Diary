@@ -11,7 +11,7 @@ import kotlinx.datetime.YearMonth
 import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 data class HabitStatState(
-    val habitId : Int = -1,
+    val habitId : Long = -1,
     val habitName : String = "",
     val habitDescription : String = "",
     val habitFrequency : List<DayOfWeek> = emptyList(),

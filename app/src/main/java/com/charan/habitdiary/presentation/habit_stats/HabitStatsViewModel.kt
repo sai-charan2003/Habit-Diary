@@ -1,9 +1,7 @@
 package com.charan.habitdiary.presentation.habit_stats
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.charan.habitdiary.data.local.entity.HabitEntity
 import com.charan.habitdiary.data.mapper.toDailyLogEntity
 import com.charan.habitdiary.data.repository.HabitLocalRepository
 import com.charan.habitdiary.utils.DateUtil
@@ -25,17 +23,17 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.atTime
-import javax.inject.Inject
+
 @HiltViewModel(assistedFactory = HabitStatsViewModel.Factory::class)
 class HabitStatsViewModel @AssistedInject constructor(
-    @Assisted val habitId : Int,
+    @Assisted val habitId : Long,
     private val habitLocalRepository: HabitLocalRepository
 
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(habitId : Int): HabitStatsViewModel
+        fun create(habitId : Long): HabitStatsViewModel
     }
 
     private val _state = MutableStateFlow(HabitStatState())

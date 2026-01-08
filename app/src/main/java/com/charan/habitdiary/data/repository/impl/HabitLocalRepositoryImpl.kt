@@ -33,7 +33,7 @@ class HabitLocalRepositoryImpl(
     ) {
         val id = dailyLogDao.upsetDailyLog(dailyLog)
         if(mediaEntity.isNotEmpty()){
-            val mediaEntity = mediaEntity.map { it.copy(dailyLogId = id.toInt()) }
+            val mediaEntity = mediaEntity.map { it.copy(dailyLogId = id) }
             dailyLogMediaDao.upsertMedia(mediaEntity)
         }
     }
@@ -91,24 +91,24 @@ class HabitLocalRepositoryImpl(
     }
 
 
-    override fun getDailyLogWithId(id: Int): DailyLogEntity {
+    override fun getDailyLogWithId(id: Long): DailyLogEntity {
         return dailyLogDao.getDailyLogWithId(id)
     }
 
-    override fun getDailyLogsWithHabitWithId(id: Int): DailyLogWithHabit {
+    override fun getDailyLogsWithHabitWithId(id: Long): DailyLogWithHabit {
         return dailyLogDao.getDailyLogsWithHabitWithId(id)
     }
 
-    override fun getHabitWithId(id: Int): HabitEntity {
+    override fun getHabitWithId(id: Long): HabitEntity {
         return habitDao.getHabitWithId(id)
     }
 
-    override fun deleteDailyLog(id: Int) {
+    override fun deleteDailyLog(id: Long) {
         dailyLogDao.deleteDailyLog(id)
 
     }
 
-    override fun deleteHabit(id: Int) {
+    override fun deleteHabit(id: Long) {
         habitDao.deleteHabit(id)
     }
 
@@ -117,7 +117,7 @@ class HabitLocalRepositoryImpl(
     }
 
     override fun getLoggedHabitFromIdForRange(
-        habitId: Int,
+        habitId: Long,
         startOfDay: LocalDateTime,
         endOfDay: LocalDateTime
     ): DailyLogEntity? {
@@ -146,7 +146,7 @@ class HabitLocalRepositoryImpl(
         return habitDao.insertHabits(habits)
     }
 
-    override fun getAllLogsWithHabitId(habitId: Int): Flow<List<DailyLogEntity>> {
+    override fun getAllLogsWithHabitId(habitId: Long): Flow<List<DailyLogEntity>> {
         return dailyLogDao.getAllLogsForHabitId(habitId)
     }
 
@@ -168,7 +168,7 @@ class HabitLocalRepositoryImpl(
         }
     }
 
-    override fun getHabitWithIdFlow(id: Int): Flow<HabitEntity> {
+    override fun getHabitWithIdFlow(id: Long): Flow<HabitEntity> {
         return habitDao.getHabitByIdFLow(id)
     }
 }

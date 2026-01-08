@@ -60,10 +60,10 @@ import kotlinx.datetime.LocalDate
 @Composable
 fun AddDailyLogScreen(
     onNavigateBack : () -> Unit,
-    logId : Int? = null,
+    logId : Long? = null,
     date : LocalDate?= null,
     openCameraOnLaunch : Boolean = false,
-    onHabitOpen : (habitId : Int) -> Unit,
+    onHabitOpen : (habitId : Long) -> Unit,
     onImageOpen : (allImages : List<String>, currentImage : String) -> Unit,
 ) {
     val viewModel = hiltViewModel<DailyLogViewModel, DailyLogViewModel.Factory>(

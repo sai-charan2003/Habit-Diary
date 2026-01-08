@@ -38,7 +38,7 @@ class NotificationHelper(private val context: Context) {
     fun showNotification(
         title: String,
         message: String,
-        habitId : Int
+        habitId : Long
     ) {
         val markAsDoneIntent = Intent(context, NotificationReceiver::class.java).apply {
             action = IntentActions.MARK_AS_DONE.name
@@ -46,7 +46,7 @@ class NotificationHelper(private val context: Context) {
         }
         val markAsDoneActionIntent = PendingIntent.getBroadcast(
             context,
-            habitId,
+            habitId.toInt(),
             markAsDoneIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -85,10 +85,10 @@ class NotificationHelper(private val context: Context) {
             )
             .build()
 
-        notificationManager.notify(habitId, notification)
+        notificationManager.notify(habitId.toInt(), notification)
     }
 
-    fun cancelNotification(habitId : Int){
-        notificationManager.cancel(habitId)
+    fun cancelNotification(habitId : Long){
+        notificationManager.cancel(habitId.toInt())
     }
 }

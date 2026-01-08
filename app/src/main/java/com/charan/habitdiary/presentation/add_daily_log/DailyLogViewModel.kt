@@ -31,7 +31,7 @@ import kotlinx.datetime.LocalTime
 
 @HiltViewModel(assistedFactory = DailyLogViewModel.Factory::class)
 class DailyLogViewModel @AssistedInject constructor(
-    @Assisted val logId : Int?,
+    @Assisted val logId : Long?,
     @Assisted val date : LocalDate?,
     @Assisted val openCameraOnLaunch : Boolean?,
     private val habitLocalRepository: HabitLocalRepository,
@@ -42,7 +42,7 @@ class DailyLogViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(logId: Int?, date : LocalDate?, openCameraOnLaunch : Boolean?) : DailyLogViewModel
+        fun create(logId: Long?, date : LocalDate?, openCameraOnLaunch : Boolean?) : DailyLogViewModel
     }
 
 
@@ -199,7 +199,7 @@ class DailyLogViewModel @AssistedInject constructor(
         _state.update { it.copy(showDeleteDialog = visible) }
     }
 
-    private fun initializeLog(logId: Int?) = viewModelScope.launch(Dispatchers.IO) {
+    private fun initializeLog(logId: Long?) = viewModelScope.launch(Dispatchers.IO) {
         if (logId != null) {
             val log = habitLocalRepository.getDailyLogsWithHabitWithId(logId)
             _state.update {

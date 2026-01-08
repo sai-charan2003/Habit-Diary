@@ -35,15 +35,15 @@ interface HabitLocalRepository {
 
     fun getActiveHabits(): Flow<List<HabitWithDone>>
 
-    fun getDailyLogWithId(id: Int): DailyLogEntity
+    fun getDailyLogWithId(id: Long): DailyLogEntity
 
-    fun getDailyLogsWithHabitWithId(id: Int): DailyLogWithHabit
+    fun getDailyLogsWithHabitWithId(id: Long): DailyLogWithHabit
 
-    fun getHabitWithId(id: Int): HabitEntity
+    fun getHabitWithId(id: Long): HabitEntity
 
-    fun deleteDailyLog(id: Int)
+    fun deleteDailyLog(id: Long)
 
-    fun deleteHabit(id: Int)
+    fun deleteHabit(id: Long)
 
     fun getLoggedHabitIdsForRange(
         startOfDay: LocalDateTime = DateUtil.todayStartOfDay(),
@@ -51,7 +51,7 @@ interface HabitLocalRepository {
     ): Flow<List<DailyLogEntity>>
 
     fun getLoggedHabitFromIdForRange(
-        habitId: Int,
+        habitId: Long,
         startOfDay: LocalDateTime = DateUtil.todayStartOfDay(),
         endOfDay: LocalDateTime = DateUtil.todayEndOfDay()
     ): DailyLogEntity?
@@ -70,9 +70,9 @@ interface HabitLocalRepository {
         end: LocalDateTime
     ): Flow<List<LocalDate>>
 
-    fun getAllLogsWithHabitId(habitId: Int): Flow<List<DailyLogEntity>>
+    fun getAllLogsWithHabitId(habitId: Long): Flow<List<DailyLogEntity>>
 
     fun getTodayHabits(currentDayOfWeek: DayOfWeek = DateUtil.getCurrentDayOfWeek()): Flow<List<HabitWithDone>>
 
-    fun getHabitWithIdFlow(id: Int): Flow<HabitEntity>
+    fun getHabitWithIdFlow(id: Long): Flow<HabitEntity>
 }

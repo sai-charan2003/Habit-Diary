@@ -6,5 +6,5 @@ sealed class DiaryScreenEffect {
 
     data object ScrollToSelectedDate : DiaryScreenEffect()
 
-    data class OnNavigateToAddDailyLogScreen(val id : Int?) : DiaryScreenEffect()
+    data class OnNavigateToAddDailyLogScreen(val id : Long?) : DiaryScreenEffect()
 }

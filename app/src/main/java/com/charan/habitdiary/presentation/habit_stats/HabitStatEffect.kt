@@ -7,9 +7,9 @@ sealed class HabitStatEffect {
 
     data object AnimateToPreviousMonth : HabitStatEffect()
 
-    data class OnNavigateToAddLogScreen(val logId : Int) : HabitStatEffect()
+    data class OnNavigateToAddLogScreen(val logId : Long) : HabitStatEffect()
 
-    data class OnNavigateToEditHabitScreen(val habitId : Int) : HabitStatEffect()
+    data class OnNavigateToEditHabitScreen(val habitId : Long) : HabitStatEffect()
 
 
 }
