@@ -48,6 +48,7 @@ import com.charan.habitdiary.presentation.common.components.DeleteWarningDialog
 import com.charan.habitdiary.presentation.common.components.RationaleDialog
 import com.charan.habitdiary.presentation.common.components.SelectDateDialog
 import com.charan.habitdiary.presentation.common.components.SelectTimeDialog
+import com.charan.habitdiary.utils.isVideo
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
@@ -117,6 +118,7 @@ fun AddDailyLogScreen(
     }
 
     if(state.showImageDeleteOption) {
+        val mediaTypeIsVideo = state.selectedMediaItemForDelete?.mediaPath?.isVideo() == true
         DeleteWarningDialog(
             onConfirm = {
                 viewModel.onEvent(DailyLogEvent.OnConfirmMediaItemDelete(true))
@@ -124,8 +126,12 @@ fun AddDailyLogScreen(
             onDismiss = {
                 viewModel.onEvent(DailyLogEvent.OnConfirmMediaItemDelete(false))
             },
-            title = stringResource(R.string.delete_image),
-            message = stringResource(R.string.delete_image_confirmation_description)
+            title = if(mediaTypeIsVideo) stringResource(
+                R.string.delete_video
+            ) else stringResource(R.string.delete_image),
+            message = if(mediaTypeIsVideo) stringResource(
+                R.string.delete_video_confirmation_description
+            ) else stringResource(R.string.delete_image_confirmation_description)
         )
     }
 
