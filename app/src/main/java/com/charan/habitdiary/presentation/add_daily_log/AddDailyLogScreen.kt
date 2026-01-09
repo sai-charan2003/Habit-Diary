@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -48,6 +49,8 @@ import com.charan.habitdiary.presentation.common.components.DeleteWarningDialog
 import com.charan.habitdiary.presentation.common.components.RationaleDialog
 import com.charan.habitdiary.presentation.common.components.SelectDateDialog
 import com.charan.habitdiary.presentation.common.components.SelectTimeDialog
+import com.charan.habitdiary.utils.isVideo
+import com.charan.habitdiary.utils.showToast
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
@@ -71,6 +74,7 @@ fun AddDailyLogScreen(
             factory.create(logId,date,openCameraOnLaunch)
         }
     )
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val imagePickOptionsBottomSheetState = rememberModalBottomSheetState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -117,6 +121,7 @@ fun AddDailyLogScreen(
     }
 
     if(state.showImageDeleteOption) {
+        val mediaTypeIsVideo = state.selectedMediaItemForDelete?.mediaPath?.isVideo() == true
         DeleteWarningDialog(
             onConfirm = {
                 viewModel.onEvent(DailyLogEvent.OnConfirmMediaItemDelete(true))
@@ -124,8 +129,12 @@ fun AddDailyLogScreen(
             onDismiss = {
                 viewModel.onEvent(DailyLogEvent.OnConfirmMediaItemDelete(false))
             },
-            title = stringResource(R.string.delete_image),
-            message = stringResource(R.string.delete_image_confirmation_description)
+            title = if(mediaTypeIsVideo) stringResource(
+                R.string.delete_video
+            ) else stringResource(R.string.delete_image),
+            message = if(mediaTypeIsVideo) stringResource(
+                R.string.delete_video_confirmation_description
+            ) else stringResource(R.string.delete_image_confirmation_description)
         )
     }
 
@@ -172,7 +181,6 @@ fun AddDailyLogScreen(
                 }
 
                 is DailyLogEffect.OnTakePhoto -> {
-                    Log.d("TAG", "AddDailyLogScreen: take")
                     captureImage.launch(state.tempImagePath.toUri())
                 }
 
@@ -191,6 +199,11 @@ fun AddDailyLogScreen(
 
                 is DailyLogEffect.OnNavigateToHabitScreen -> {
                     onHabitOpen(it.habitId)
+                }
+
+                is DailyLogEffect.ShowToast -> {
+                    context.showToast(it.message)
+
                 }
             }
         }
@@ -270,6 +283,11 @@ fun AddDailyLogScreen(
             )
         },
         bottomBar = {
+            val hasMedia = state.dailyLogItemDetails.mediaItems.any { !it.isDeleted }
+            val hasNotes = state.dailyLogItemDetails.notesText.isNotBlank()
+            val hasHabit = state.dailyLogItemDetails.habitId != null
+            val canEditContent = (hasMedia || hasNotes) && !state.isLoading
+
             ActionButtonRow(
                 saveButtonText = stringResource(R.string.save_log),
                 showDeleteButton = state.isEdit,
@@ -279,9 +297,9 @@ fun AddDailyLogScreen(
                 onDelete = {
                     viewModel.onEvent(DailyLogEvent.OnToggleDeleteDialog(true))
                 },
-                isSaveEnabled = (state.dailyLogItemDetails.mediaItems.isNotEmpty()
-                        || state.dailyLogItemDetails.notesText.isNotEmpty()) && !state.isLoading
+                isSaveEnabled = canEditContent || hasHabit
             )
+
         }
     ) { innerPadding->
         LazyColumn(

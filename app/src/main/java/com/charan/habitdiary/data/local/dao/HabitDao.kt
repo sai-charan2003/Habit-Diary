@@ -27,7 +27,7 @@ interface HabitDao {
     SELECT * FROM habit_entity
     WHERE isDeleted = 0
     AND habitFrequency LIKE '%' || :currentDayOfWeek || '%'
-    ORDER BY createdAt DESC
+    ORDER BY habitTime
 """)
     fun getTodayHabits(
         currentDayOfWeek: DayOfWeek
@@ -44,7 +44,7 @@ interface HabitDao {
     @Query("SELECT * FROM habit_entity WHERE id = :id")
     fun getHabitByIdFLow(id: Long): Flow<HabitEntity>
 
-    @Query("SELECT * FROM habit_entity WHERE isDeleted = 0 ORDER BY createdAt DESC")
+    @Query("SELECT * FROM habit_entity WHERE isDeleted = 0 ORDER BY habitTime")
     fun getActiveHabitsFlow(): Flow<List<HabitEntity>>
 
 

@@ -95,7 +95,7 @@ class AddHabitScreenViewModel @Inject constructor(
             }
 
             AddHabitEvent.OnNavigateBack -> {
-                sendEffect(AddHabitEffect.OnNavigateBack)
+                sendEffect(AddHabitEffect.OnNavigateBack())
             }
 
             AddHabitEvent.OnDeleteHabit -> {
@@ -116,7 +116,10 @@ class AddHabitScreenViewModel @Inject constructor(
         habitLocalRepository.deleteHabit(
             _state.value.habitId ?: return@launch
         )
-        sendEffect(AddHabitEffect.OnNavigateBack)
+        _state.update {
+            it.copy(showDeleteDialog = false)
+        }
+        sendEffect(AddHabitEffect.OnNavigateBack(true))
     }
 
     private fun togglePermissionRationale(showRationale: Boolean) {
@@ -207,7 +210,7 @@ class AddHabitScreenViewModel @Inject constructor(
             isReminderEnabled = _state.value.isReminderEnabled,
             frequency = _state.value.habitFrequency,
         )
-        sendEffect(AddHabitEffect.OnNavigateBack)
+        sendEffect(AddHabitEffect.OnNavigateBack())
     }
 
     private fun observeTimeChanges() = viewModelScope.launch(Dispatchers.IO){

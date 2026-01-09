@@ -17,7 +17,8 @@ data class DailyLogState(
     val selectedMediaItemForDelete : DailyLogMediaItem? = null,
     val showImageDeleteOption : Boolean = false,
     val isLoading : Boolean = false,
-    val pendingCameraAction : PendingCameraAction? = null
+    val pendingCameraAction : PendingCameraAction? = null,
+    val isHabitDeleted : Boolean = false
 )
 
 enum class PendingCameraAction {

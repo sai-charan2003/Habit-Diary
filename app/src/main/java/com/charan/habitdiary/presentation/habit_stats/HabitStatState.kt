@@ -16,6 +16,7 @@ data class HabitStatState(
     val habitDescription : String = "",
     val habitFrequency : List<DayOfWeek> = emptyList(),
     val habitTime : LocalTime? = null,
+    val isHabitDeleted : Boolean = false,
     val currentStreak : Int = 0,
     val bestStreak : Int = 0,
     val totalCompletions : Int = 0,

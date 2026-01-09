@@ -53,7 +53,7 @@ fun RootNavigation(
                             backStack.add(Destinations.AddHabit(id = it))
                         },
                         onAddDailyLogNav = { id, date->
-                            backStack.add(Destinations.AddDailyLog(id = id, date))
+                            backStack.add(Destinations.AddDailyLog(id = id, date = date))
                         },
                         onNavigateToAboutLibraries = {
                             backStack.add(Destinations.LibrariesScreenNav)
@@ -70,7 +70,10 @@ fun RootNavigation(
                 }
                 is Destinations.AddHabit -> NavEntry(key){
                     AddHabitScreen(
-                        onNavigateBack = {
+                        onNavigateBack = { isDeleted ->
+                            if (isDeleted) {
+                                backStack.removeIf { it is Destinations.HabitStatsScreeNav }
+                            }
                             backStack.removeLastOrNull()
                         },
                         key.id
@@ -91,6 +94,7 @@ fun RootNavigation(
                         onHabitOpen = {
                             backStack.add(Destinations.HabitStatsScreeNav(it))
                         },
+                        date = key.date,
                         openCameraOnLaunch = key.openCameraOnLaunch
                     )
                 }

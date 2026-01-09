@@ -42,7 +42,7 @@ import kotlinx.datetime.LocalTime
 )
 @Composable
 fun AddHabitScreen(
-    onNavigateBack : () -> Unit ,
+    onNavigateBack : (isHabitDeleted : Boolean) -> Unit ,
     habitId : Long? = null
 ) {
     val viewModel = hiltViewModel<AddHabitScreenViewModel>()
@@ -59,8 +59,8 @@ fun AddHabitScreen(
         viewModel.onEvent(AddHabitEvent.InitializeHabit(habitId))
         viewModel.effect.collectLatest { effect ->
             when(effect){
-                AddHabitEffect.OnNavigateBack -> {
-                    onNavigateBack()
+                is AddHabitEffect.OnNavigateBack -> {
+                    onNavigateBack(effect.isHabitDeleted)
 
                 }
                 AddHabitEffect.RequestNotificationPermission -> {
