@@ -116,6 +116,9 @@ class AddHabitScreenViewModel @Inject constructor(
         habitLocalRepository.deleteHabit(
             _state.value.habitId ?: return@launch
         )
+        _state.update {
+            it.copy(showDeleteDialog = false)
+        }
         sendEffect(AddHabitEffect.OnNavigateBack)
     }
 

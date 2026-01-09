@@ -394,6 +394,9 @@ class DailyLogViewModel @AssistedInject constructor(
     private fun deleteDailyLog() = viewModelScope.launch(Dispatchers.IO) {
         val id = _state.value.dailyLogItemDetails.id ?: return@launch
         habitLocalRepository.deleteDailyLog(id)
+        _state.update {
+            it.copy(showDeleteDialog = false)
+        }
         sendEffect(DailyLogEffect.OnNavigateBack)
     }
 
