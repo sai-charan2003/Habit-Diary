@@ -270,6 +270,11 @@ fun AddDailyLogScreen(
             )
         },
         bottomBar = {
+            val hasMedia = state.dailyLogItemDetails.mediaItems.any { !it.isDeleted }
+            val hasNotes = state.dailyLogItemDetails.notesText.isNotBlank()
+            val hasHabit = state.dailyLogItemDetails.habitId != null
+            val canEditContent = (hasMedia || hasNotes) && !state.isLoading
+
             ActionButtonRow(
                 saveButtonText = stringResource(R.string.save_log),
                 showDeleteButton = state.isEdit,
@@ -279,9 +284,9 @@ fun AddDailyLogScreen(
                 onDelete = {
                     viewModel.onEvent(DailyLogEvent.OnToggleDeleteDialog(true))
                 },
-                isSaveEnabled = (state.dailyLogItemDetails.mediaItems.isNotEmpty()
-                        || state.dailyLogItemDetails.notesText.isNotEmpty()) && !state.isLoading
+                isSaveEnabled = canEditContent || hasHabit
             )
+
         }
     ) { innerPadding->
         LazyColumn(

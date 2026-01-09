@@ -32,7 +32,7 @@ interface DailyLogDao {
     fun getAllDailyLogs(): List<DailyLogEntity>
 
     @Transaction
-    @Query("SELECT * FROM daily_log_entity WHERE createdAt >= :startOfDay and createdAt <= :endOfDay and isDeleted = 0 ORDER BY createdAt DESC")
+    @Query("SELECT * FROM daily_log_entity WHERE createdAt >= :startOfDay and createdAt <= :endOfDay and isDeleted = 0 ORDER BY createdAt")
     fun getDailyLogsInRange(startOfDay: LocalDateTime , endOfDay : LocalDateTime): Flow<List<DailyLogWithHabit>>
 
     @Query("SELECT * FROM daily_log_entity WHERE id = :id")
