@@ -70,7 +70,10 @@ fun RootNavigation(
                 }
                 is Destinations.AddHabit -> NavEntry(key){
                     AddHabitScreen(
-                        onNavigateBack = {
+                        onNavigateBack = { isDeleted ->
+                            if (isDeleted) {
+                                backStack.removeIf { it is Destinations.HabitStatsScreeNav }
+                            }
                             backStack.removeLastOrNull()
                         },
                         key.id

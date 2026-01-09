@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
@@ -49,6 +50,7 @@ import com.charan.habitdiary.presentation.common.components.RationaleDialog
 import com.charan.habitdiary.presentation.common.components.SelectDateDialog
 import com.charan.habitdiary.presentation.common.components.SelectTimeDialog
 import com.charan.habitdiary.utils.isVideo
+import com.charan.habitdiary.utils.showToast
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
@@ -72,6 +74,7 @@ fun AddDailyLogScreen(
             factory.create(logId,date,openCameraOnLaunch)
         }
     )
+    val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val imagePickOptionsBottomSheetState = rememberModalBottomSheetState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -178,7 +181,6 @@ fun AddDailyLogScreen(
                 }
 
                 is DailyLogEffect.OnTakePhoto -> {
-                    Log.d("TAG", "AddDailyLogScreen: take")
                     captureImage.launch(state.tempImagePath.toUri())
                 }
 
@@ -197,6 +199,11 @@ fun AddDailyLogScreen(
 
                 is DailyLogEffect.OnNavigateToHabitScreen -> {
                     onHabitOpen(it.habitId)
+                }
+
+                is DailyLogEffect.ShowToast -> {
+                    context.showToast(it.message)
+
                 }
             }
         }

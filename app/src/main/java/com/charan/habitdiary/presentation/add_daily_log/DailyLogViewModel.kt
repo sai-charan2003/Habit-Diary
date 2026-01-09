@@ -5,9 +5,11 @@ import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.charan.habitdiary.R
 import com.charan.habitdiary.data.repository.DataStoreRepository
 import com.charan.habitdiary.data.repository.FileRepository
 import com.charan.habitdiary.data.repository.HabitLocalRepository
+import com.charan.habitdiary.presentation.common.model.ToastMessage
 import com.charan.habitdiary.presentation.mapper.toDailyLogEntity
 import com.charan.habitdiary.presentation.mapper.toDailyLogItemDetails
 import com.charan.habitdiary.presentation.mapper.toDailyLogMediaEntityList
@@ -128,8 +130,17 @@ class DailyLogViewModel @AssistedInject constructor(
             }
 
             is DailyLogEvent.OnNavigateToHabitScreen ->{
-                sendEffect(DailyLogEffect.OnNavigateToHabitScreen(_state.value.dailyLogItemDetails.habitId ?: return))
+                handleNavigationToHabitScreen()
             }
+        }
+    }
+
+    private fun handleNavigationToHabitScreen(){
+        if(_state.value.isHabitDeleted){
+            sendEffect(DailyLogEffect.ShowToast(ToastMessage.Res(R.string.habit_deleted_message)))
+        } else {
+            val habitId = _state.value.dailyLogItemDetails.habitId ?: return
+            sendEffect(DailyLogEffect.OnNavigateToHabitScreen(habitId))
         }
     }
 
@@ -205,7 +216,8 @@ class DailyLogViewModel @AssistedInject constructor(
             _state.update {
                 it.copy(
                     dailyLogItemDetails = log.toDailyLogItemDetails(),
-                    isEdit = true
+                    isEdit = true,
+                    isHabitDeleted = log.habitEntity?.isDeleted == true
                 )
             }
         } else {

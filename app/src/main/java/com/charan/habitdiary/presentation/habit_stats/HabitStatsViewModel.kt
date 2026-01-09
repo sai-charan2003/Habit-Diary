@@ -129,6 +129,7 @@ class HabitStatsViewModel @AssistedInject constructor(
                 state.copy(
                     habitId = habitId,
                     habitName = habit.habitName,
+                    isHabitDeleted = habit.isDeleted,
                     habitFrequency = habit.habitFrequency,
                     habitDescription = habit.habitDescription,
                     habitTime = habit.habitTime,

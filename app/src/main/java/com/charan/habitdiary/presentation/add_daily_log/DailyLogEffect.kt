@@ -1,5 +1,7 @@
 package com.charan.habitdiary.presentation.add_daily_log
 
+import com.charan.habitdiary.presentation.common.model.ToastMessage
+
 
 sealed class DailyLogEffect {
 
@@ -14,4 +16,7 @@ sealed class DailyLogEffect {
     data object OnTakeVideo : DailyLogEffect()
 
     data class OnNavigateToHabitScreen(val habitId : Long) : DailyLogEffect()
+
+    data class ShowToast(val message : ToastMessage) : DailyLogEffect()
+
 }
