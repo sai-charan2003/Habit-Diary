@@ -25,7 +25,6 @@
             android:action="android.intent.action.VIEW"
             android:targetClass="com.charan.habitdiary.MainActivity"
             android:data="habitdiary://app/add-habit" />
-        />
         <categories android:name="android.shortcut.conversation" />
         <capability-binding android:key="actions.intent.CREATE_MESSAGE" />
     </shortcut>

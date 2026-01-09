@@ -166,15 +166,14 @@ class BackupRepositoryImpl(
                                 importedMediaEntities = Json.decodeFromString(json)
                             }
                         }
-
-
-                        entryName.startsWith(HABIT_MEDIA_DIR) || entryName.startsWith(HABIT_IMAGES_DIR) -> {
+                        entryName.startsWith(HABIT_MEDIA_DIR) ||
+                                entryName.startsWith(HABIT_IMAGES_DIR) -> {
                             val targetDir = File(context.filesDir, HABIT_DIARY_MEDIA_DIR)
                             if (!targetDir.exists()) targetDir.mkdirs()
                             val originalFileName = File(entryName).name
-
-                            val extension = originalFileName.substringAfterLast('.', ".jpg")
-                            val newFileName = "MEDIA_${System.currentTimeMillis()}_${UUID.randomUUID()}.$extension"
+                            val extension = originalFileName.substringAfterLast('.', "jpg")
+                            val newFileName =
+                                "MEDIA_${System.currentTimeMillis()}_${UUID.randomUUID()}.$extension"
 
                             val newFile = File(targetDir, newFileName)
 
@@ -189,13 +188,17 @@ class BackupRepositoryImpl(
                     entry = zip.nextEntry
                 }
             }
-
+            val habitIdMap = mutableMapOf<Long, Long>()
             if (importedHabits.isNotEmpty()) {
                 val insertHabits = importedHabits.map { it.copy(id = 0) }
-                val ids = habitLocalRepository.insertHabits(insertHabits)
+                val newIds = habitLocalRepository.insertHabits(insertHabits)
+
+                importedHabits.forEachIndexed { index, oldHabit ->
+                    habitIdMap[oldHabit.id] = newIds[index]
+                }
 
                 insertHabits.forEachIndexed { index, habit ->
-                    val newId = ids[index]
+                    val newId = newIds[index]
                     if (habit.isReminderEnabled) {
                         notificationScheduler.scheduleReminder(
                             habitId = newId,
@@ -205,33 +208,35 @@ class BackupRepositoryImpl(
                         )
                     }
                 }
-
-
             }
 
             val newDailyLogIdMap = mutableMapOf<Long, Long>()
             if (importedDailyLogs.isNotEmpty()) {
-                val insertDailyLogs = importedDailyLogs.map { it.copy(id = 0) }
+                val insertDailyLogs = importedDailyLogs.mapNotNull { oldLog ->
+                    val newHabitId = habitIdMap[oldLog.habitId]
+                    oldLog.copy(
+                        id = 0,
+                        habitId = newHabitId
+                    )
+                }
+
                 val newIds = habitLocalRepository.insertDailyLogs(insertDailyLogs)
 
-                importedDailyLogs.forEachIndexed { index, oldEntity ->
-                    newDailyLogIdMap[oldEntity.id] = newIds[index]
+                insertDailyLogs.forEachIndexed { index, newLog ->
+                    newDailyLogIdMap[importedDailyLogs[index].id] = newIds[index]
                 }
             }
             if (importedMediaEntities.isNotEmpty()) {
-                val finalMediaEntities = importedMediaEntities.mapNotNull { mediaEntity ->
-                    val newLogId = newDailyLogIdMap[mediaEntity.dailyLogId] ?: return@mapNotNull null
-                    val oldFileName = File(mediaEntity.mediaPath).name
-                    val newPath = fileNameMapping[oldFileName]
-                    if (newPath != null) {
-                        mediaEntity.copy(
-                            id = 0,
-                            dailyLogId = newLogId,
-                            mediaPath = newPath
-                        )
-                    } else {
-                        null
-                    }
+                val finalMediaEntities = importedMediaEntities.mapNotNull { media ->
+                    val newLogId = newDailyLogIdMap[media.dailyLogId] ?: return@mapNotNull null
+                    val oldFileName = File(media.mediaPath).name
+                    val newPath = fileNameMapping[oldFileName] ?: return@mapNotNull null
+
+                    media.copy(
+                        id = 0,
+                        dailyLogId = newLogId,
+                        mediaPath = newPath
+                    )
                 }
 
                 habitLocalRepository.upsetDailyLogMediaEntities(finalMediaEntities)
@@ -244,6 +249,7 @@ class BackupRepositoryImpl(
             emit(ProcessState.Error(e.message ?: "An error occurred"))
         }
     }
+
 
     override val fileName: String
         get() {
