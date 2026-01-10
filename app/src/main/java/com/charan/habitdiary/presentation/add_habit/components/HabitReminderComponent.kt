@@ -10,8 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.charan.habitdiary.R
 
 @Composable
 fun HabitReminderComponent(
@@ -20,10 +22,10 @@ fun HabitReminderComponent(
     reminderTime: String,
     onSelectReminderTime: () -> Unit
 ) {
-    SectionContainer(title = "Reminder") {
+    SectionContainer(title = stringResource(R.string.reminder)) {
 
         LabelActionListItem(
-            label = "Set Reminder",
+            label = stringResource(R.string.set_reminder_time),
             icon = { Icon(Icons.Rounded.Alarm, contentDescription = null) },
             tailingContent = {
                 Switch(
@@ -35,11 +37,11 @@ fun HabitReminderComponent(
 
         if (isReminderEnabled) {
             LabelActionListItem(
-                label = "Remind me at",
+                label = stringResource(R.string.remind_me_at),
                 icon = { Icon(Icons.Rounded.Watch, contentDescription = null) },
                 tailingContent = {
                     TextButton(onClick = onSelectReminderTime) {
-                        Text(reminderTime.ifEmpty { "Select Time" })
+                        Text(reminderTime.ifEmpty { stringResource(R.string.select_time) } )
                     }
                 },
                 modifier = Modifier.padding(start = 12.dp)

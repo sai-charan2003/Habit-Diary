@@ -4,6 +4,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.charan.habitdiary.R
 
 @Composable
 fun RationaleDialog(
@@ -24,7 +26,7 @@ fun RationaleDialog(
             TextButton(
                 onClick = onConfirmRequest
             ) {
-                Text("Open Settings")
+                Text(stringResource(R.string.open_settings))
             }
 
         },
@@ -32,7 +34,7 @@ fun RationaleDialog(
             TextButton(
                 onClick = onDismissRequest
             ) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

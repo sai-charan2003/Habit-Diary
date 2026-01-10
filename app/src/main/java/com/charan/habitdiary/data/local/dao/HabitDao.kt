@@ -14,6 +14,9 @@ interface HabitDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsetHabit(habit: HabitEntity) : Long
 
+    @Insert
+    fun insertHabits(habits: List<HabitEntity>) : List<Long>
+
     @Query("SELECT * FROM habit_entity ORDER BY createdAt DESC")
     fun getAllHabitsFlow(): Flow<List<HabitEntity>>
 
@@ -24,7 +27,7 @@ interface HabitDao {
     SELECT * FROM habit_entity
     WHERE isDeleted = 0
     AND habitFrequency LIKE '%' || :currentDayOfWeek || '%'
-    ORDER BY createdAt DESC
+    ORDER BY habitTime
 """)
     fun getTodayHabits(
         currentDayOfWeek: DayOfWeek
@@ -33,10 +36,16 @@ interface HabitDao {
 
 
     @Query("SELECT * FROM habit_entity WHERE id = :id")
-    fun getHabitWithId(id: Int): HabitEntity
+    fun getHabitWithId(id: Long): HabitEntity
 
     @Query("UPDATE habit_entity SET isDeleted = 1 WHERE id = :id")
-    fun deleteHabit(id: Int)
+    fun deleteHabit(id: Long)
+
+    @Query("SELECT * FROM habit_entity WHERE id = :id")
+    fun getHabitByIdFLow(id: Long): Flow<HabitEntity>
+
+    @Query("SELECT * FROM habit_entity WHERE isDeleted = 0 ORDER BY habitTime")
+    fun getActiveHabitsFlow(): Flow<List<HabitEntity>>
 
 
 }

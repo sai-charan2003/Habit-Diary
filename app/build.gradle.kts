@@ -19,29 +19,36 @@ android {
     compileSdk {
         version = release(36)
     }
+    androidResources {
+        generateLocaleConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.charan.habitdiary"
         minSdk = 26
         targetSdk = 36
-        versionCode =1
-        versionName = "0.1.0"
+        versionCode = 7
+        versionName = "0.5.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    val properties = Properties().apply {
-        load(project.rootProject.file("keystore.properties").inputStream())
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystoreProperties = Properties()
+
+    if (keystorePropertiesFile.exists()) {
+        keystoreProperties.load(keystorePropertiesFile.inputStream())
     }
-
     signingConfigs {
-        create("release"){
-            storeFile =  properties.getProperty("storeFile")?.let { file(it) }
-            storePassword =  properties.getProperty("storePassword")
-            keyAlias =  properties.getProperty("keyAlias")
-            keyPassword =  properties.getProperty("keyPassword")
-
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
         }
     }
+
     val appName = "Habit Diary"
     applicationVariants.all {
         val variant = this
@@ -95,6 +102,11 @@ android {
         schemaDirectory("$projectDir/schemas")
         generateKotlin = true
     }
+    sourceSets {
+        getByName("androidTest") {
+            assets.srcDir("$projectDir/schemas")
+        }
+    }
 
 }
 
@@ -110,6 +122,8 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
     implementation(libs.androidx.compose.animation)
     implementation(libs.firebase.crashlytics)
+    implementation(libs.androidx.room.testing)
+    implementation(libs.androidx.media3.exoplayer)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -140,5 +154,12 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.graphics.shapes)
+    testImplementation(libs.androidx.room.testing)
+    implementation(libs.zoomable.image.coil3)
+    implementation(libs.coil.video)
+    implementation(libs.androidx.media3.ui.compose)
+    implementation(libs.androidx.media3.ui.compose.material3)
+    implementation(libs.compose.cloudy)
+
 
 }

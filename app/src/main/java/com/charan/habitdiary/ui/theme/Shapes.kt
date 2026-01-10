@@ -1,44 +1,62 @@
 package com.charan.habitdiary.ui.theme
 
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ListItemShapes
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-fun roundedListItemCorners(
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun customListItemShapes(
     indexItem: IndexItem,
-    topBottomRadius: Dp = 16.dp,
-    middleRadius: Dp = 4.dp
-): RoundedCornerShape {
+    defaultShape : ListItemShapes = ListItemDefaults.shapes()
+): ListItemShapes {
+    val overrideShape = ShapeDefaults.Large
     val shape = when (indexItem) {
-        IndexItem.FIRST -> RoundedCornerShape(
-            topStart = topBottomRadius,
-            topEnd = topBottomRadius,
-            bottomStart = middleRadius,
-            bottomEnd = middleRadius
-        )
-        IndexItem.LAST -> RoundedCornerShape(
-            topStart = middleRadius,
-            topEnd = middleRadius,
-            bottomStart = topBottomRadius,
-            bottomEnd = topBottomRadius
-        )
+        IndexItem.FIRST -> {
+            val defaultBaseShape = defaultShape.shape
+            if (defaultBaseShape is CornerBasedShape) {
+                defaultShape.copy(
+                    shape =
+                        defaultBaseShape.copy(
+                            topStart = overrideShape.topStart,
+                            topEnd = overrideShape.topEnd,
+                        )
+                )
+            } else {
+                defaultShape
+            }
+        }
+        IndexItem.LAST -> {
+            val defaultBaseShape = defaultShape.shape
+            if (defaultBaseShape is CornerBasedShape) {
+                defaultShape.copy(
+                    shape =
+                        defaultBaseShape.copy(
+                            bottomStart = overrideShape.bottomStart,
+                            bottomEnd = overrideShape.bottomEnd,
+                        )
+                )
+            } else {
+                defaultShape
+            }
+        }
 
         IndexItem.MIDDLE -> {
-            RoundedCornerShape(
-                topStart = middleRadius,
-                topEnd = middleRadius,
-                bottomStart = middleRadius,
-                bottomEnd = middleRadius
-            )
+            defaultShape
         }
 
         IndexItem.FIRST_AND_LAST -> {
-            RoundedCornerShape(
-                topStart = topBottomRadius,
-                topEnd = topBottomRadius,
-                bottomStart = topBottomRadius,
-                bottomEnd = topBottomRadius
+            defaultShape.copy(
+                shape = ShapeDefaults.Large
             )
+
+
         }
     }
 

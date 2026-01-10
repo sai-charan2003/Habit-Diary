@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
 )
 data class HabitEntity(
     @PrimaryKey(autoGenerate = true)
-    val id : Int = 0,
+    val id : Long = 0,
     val habitName : String,
     val habitReminder : LocalTime?,
     val createdAt : LocalDateTime,

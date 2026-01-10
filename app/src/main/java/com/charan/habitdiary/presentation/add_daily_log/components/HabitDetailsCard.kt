@@ -12,16 +12,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.charan.habitdiary.R
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HabitDetailsCard(
     habitTitle: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick : () -> Unit = { }
 ) {
     ElevatedCard(
         modifier = modifier.fillMaxWidth(),
@@ -30,7 +33,11 @@ fun HabitDetailsCard(
             containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+        onClick = {
+            onClick()
+
+        }
     ) {
         Column(
             modifier = Modifier
@@ -41,7 +48,7 @@ fun HabitDetailsCard(
         ) {
 
             Text(
-                text = "For your completed habit",
+                text = stringResource(R.string.for_your_completed_habit),
                 style = MaterialTheme.typography.labelLargeEmphasized,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center

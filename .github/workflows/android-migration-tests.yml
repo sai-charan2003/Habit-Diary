@@ -1,0 +1,65 @@
+name: Room Migration Tests
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - master
+  push:
+    branches:
+      - dev
+      - master
+
+jobs:
+  migration-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        api-level: [29]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Restore keystore and google services
+        run: |
+          mkdir -p app/src/release
+          mkdir -p app/src/debug
+
+          # Keystore
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/src/release/habitdiary_release.jks
+
+          # google-services
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/src/release/google-services.json
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_DEBUG_BASE64 }}" | base64 --decode > app/src/debug/google-services.json
+
+          # keystore.properties
+          echo "storeFile=src/release/habitdiary_release.jks" > keystore.properties
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> keystore.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> keystore.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> keystore.properties
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Cache Gradle
+        uses: gradle/actions/setup-gradle@v3
+        
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run Room migration tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: google_apis
+          arch: x86_64
+          profile: pixel_7_pro
+          script: ./gradlew connectedDebugAndroidTest

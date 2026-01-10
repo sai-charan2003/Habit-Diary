@@ -10,12 +10,12 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.ImportContacts
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.rounded.CalendarMonth
-import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.outlined.TaskAlt
+import androidx.compose.material.icons.rounded.ImportContacts
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
@@ -31,20 +31,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.charan.habitdiary.presentation.calendar.LogCalendarScreen
-import com.charan.habitdiary.presentation.home.HomeScreen
+import com.charan.habitdiary.R
+import com.charan.habitdiary.presentation.diary.DiaryScreen
+import com.charan.habitdiary.presentation.habits.HabitScreen
 import com.charan.habitdiary.presentation.settings.SettingsScreen
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun BottomBarNavigation(
-    onAddHabitNav : (Int?) -> Unit,
-    onAddDailyLogNav : (Int?) -> Unit,
-    onNavigateToAboutLibraries : () -> Unit
+    onAddHabitNav : (Long?) -> Unit,
+    onAddDailyLogNav : (id : Long? , date : LocalDate?) -> Unit,
+    onNavigateToAboutLibraries : () -> Unit,
+    onImageOpen : (allImage : List<String>,currentImage : String) -> Unit,
+    onHabitStats : (id : Long) -> Unit,
 
 ) {
     val bottomBarBackStack = rememberNavBackStack(BottomBarNavDestinations.Home)
@@ -140,7 +145,7 @@ fun BottomBarNavigation(
                         )
                     },
                     label = {
-                        Text(item.title)
+                        Text(stringResource(item.title))
                     }
                 )
             }
@@ -160,8 +165,8 @@ fun BottomBarNavigation(
             entryProvider = { key ->
                 when (key) {
                     is BottomBarNavDestinations.Home -> NavEntry(key) {
-                        HomeScreen(
-                            onAddHabitClick = { id->
+                        HabitScreen(
+                            onHabitDetails = { id->
                                 onAddHabitNav(
                                     id
                                 )
@@ -169,19 +174,32 @@ fun BottomBarNavigation(
                             },
                             onAddDailyLog = { id->
                                 onAddDailyLogNav(
-                                    id
+                                    id,
+                                    null
                                 )
 
+                            },
+                            onHabitStats = { id ->
+                                onHabitStats(
+                                    id
+                                )
                             }
 
                         )
                     }
 
                     is BottomBarNavDestinations.Calender -> NavEntry(key){
-                        LogCalendarScreen(
-                            onNavigateToDailyLogScreen = {
+                        DiaryScreen(
+                            onNavigateToDailyLogScreen = { id , date->
                                 onAddDailyLogNav(
-                                    it
+                                    id,
+                                    date
+                                )
+                            },
+                            onImageOpen = { allImages, currentImage ->
+                                onImageOpen(
+                                    allImages,
+                                    currentImage
                                 )
                             }
                         )
@@ -206,23 +224,23 @@ fun BottomBarNavigation(
 }
 
 enum class BottomNavItem(
-    val title: String,
+    val title: Int,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
 ) {
     HOME(
-        title = "Home",
-        selectedIcon = Icons.Rounded.Home,
-        unselectedIcon = Icons.Outlined.Home,
+        title = R.string.habits,
+        selectedIcon = Icons.Rounded.TaskAlt,
+        unselectedIcon = Icons.Outlined.TaskAlt,
 
         ),
     CALENDAR(
-        title = "Calendar",
-        selectedIcon = Icons.Rounded.CalendarMonth,
-        unselectedIcon = Icons.Outlined.CalendarMonth,
+        title = R.string.diary,
+        selectedIcon = Icons.Rounded.ImportContacts,
+        unselectedIcon = Icons.Outlined.ImportContacts,
     ),
     SETTINGS(
-        title = "Settings",
+        title = R.string.settings,
         selectedIcon = Icons.Rounded.Settings,
         unselectedIcon = Icons.Outlined.Settings,
     )

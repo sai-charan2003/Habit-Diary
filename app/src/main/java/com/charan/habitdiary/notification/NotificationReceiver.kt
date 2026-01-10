@@ -3,7 +3,9 @@ package com.charan.habitdiary.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.charan.habitdiary.data.local.entity.DailyLogEntity
 import com.charan.habitdiary.data.repository.HabitLocalRepository
+import com.charan.habitdiary.utils.DateUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,23 +24,49 @@ class NotificationReceiver : BroadcastReceiver() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val habitId = intent?.getIntExtra("habitId", -1) ?: -1
-                if (habitId != -1 && appContext != null) {
-                    val habit = habitLocalRepository.getHabitWithId(habitId)
-                    val habitLog = habitLocalRepository.getLoggedHabitFromIdForRange(habitId)
-                    if(habitLog == null){
-                        notificationHelper.showNotification(
-                            title = "Habit Reminder",
-                            message = "It's time for your habit: ${habit.habitName}"
-                        )
+                when(intent?.action){
+                    IntentActions.SHOW_NOTIFICATION.name -> {
+                        val habitId = intent?.getLongExtra("habitId", -1) ?: -1
+                        if (habitId != -1L && appContext != null) {
+                            val habit = habitLocalRepository.getHabitWithId(habitId)
+                            val habitLog = habitLocalRepository.getLoggedHabitFromIdForRange(habitId)
+                            if(habitLog == null){
+                                notificationHelper.showNotification(
+                                    title = "Habit Reminder",
+                                    message = "It's time for your habit: ${habit.habitName}",
+                                    habitId = habit.id
+                                )
+                            }
+                            notificationScheduler.scheduleReminder(
+                                habitId = habit.id,
+                                time = habit.habitReminder,
+                                frequency = habit.habitFrequency,
+                                isReminderEnabled = habit.isReminderEnabled
+                            )
+                        }
                     }
-                    notificationScheduler.scheduleReminder(
-                        habitId = habit.id,
-                        time = habit.habitReminder,
-                        frequency = habit.habitFrequency,
-                        isReminderEnabled = habit.isReminderEnabled
-                    )
+
+                    IntentActions.MARK_AS_DONE.name -> {
+                        val habitId = intent?.getLongExtra("habitId", -1) ?: -1
+                        if (habitId != -1L) {
+                            val habit = habitLocalRepository.getHabitWithId(habitId)
+                            val habitLog = habitLocalRepository.getLoggedHabitFromIdForRange(habitId)
+                            if(habitLog == null){
+                                habitLocalRepository.upsetDailyLog(
+                                    DailyLogEntity(
+                                        logNote = "",
+                                        imagePath = "",
+                                        createdAt = DateUtil.getCurrentDateTime(),
+                                        habitId = habit.id
+                                    )
+                                )
+                            }
+                        }
+                        notificationHelper.cancelNotification(habitId)
+                    }
+
                 }
+
             } finally {
                 pendingResult.finish()
             }

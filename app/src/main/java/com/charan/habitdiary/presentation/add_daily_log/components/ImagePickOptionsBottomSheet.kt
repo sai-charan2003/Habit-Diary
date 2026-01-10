@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Camera
 import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -17,8 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.common.components.CustomListItem
 import com.charan.habitdiary.ui.theme.indexItemFor
 
@@ -28,19 +31,25 @@ fun ImagePickOptionsBottomSheet(
     onImageFromGalleryClick : () -> Unit,
     onImageFromCameraClick : () -> Unit,
     onDismissRequest : () ->Unit,
+    onCaptureVideo : () -> Unit = {},
     sheetState: SheetState
 ) {
     val imagePickOptions = listOf(
         ImagePickOptions(
-            title = "Pick from Gallery",
+            title = stringResource(R.string.take_a_photo),
+            icon = Icons.Rounded.Camera,
+            onClick = onImageFromCameraClick
+        ),
+        ImagePickOptions(
+            title = stringResource(R.string.record_a_video),
+            icon = Icons.Rounded.Videocam,
+            onClick = onCaptureVideo
+        ),
+        ImagePickOptions(
+            title = stringResource(R.string.choose_from_gallery),
             icon = Icons.Rounded.Image,
             onClick = onImageFromGalleryClick
         ),
-        ImagePickOptions(
-            title = "Take a Photo",
-            icon = Icons.Rounded.Camera,
-            onClick = onImageFromCameraClick
-        )
     )
 
     ModalBottomSheet(
@@ -56,23 +65,19 @@ fun ImagePickOptionsBottomSheet(
         ) {
             imagePickOptions.forEachIndexed { index, option ->
                 CustomListItem(
-                    content = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = option.icon,
-                                contentDescription = option.title,
-                                modifier = Modifier.padding(end = 8.dp)
-                            )
-                            Text(option.title)
-                        }
+                    headLineContent = {
+                        Text(option.title)
                     },
                     indexItem = imagePickOptions.indexItemFor(index),
                     onClick = {
                         option.onClick()
                     },
-                    contentPaddingValues = PaddingValues(20.dp)
+                    leadingContent = {
+                        Icon(
+                            imageVector = option.icon,
+                            contentDescription = option.title,
+                        )
+                    }
 
                 )
             }

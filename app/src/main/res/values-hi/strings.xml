@@ -1,0 +1,81 @@
+<resources>
+    <string name="getting_started">शुरुआत करें</string>
+    <string name="next">आगे</string>
+    <string name="today">आज</string>
+    <string name="delete">हटाएं</string>
+    <string name="delete_confirmation_description">क्या आप वाकई इस प्रविष्टि को हटाना चाहते हैं? यह क्रिया वापस नहीं की जा सकती।</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="open_settings">सेटिंग्स खोलें</string>
+    <string name="ok">ठीक है</string>
+    <string name="dismiss">बंद करें</string>
+    <string name="save">सहेजें</string>
+    <string name="notification_permission_required">सूचना अनुमति आवश्यक</string>
+    <string name="notification_permission_description">आपको आदतों की याद दिलाने के लिए यह अनुमति आवश्यक है।</string>
+    <string name="reminder">रिमाइंडर</string>
+    <string name="set_reminder_time">रिमाइंडर समय सेट करें</string>
+    <string name="select_time">समय चुनें</string>
+    <string name="when_will_you_do_this">आप यह कब करेंगे?</string>
+    <string name="time">समय</string>
+    <string name="repeat">दोहराएं</string>
+    <string name="days">दिन</string>
+    <string name="remind_me_at">मुझे याद दिलाएं</string>
+    <string name="camera_permission_required">कैमरा अनुमति आवश्यक</string>
+    <string name="camera_permission_description">दैनिक जर्नल प्रविष्टियों के लिए फोटो लेने हेतु कैमरा एक्सेस आवश्यक है।</string>
+    <string name="delete_image">छवि हटाएं</string>
+    <string name="delete_image_confirmation_description">क्या आप वाकई इस छवि को हटाना चाहते हैं? यह क्रिया वापस नहीं की जा सकती।</string>
+    <string name="add_daily_journal">दैनिक जर्नल जोड़ें</string>
+    <string name="add_image">छवि जोड़ें</string>
+    <string name="date">तारीख</string>
+    <string name="for_your_completed_habit">आपकी पूरी की गई आदत के लिए</string>
+    <string name="take_a_photo">फोटो लें</string>
+    <string name="choose_from_gallery">गैलरी से चुनें</string>
+    <string name="record_a_video">वीडियो रिकॉर्ड करें</string>
+    <string name="settings">सेटिंग्स</string>
+    <string name="appearance">दिखावट</string>
+    <string name="theme">थीम</string>
+    <string name="use_dynamic_color">डायनामिक रंग का उपयोग करें</string>
+    <string name="general">सामान्य</string>
+    <string name="hour_format_24">24 घंटे का प्रारूप</string>
+    <string name="about">ऐप के बारे में</string>
+    <string name="open_source_libraries">ओपन सोर्स लाइब्रेरीज़</string>
+    <string name="app_version">ऐप संस्करण</string>
+    <string name="home">होम</string>
+    <string name="calendar">कैलेंडर</string>
+    <string name="system">सिस्टम</string>
+    <string name="light">लाइट</string>
+    <string name="dark">डार्क</string>
+    <string name="mark_as_done">पूरा हुआ चिन्हित करें</string>
+    <string name="saved_to_download">डाउनलोड्स में सहेजा गया</string>
+
+
+    <!-- Onboarding Screen Strings -->
+    <string name="onboarding_welcome_title">हैबिट डायरी में आपका स्वागत है</string>
+    <string name="onboarding_welcome_description">आदतें बनाने और दैनिक पलों को सहेजने के लिए आपकी निजी जगह।</string>
+    <string name="onboarding_habit_tracking_title">अपनी आदतें ट्रैक करें</string>
+    <string name="onboarding_habit_tracking_description">अपनी आदतों की यात्रा को रिकॉर्ड करते हुए सार्थक आदतें बनाएं।</string>
+    <string name="onboarding_daily_log_title">हर पल को कैद करें</string>
+    <string name="onboarding_daily_log_description">नोट्स और छवियों के साथ अपनी दैनिक गतिविधियों को लॉग करें।</string>
+
+    <string name="today_habits">आज की आदतें</string>
+    <string name="add_habit">आदत जोड़ें</string>
+    <string name="save_habit">आदत सहेजें</string>
+    <string name="edit_habit">आदत संपादित करें</string>
+    <string name="no_habits_for_today">आज के लिए कोई आदत नहीं</string>
+    <string name="habit_completed">आदत पूरी हुई</string>
+    <string name="habit_name">आदत का नाम</string>
+    <string name="enter_habit_name">आदत का नाम दर्ज करें</string>
+    <string name="habit_description">आदत का विवरण</string>
+    <string name="enter_habit_description">आदत का विवरण दर्ज करें (वैकल्पिक)</string>
+
+    <string name="daily_journals">दैनिक जर्नल</string>
+    <string name="no_daily_logs_yet">अभी तक कोई दैनिक लॉग नहीं</string>
+    <string name="add_daily_log">दैनिक लॉग जोड़ें</string>
+    <string name="save_log">लॉग सहेजें</string>
+    <string name="edit_daily_log">दैनिक लॉग संपादित करें</string>
+
+    <string name="add_entry">प्रविष्टि जोड़ें</string>
+    <string name="back_button">वापस बटन</string>
+    <string name="media_preview">मीडिया पूर्वावलोकन</string>
+    <string name="remove_button">हटाने का बटन</string>
+    <string name="repeat_icon">दोहराने का आइकन</string>
+</resources>

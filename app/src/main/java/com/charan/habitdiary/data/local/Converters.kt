@@ -3,6 +3,7 @@ package com.charan.habitdiary.data.local
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
@@ -55,5 +56,10 @@ object Converters {
     @TypeConverter
     fun stringToDayOfWeek(value: String): DayOfWeek {
         return DayOfWeek.valueOf(value)
+    }
+
+    @TypeConverter
+    fun localDateTimeToLocalDate(value: LocalDateTime): LocalDate {
+        return value.date
     }
 }

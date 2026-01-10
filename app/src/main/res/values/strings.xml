@@ -1,4 +1,106 @@
 <resources>
-    <string name="app_name">Habit Diary</string>
+    <string name="app_name" translatable="false">Habit Diary</string>
+    <string name="getting_started">Getting Started</string>
+    <string name="next">Next</string>
+    <string name="today">Today</string>
+    <string name="delete">Delete</string>
+    <string name="delete_confirmation_description">Are you sure you want to delete this entry? This action cannot be undone.</string>
+    <string name="cancel">Cancel</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="ok">OK</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="save">Save</string>
+    <string name="notification_permission_required">Notification Permission Required</string>
+    <string name="notification_permission_description">This permission is needed to send you reminders for your habits.</string>
+    <string name="reminder">Reminder</string>
+    <string name="set_reminder_time">Set Reminder Time</string>
+    <string name="select_time">Select Time</string>
+    <string name="when_will_you_do_this">When will you do this?</string>
+    <string name="time">Time</string>
+    <string name="repeat">Repeat</string>
+    <string name="days">Days</string>
+    <string name="remind_me_at">Remind Me At</string>
+    <string name="camera_permission_required">Camera Permission Required</string>
+    <string name="camera_permission_description">This app requires camera access to take photos for your daily journal entries.</string>
+    <string name="delete_image">Delete Image</string>
+    <string name="delete_image_confirmation_description">Are you sure you want to delete this image? This action cannot be undone.</string>
+    <string name="add_daily_journal">Add Daily Journal</string>
+    <string name="add_image">Add Image</string>
+    <string name="date">Date</string>
+    <string name="for_your_completed_habit">For your completed habit</string>
+    <string name="take_a_photo">Take a Photo</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="record_a_video">Record a Video</string>
+    <string name="settings">Settings</string>
+    <string name="appearance">Appearance</string>
+    <string name="theme">Theme</string>
+    <string name="use_dynamic_color">Use Dynamic Color</string>
+    <string name="use_system_font">Use System Font</string>
+    <string name="general">General</string>
+    <string name="hour_format_24">24 Hour Format</string>
+    <string name="about">About</string>
+    <string name="open_source_libraries">Open Source Libraries</string>
+    <string name="app_version">App Version</string>
+    <string name="home">Home</string>
+    <string name="calendar">Calendar</string>
+    <string name="system">System</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="mark_as_done">Mark as Done</string>
+    <string name="saved_to_download">Saved to Downloads</string>
+    <string name="backup">Backup</string>
+    <string name="export_data">Export Data</string>
+    <string name="import_data">Import Data</string>
+    <string name="backup_saved">Backup saved successfully</string>
+    <string name="backup_restored">Backup Restored</string>
+    <string name="habits">Habits</string>
+    <string name="diary">Diary</string>
+    <string name="daily">Daily</string>
+    <string name="weekdays">Weekdays</string>
+    <string name="weekends">Weekends</string>
+    <string name="current">Current</string>
+    <string name="best">Best</string>
+    <string name="no_repeat">No Repeat</string>
+    <string name="capture_moment">Capture Moment</string>
+    <string name="delete_video">Delete Video</string>
+    <string name="delete_video_confirmation_description">Are you sure you want to delete this video? This action cannot be undone.</string>
+    <string name="habit_deleted_message">This habit has been deleted.</string>
+
+
+    <!-- Onboarding Screen Strings -->
+    <string name="onboarding_welcome_title">Welcome to Habit Diary</string>
+    <string name="onboarding_welcome_description">Your personal space to build habits and capture daily moments.</string>
+    <string name="onboarding_habit_tracking_title">Track Your Habits</string>
+    <string name="onboarding_habit_tracking_description">Build meaningful habits while capturing your habit journey.</string>
+    <string name="onboarding_daily_log_title">Capture Every Moment</string>
+    <string name="onboarding_daily_log_description">Log your daily activities with notes and images.</string>
+
+    <string name="today_habits">Today’s Habits</string>
+    <string name="all_habits">All Habits</string>
+    <string name="add_habit">Add Habit</string>
+    <string name="save_habit">Save Habit</string>
+    <string name="edit_habit">Edit Habit</string>
+    <string name="no_habits_for_today">No habits</string>
+    <string name="habit_completed">Habit Completed</string>
+    <string name="habit_name">Habit Name</string>
+    <string name="enter_habit_name">Enter Habit Name</string>
+    <string name="habit_description">Habit Description</string>
+    <string name="enter_habit_description">Enter Habit Description (optional)</string>
+
+    <string name="daily_journals">Daily Journals</string>
+    <string name="no_daily_logs_yet">No daily logs yet</string>
+    <string name="add_daily_log">Add Daily Log</string>
+    <string name="save_log">Save Log</string>
+    <string name="edit_daily_log">Edit Daily Log</string>
+
+    <string name="add_entry">Add Entry</string>
+    <string name="back_button">Back Button</string>
+    <string name="media_preview">Media Preview</string>
+    <string name="remove_button">Remove Button</string>
+    <string name="repeat_icon">Repeat Icon</string>
+
+
+
+
 
 </resources>

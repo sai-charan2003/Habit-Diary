@@ -1,14 +1,16 @@
 package com.charan.habitdiary.presentation.mapper
 
 import com.charan.habitdiary.data.local.entity.DailyLogEntity
+import com.charan.habitdiary.data.local.entity.DailyLogMediaEntity
 import com.charan.habitdiary.data.local.entity.HabitEntity
 import com.charan.habitdiary.data.local.model.DailyLogWithHabit
 import com.charan.habitdiary.data.local.model.HabitWithDone
 import com.charan.habitdiary.presentation.add_daily_log.DailyLogItemDetails
+import com.charan.habitdiary.presentation.add_daily_log.DailyLogMediaItem
 import com.charan.habitdiary.presentation.add_daily_log.DailyLogState
 import com.charan.habitdiary.presentation.add_habit.AddHabitState
 import com.charan.habitdiary.presentation.common.model.DailyLogItemUIState
-import com.charan.habitdiary.presentation.home.HabitItemUIState
+import com.charan.habitdiary.presentation.habits.HabitItemUIState
 import com.charan.habitdiary.utils.DateUtil
 import com.charan.habitdiary.utils.DateUtil.toFormattedString
 import kotlinx.datetime.LocalDateTime
@@ -34,7 +36,8 @@ fun HabitWithDone.toHabitUIState(is24HourFormat: Boolean) : HabitItemUIState {
         habitTime = this.habitEntity.habitTime.toFormattedString(is24HourFormat),
         isDone = this.isDone,
         logId = this.logId,
-        habitReminderTime = this.habitEntity.habitReminder?.toFormattedString(is24HourFormat)
+        habitReminderTime = this.habitEntity.habitReminder?.toFormattedString(is24HourFormat),
+        habitFrequency = this.habitEntity.habitFrequency.sortedBy { DateUtil.getDaysOfWeek().indexOf(it)}
     )
 }
 
@@ -71,10 +74,24 @@ fun DailyLogState.toDailyLogEntity(): DailyLogEntity {
     return DailyLogEntity(
         id = item.id ?: 0,
         logNote = item.notesText,
-        imagePath = item.imagePath,
+        imagePath = "",
         createdAt = DateUtil.mergeDateTime(item.date, item.time),
         habitId = item.habitId
     )
+}
+
+fun DailyLogMediaItem.toDailyLogMediaEntity() : DailyLogMediaEntity {
+    return DailyLogMediaEntity(
+        dailyLogId =  0,
+        mediaPath = this.mediaPath,
+        isDeleted = this.isDeleted
+    )
+}
+
+fun List<DailyLogMediaItem>.toDailyLogMediaEntityList() : List<DailyLogMediaEntity> {
+    return this.map {
+        it.toDailyLogMediaEntity()
+    }
 }
 
 
@@ -85,7 +102,7 @@ fun DailyLogWithHabit.toDailyLogUIState(is24HourFormat : Boolean) : DailyLogItem
     return DailyLogItemUIState(
         id = this.dailyLogEntity.id,
         logNote = this.dailyLogEntity.logNote,
-        imagePath = this.dailyLogEntity.imagePath,
+        mediaPaths = this.mediaEntities.map { it.mediaPath },
         createdAt = this.dailyLogEntity.createdAt.time.toFormattedString(is24HourFormat),
         habitId = this.dailyLogEntity.habitId,
         habitName = this.habitEntity?.habitName
@@ -98,11 +115,25 @@ fun List<DailyLogWithHabit>.toDailyLogUIStateList(is24HourFormat: Boolean) : Lis
     }
 }
 
-fun DailyLogWithHabit.toDailyLogItemDetails() : DailyLogItemDetails {
+fun DailyLogMediaEntity.toDailyLogMediaItem(isPendingSave : Boolean) : DailyLogMediaItem {
+    return DailyLogMediaItem(
+        mediaPath = this.mediaPath,
+        isDeleted = this.isDeleted,
+        id = this.id,
+        isPendingSave = isPendingSave
+    )
+}
+fun List<DailyLogMediaEntity>.toDailyLogMediaItemList(isPendingSave : Boolean) : List<DailyLogMediaItem> {
+    return this.map {
+        it.toDailyLogMediaItem(isPendingSave)
+    }
+}
+
+fun DailyLogWithHabit.toDailyLogItemDetails(pendingSaveImage : Boolean = false) : DailyLogItemDetails {
     return DailyLogItemDetails(
         id = this.dailyLogEntity.id,
         notesText = this.dailyLogEntity.logNote,
-        imagePath = this.dailyLogEntity.imagePath,
+        mediaItems = this.mediaEntities.toDailyLogMediaItemList(pendingSaveImage),
         date = this.dailyLogEntity.createdAt.date,
         time = this.dailyLogEntity.createdAt.time,
         habitId = this.dailyLogEntity.habitId,

@@ -9,24 +9,24 @@ data class OnBoardingState(
 
 private val pages = listOf(
     OnBoardingPage(
-        title = "Welcome to Habit Diary",
-        description = "Your personal space to build habits and capture daily moments.",
+        title = R.string.onboarding_welcome_title,
+        description = R.string.onboarding_welcome_description,
         imageRes = R.drawable.app_logo
     ),
     OnBoardingPage(
-        title = "Track your Habits",
-        description = "Build meaningful habits while capturing your habit journey.",
+        title = R.string.onboarding_habit_tracking_title,
+        description = R.string.onboarding_habit_tracking_description,
         imageRes = R.drawable.habit
     ),
     OnBoardingPage(
-        title = "Capture Every Moment",
-        description = "Log your daily activities with notes and images.",
+        title = R.string.onboarding_daily_log_title,
+        description = R.string.onboarding_daily_log_description,
         imageRes = R.drawable.book
     )
 )
 
 data class OnBoardingPage(
-    val title: String,
-    val description: String,
+    val title: Int,
+    val description: Int,
     val imageRes: Int
 )

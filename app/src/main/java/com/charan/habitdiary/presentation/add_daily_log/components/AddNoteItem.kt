@@ -3,6 +3,7 @@ package com.charan.habitdiary.presentation.add_daily_log.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,13 +28,9 @@ fun AddNoteItem(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier
-            .fillMaxWidth()
-            .size(150.dp)
-            .border(
-                BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                shape = CardDefaults.shape
-            ),
-        textStyle = MaterialTheme.typography.bodyMedium.copy(
+            .fillMaxSize()
+            .padding(top = 5.dp),
+        textStyle = MaterialTheme.typography.bodyMediumEmphasized.copy(
             color = MaterialTheme.colorScheme.onSurface
         ),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
@@ -41,13 +38,12 @@ fun AddNoteItem(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
             ) {
                 if (value.isEmpty()) {
                     Text(
-                        text = "Write a short note...",
-                        style = MaterialTheme.typography.bodyMediumEmphasized.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        text = "Add a note...",
+                        style = MaterialTheme.typography.bodyLargeEmphasized.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                         )
                     )
                 }

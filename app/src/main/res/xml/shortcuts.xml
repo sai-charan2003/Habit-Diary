@@ -1,0 +1,44 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="add_daily_log"
+        android:enabled="true"
+        android:icon="@mipmap/ic_daily_log_shortcut"
+        android:shortcutShortLabel="@string/add_daily_log"
+        android:shortcutLongLabel="@string/add_daily_log"
+        android:shortcutDisabledMessage="@string/add_daily_log">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.charan.habitdiary.MainActivity"
+            android:data="habitdiary://app/add-daily-log" />
+        <categories android:name="android.shortcut.conversation" />
+        <capability-binding android:key="actions.intent.CREATE_MESSAGE" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="add_habit"
+        android:enabled="true"
+        android:icon="@mipmap/ic_habit_shortcut"
+        android:shortcutShortLabel="@string/add_habit"
+        android:shortcutLongLabel="@string/add_habit"
+        android:shortcutDisabledMessage="@string/add_habit">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.charan.habitdiary.MainActivity"
+            android:data="habitdiary://app/add-habit" />
+        <categories android:name="android.shortcut.conversation" />
+        <capability-binding android:key="actions.intent.CREATE_MESSAGE" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="add_daily_log_image"
+        android:enabled="true"
+        android:icon="@mipmap/ic_add_image_shortcut"
+        android:shortcutShortLabel="@string/capture_moment"
+        android:shortcutLongLabel="@string/capture_moment"
+        android:shortcutDisabledMessage="@string/capture_moment">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.charan.habitdiary.MainActivity"
+            android:data="habitdiary://app/add-daily-log?openCameraOnLaunch=true" />
+        <categories android:name="android.shortcut.conversation" />
+        <capability-binding android:key="actions.intent.CREATE_MESSAGE" />
+    </shortcut>
+</shortcuts>

@@ -18,7 +18,7 @@ data class AddHabitState(
     val isReminderEnabled : Boolean = false,
     val showPermissionRationale : Boolean = false,
     val showDeleteDialog : Boolean = false,
-    val habitId : Int? = null,
+    val habitId : Long? = null,
     val isEdit : Boolean = false,
     val is24HourFormat : Boolean = false
 )

@@ -2,63 +2,207 @@ package com.charan.habitdiary.presentation.add_daily_log
 
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.charan.habitdiary.R
 import com.charan.habitdiary.data.repository.DataStoreRepository
 import com.charan.habitdiary.data.repository.FileRepository
 import com.charan.habitdiary.data.repository.HabitLocalRepository
+import com.charan.habitdiary.presentation.common.model.ToastMessage
 import com.charan.habitdiary.presentation.mapper.toDailyLogEntity
 import com.charan.habitdiary.presentation.mapper.toDailyLogItemDetails
+import com.charan.habitdiary.presentation.mapper.toDailyLogMediaEntityList
 import com.charan.habitdiary.utils.DateUtil
 import com.charan.habitdiary.utils.DateUtil.toFormattedString
 import com.charan.habitdiary.utils.DateUtil.toLocalDate
 import com.charan.habitdiary.utils.PermissionManager
 import com.charan.habitdiary.utils.ProcessState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
-import javax.inject.Inject
 
-@HiltViewModel
-class DailyLogViewModel @Inject constructor(
+@HiltViewModel(assistedFactory = DailyLogViewModel.Factory::class)
+class DailyLogViewModel @AssistedInject constructor(
+    @Assisted val logId : Long?,
+    @Assisted val date : LocalDate?,
+    @Assisted val openCameraOnLaunch : Boolean?,
     private val habitLocalRepository: HabitLocalRepository,
     private val fileRepository: FileRepository,
     private val permissionManager: PermissionManager,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
+    @AssistedFactory
+    interface Factory {
+        fun create(logId: Long?, date : LocalDate?, openCameraOnLaunch : Boolean?) : DailyLogViewModel
+    }
+
+
     private val _state = MutableStateFlow(DailyLogState())
     val state: StateFlow<DailyLogState> = _state.asStateFlow()
 
-    private val _effect = MutableSharedFlow<DailyLogEffect>()
-    val effect: SharedFlow<DailyLogEffect> = _effect.asSharedFlow()
+    private val _effect = Channel<DailyLogEffect>(Channel.BUFFERED)
+    val effect = _effect.receiveAsFlow()
 
     init {
+        initializeLog(logId)
         observeDateTimeChanges()
         observeHourFormat()
+        if(openCameraOnLaunch == true){
+            handleTakePhoto()
+        }
     }
 
     fun onEvent(event: DailyLogEvent) {
         when (event) {
-            is DailyLogEvent.InitializeLog -> initializeLog(event.habitId)
-            is DailyLogEvent.OnNotesTextChange -> updateNotes(event.text)
-            is DailyLogEvent.OnImagePathChange -> updateImagePath(event.path)
-            DailyLogEvent.OnSaveDailyLogClick -> saveDailyLog()
-            DailyLogEvent.OnBackClick -> sendEffect(DailyLogEffect.OnNavigateBack)
-            is DailyLogEvent.OnToggleImagePickOptionsSheet -> toggleImagePickerSheet(event.isVisible)
-            DailyLogEvent.OnPickFromGalleryClick -> sendEffect(DailyLogEffect.OnOpenImagePicker)
-            DailyLogEvent.OnTakePhotoClick -> handleTakePhoto()
-            is DailyLogEvent.OnImagePick -> handleImagePicked(event.uri)
-            DailyLogEvent.OnOpenSettingsForPermissions -> permissionManager.openSettingsPermissionScreen()
-            is DailyLogEvent.ToggleShowRationaleForCameraPermission -> setCameraRationaleVisible(event.showRationale)
-            is DailyLogEvent.OnToggleDateSelectorDialog -> setDatePickerVisible(event.isVisible)
-            is DailyLogEvent.OnDateSelected -> updateDate(event.date)
+            is DailyLogEvent.OnNotesTextChange -> {
+                updateNotes(event.text)
+            }
+            is DailyLogEvent.OnImagePathChange -> {
+                updateImagePath(event.path)
+            }
+            DailyLogEvent.OnSaveDailyLogClick -> {
+                saveDailyLog()
+            }
+            DailyLogEvent.OnBackClick -> {
+                sendEffect(DailyLogEffect.OnNavigateBack)
+            }
+            is DailyLogEvent.OnToggleImagePickOptionsSheet -> {
+                toggleImagePickerSheet(event.isVisible)
+            }
+            DailyLogEvent.OnPickFromGalleryClick -> {
+                sendEffect(DailyLogEffect.OnOpenMediaPicker)
+            }
+            DailyLogEvent.OnTakePhotoClick -> {
+                handleTakePhoto()
+            }
+            is DailyLogEvent.OnImagePick -> {
+                handleImagePicked(event.uris)
+            }
+            DailyLogEvent.OnOpenSettingsForPermissions -> {
+                permissionManager.openSettingsPermissionScreen()
+            }
+            is DailyLogEvent.ToggleShowRationaleForCameraPermission -> {
+                setCameraRationaleVisible(event.showRationale)
+            }
+            is DailyLogEvent.OnToggleDateSelectorDialog -> {
+                setDatePickerVisible(event.isVisible)
+            }
+            is DailyLogEvent.OnDateSelected -> {
+                updateDate(event.date)
+            }
             is DailyLogEvent.OnToggleTimeSelectorDialog -> setTimePickerVisible(event.isVisible)
             is DailyLogEvent.OnTimeSelected -> updateTime(event.time)
             DailyLogEvent.OnDeleteDailyLog -> deleteDailyLog()
             is DailyLogEvent.OnToggleDeleteDialog -> setDeleteDialogVisible(event.showDeleteDialog)
+            is DailyLogEvent.OnConfirmMediaItemDelete -> {
+                handleDeleteMediaItem(event.confirmDelete)
+
+            }
+            is DailyLogEvent.OnSelectMediaItemForDelete -> {
+                updateMediaItemDeletion(
+                    event.mediaItem!!
+                )
+
+            }
+
+            DailyLogEvent.OnCaptureVideoClick -> {
+                handleTakeVideo()
+
+            }
+
+            is DailyLogEvent.OnVideoPick -> {
+
+            }
+
+            is DailyLogEvent.OnPermissionResult -> {
+                handlePermissionResult(event.isGranted)
+            }
+
+            is DailyLogEvent.OnNavigateToHabitScreen ->{
+                handleNavigationToHabitScreen()
+            }
+        }
+    }
+
+    private fun handleNavigationToHabitScreen(){
+        if(_state.value.isHabitDeleted){
+            sendEffect(DailyLogEffect.ShowToast(ToastMessage.Res(R.string.habit_deleted_message)))
+        } else {
+            val habitId = _state.value.dailyLogItemDetails.habitId ?: return
+            sendEffect(DailyLogEffect.OnNavigateToHabitScreen(habitId))
+        }
+    }
+
+    private fun handlePermissionResult(isGranted: Boolean) {
+        val pendingAction = _state.value.pendingCameraAction ?: return
+        if (isGranted) {
+            when (pendingAction) {
+                PendingCameraAction.PHOTO -> {
+                    handleTakePhoto()
+                }
+                PendingCameraAction.VIDEO -> {
+                    handleTakeVideo()
+                }
+            }
+        }
+        _state.update {
+            it.copy(
+                pendingCameraAction = null
+            )
+        }
+    }
+
+    private fun handleDeleteMediaItem(confirmDelete: Boolean) {
+        val selectedItem = _state.value.selectedMediaItemForDelete ?: return
+
+        if (confirmDelete) {
+            val updatedMediaItems = _state.value.dailyLogItemDetails.mediaItems.map { item ->
+                if (item == selectedItem) item.copy(isDeleted = true) else item
+            }
+
+            _state.update {
+                it.copy(
+                    dailyLogItemDetails = it.dailyLogItemDetails.copy(
+                        mediaItems = updatedMediaItems
+                    ),
+                    showImageDeleteOption = false,
+                    selectedMediaItemForDelete = null
+                )
+            }
+        } else {
+            _state.update {
+                it.copy(
+                    showImageDeleteOption = false,
+                    selectedMediaItemForDelete = null
+                )
+            }
+        }
+    }
+
+
+
+    private fun updateMediaItemDeletion(
+        mediaItem : String
+    ) {
+        _state.update {
+            it.copy(
+                selectedMediaItemForDelete = it.dailyLogItemDetails.mediaItems.first { item ->
+                    item.mediaPath == mediaItem
+                },
+                showImageDeleteOption = true
+
+            )
         }
     }
 
@@ -66,20 +210,21 @@ class DailyLogViewModel @Inject constructor(
         _state.update { it.copy(showDeleteDialog = visible) }
     }
 
-    private fun initializeLog(logId: Int?) = viewModelScope.launch(Dispatchers.IO) {
+    private fun initializeLog(logId: Long?) = viewModelScope.launch(Dispatchers.IO) {
         if (logId != null) {
             val log = habitLocalRepository.getDailyLogsWithHabitWithId(logId)
             _state.update {
                 it.copy(
                     dailyLogItemDetails = log.toDailyLogItemDetails(),
-                    isEdit = true
+                    isEdit = true,
+                    isHabitDeleted = log.habitEntity?.isDeleted == true
                 )
             }
         } else {
             _state.update {
                 it.copy(
                     dailyLogItemDetails = it.dailyLogItemDetails.copy(
-                        date = DateUtil.getCurrentDate(),
+                        date = date ?: DateUtil.getCurrentDate(),
                         time = DateUtil.getCurrentTime()
                     )
                 )
@@ -98,13 +243,25 @@ class DailyLogViewModel @Inject constructor(
     }
 
     private fun updateImagePath(path: String) {
-        _state.update {
-            it.copy(
-                dailyLogItemDetails = it.dailyLogItemDetails.copy(imagePath = path),
+        _state.update { state ->
+            val updatedMediaItems =
+                state.dailyLogItemDetails.mediaItems.toMutableList().apply {
+                    add(DailyLogMediaItem(
+                        mediaPath = path,
+                        isPendingSave = true
+                    ))
+                }
+
+            state.copy(
+                dailyLogItemDetails = state.dailyLogItemDetails.copy(
+                    mediaItems = updatedMediaItems
+                ),
+                tempImagePath = "",
                 showImagePickOptionsSheet = false
             )
         }
     }
+
 
     private fun toggleImagePickerSheet(visible: Boolean) {
         _state.update { it.copy(showImagePickOptionsSheet = visible) }
@@ -141,16 +298,33 @@ class DailyLogViewModel @Inject constructor(
     }
 
     private fun saveDailyLog() = viewModelScope.launch(Dispatchers.IO) {
-        Log.d("TAG", "saveDailyLog: ${_state.value.toDailyLogEntity()}")
-        habitLocalRepository.upsetDailyLog(
-            _state.value.toDailyLogEntity()
-        )
-        sendEffect(DailyLogEffect.OnNavigateBack)
+        try {
+            setLoading(true)
+            saveImagesToFileDir()
+            habitLocalRepository.upsetDailyLog(
+                dailyLog = _state.value.toDailyLogEntity(),
+                mediaEntity = _state.value.dailyLogItemDetails.mediaItems.toDailyLogMediaEntityList()
+            )
+            sendEffect(DailyLogEffect.OnNavigateBack)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    private fun setLoading(isLoading: Boolean) {
+        _state.update {
+            it.copy(
+                isLoading = isLoading
+            )
+        }
     }
 
     private fun handleTakePhoto() {
         if (!permissionManager.isCameraPermissionGranted()) {
             sendEffect(DailyLogEffect.OnRequestCameraPermission)
+            _state.update { it.copy(
+                pendingCameraAction = PendingCameraAction.PHOTO
+            ) }
             return
         }
         val uri = fileRepository.createImageUri()
@@ -159,20 +333,82 @@ class DailyLogViewModel @Inject constructor(
                 tempImagePath = uri.toString()
             )
         }
+        Log.d("TAG", "handleTakePhoto:")
         sendEffect(DailyLogEffect.OnTakePhoto)
     }
 
-    private fun handleImagePicked(uri: Uri) = viewModelScope.launch {
-        fileRepository.saveImage(uri).collectLatest { result ->
-            if (result is ProcessState.Success<*>) {
-                updateImagePath(result.data as String)
-            }
+    private fun handleTakeVideo() {
+        if (!permissionManager.isCameraPermissionGranted()) {
+            sendEffect(DailyLogEffect.OnRequestCameraPermission)
+            _state.update { it.copy(
+                pendingCameraAction = PendingCameraAction.VIDEO
+            ) }
+            return
+        }
+        val uri = fileRepository.createVideoUri()
+        _state.update {
+            it.copy(
+                tempVideoPath = uri.toString()
+            )
+        }
+        sendEffect(DailyLogEffect.OnTakeVideo)
+    }
+
+    private fun handleImagePicked(uris: List<Uri>) = viewModelScope.launch {
+        setLoading(true)
+
+        try {
+            uris
+                .map { uri ->
+                    async {
+                        fileRepository.saveImagesToCache(uri).collect { state ->
+                            if (state is ProcessState.Success<String>) {
+                                updateImagePath(state.data)
+                                return@collect
+                            }
+                        }
+                    }
+                }
+                .awaitAll()
+        } finally {
+            setLoading(false)
         }
     }
+
+    private suspend fun saveImagesToFileDir() {
+        val unSavedImages = _state.value.dailyLogItemDetails.mediaItems.filter { it.isPendingSave && !it.isDeleted }
+        unSavedImages.forEach { item->
+            fileRepository.saveMedia(item.mediaPath.toUri()).collect { state->
+                if (state is ProcessState.Success<String>) {
+                    _state.update { current->
+                        val updatedMediaItems = current.dailyLogItemDetails.mediaItems.map { mediaItem->
+                            if(mediaItem == item){
+                                mediaItem.copy(
+                                    mediaPath = state.data,
+                                    isPendingSave = false
+                                )
+                            } else mediaItem
+                        }
+                        current.copy(
+                            dailyLogItemDetails = current.dailyLogItemDetails.copy(
+                                mediaItems = updatedMediaItems
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+    }
+
+
 
     private fun deleteDailyLog() = viewModelScope.launch(Dispatchers.IO) {
         val id = _state.value.dailyLogItemDetails.id ?: return@launch
         habitLocalRepository.deleteDailyLog(id)
+        _state.update {
+            it.copy(showDeleteDialog = false)
+        }
         sendEffect(DailyLogEffect.OnNavigateBack)
     }
 
@@ -199,6 +435,12 @@ class DailyLogViewModel @Inject constructor(
     }
 
     private fun sendEffect(effect: DailyLogEffect) = viewModelScope.launch {
-        _effect.emit(effect)
+        _effect.send(effect)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        fileRepository.clearCacheMedia()
     }
 }

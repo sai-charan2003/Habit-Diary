@@ -4,8 +4,13 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import com.charan.habitdiary.R
+import androidx.core.net.toUri
+import com.charan.habitdiary.DeepLinkHandler
 
 class NotificationHelper(private val context: Context) {
     private val notificationManager =
@@ -20,33 +25,70 @@ class NotificationHelper(private val context: Context) {
     }
 
     fun createHabitReminderNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                HABIT_REMINDER_CHANNEL_ID,
-                HABIT_REMINDER_CHANNEL_NAME,
-                IMPORTANCE_HIGH
-            ).apply {
-                description = "Habit Reminder notifications"
-            }
-            notificationManager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            HABIT_REMINDER_CHANNEL_ID,
+            HABIT_REMINDER_CHANNEL_NAME,
+            IMPORTANCE_HIGH
+        ).apply {
+            description = "Habit Reminder notifications"
         }
+        notificationManager.createNotificationChannel(channel)
     }
 
-    fun showNotification(title: String, message: String) {
-
-        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Notification.Builder(context, HABIT_REMINDER_CHANNEL_ID)
-        } else {
-            Notification.Builder(context)
+    fun showNotification(
+        title: String,
+        message: String,
+        habitId : Long
+    ) {
+        val markAsDoneIntent = Intent(context, NotificationReceiver::class.java).apply {
+            action = IntentActions.MARK_AS_DONE.name
+            putExtra("habitId", habitId)
         }
+        val markAsDoneActionIntent = PendingIntent.getBroadcast(
+            context,
+            habitId.toInt(),
+            markAsDoneIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val openHabitStatScreen = Intent(
+            Intent.ACTION_VIEW,
+            "habitdiary://app/${DeepLinkHandler.HABIT_STATS_URI}?id=$habitId".toUri()
+        ).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            putExtra("habitId", habitId)
+        }
+
+        val openHabitStatsIntent = PendingIntent.getActivity(
+            context,
+            habitId.hashCode(),
+            openHabitStatScreen,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+
+
+        val builder =
+            Notification.Builder(context, HABIT_REMINDER_CHANNEL_ID)
 
         val notification = builder
             .setContentTitle(title)
             .setContentText(message)
-            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setSmallIcon(R.drawable.notification_icon)
             .setAutoCancel(true)
+            .setContentIntent(openHabitStatsIntent)
+            .addAction(
+                Notification.Action.Builder(
+                    null,
+                    "Mark as Done",
+                    markAsDoneActionIntent
+                ).build()
+            )
             .build()
 
-        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
+        notificationManager.notify(habitId.toInt(), notification)
+    }
+
+    fun cancelNotification(habitId : Long){
+        notificationManager.cancel(habitId.toInt())
     }
 }
