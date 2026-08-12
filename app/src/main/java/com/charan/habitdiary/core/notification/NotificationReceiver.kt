@@ -48,6 +48,12 @@ class NotificationReceiver : BroadcastReceiver() {
                                 return@launch
                             }
                             val habitLog = habitLogResult.getOrNull()
+
+
+                            if(habit.isDeleted || !habit.isReminderEnabled){
+                                notificationScheduler.cancelReminder(habitId)
+                                return@launch
+                            }
                             
                             if(habitLog == null){
                                 notificationHelper.showNotification(
