@@ -7,4 +7,5 @@ data class MediaViewerState(
     val showPermissionDialog : Boolean = false,
     val images : List<MediaItemUIModel> = emptyList(),
     val currentIndex : Int = 0,
+    val totalImages : Int = images.size
 )
