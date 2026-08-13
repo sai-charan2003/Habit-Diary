@@ -45,6 +45,12 @@ import com.charan.habitdiary.presentation.mediaviewer.components.MiniVideoPlayer
 import com.charan.habitdiary.presentation.mediaviewer.components.VideoViewer
 import com.charan.habitdiary.core.utils.isVideo
 import com.skydoves.cloudy.cloudy
+import dev.chrisbanes.haze.HazeInput
+import dev.chrisbanes.haze.HazePerformanceMode
+import dev.chrisbanes.haze.blur.HazeBlurStyle
+import dev.chrisbanes.haze.blur.hazeBlur
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -59,6 +65,7 @@ fun CustomCarouselImageItem(
     if (mediaPaths.isEmpty()) return
 
     val imageLoader = rememberMediaImageLoader()
+    val hazeState = rememberHazeState()
 
     HorizontalMultiBrowseCarousel(
         state = rememberCarouselState { mediaPaths.size },
@@ -79,22 +86,23 @@ fun CustomCarouselImageItem(
             elevation = CardDefaults.cardElevation(4.dp)
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-                AsyncImage(
-                    model = item,
-                    imageLoader = imageLoader,
-                    contentDescription = null,
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .cloudy(radius = 50)
-                        .alpha(0.6f),
-                    contentScale = ContentScale.Crop
+                        .matchParentSize()
+                        .hazeBlur(
+                            input = HazeInput.Sources(hazeState),
+                            style = HazeBlurStyle {
+                                noiseFactor(0f)
+                            },
+                            performanceMode = HazePerformanceMode.Adaptive,
+                        ),
                 )
                 if (isVideo) {
                     MiniVideoPlayer(
                         videoPath = item,
                         onVideoClick = {
                             onImageOpen(item)
-                        }
+                        },
                     )
                 } else {
                     AsyncImage(
@@ -103,8 +111,10 @@ fun CustomCarouselImageItem(
                         contentDescription = stringResource(R.string.media_preview),
                         modifier = Modifier
                             .fillMaxSize()
-                            .clickable { onImageOpen(item) },
-                        contentScale = ContentScale.Fit
+                            .hazeSource(hazeState)
+                            .clickable { onImageOpen(item) }
+                        ,
+                        contentScale = ContentScale.Fit,
                     )
                 }
                 if (isEdit) {

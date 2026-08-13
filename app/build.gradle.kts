@@ -184,6 +184,8 @@ dependencies {
     implementation(libs.androidx.compose.adaptive.navigation3)
     implementation(libs.richeditor.compose)
     debugImplementation(libs.leakcanary)
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
 
 
 }
