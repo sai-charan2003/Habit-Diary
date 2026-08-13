@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -76,4 +77,15 @@ private fun MediaActionIcon(
             contentDescription = contentDescription
         )
     }
+}
+
+
+@Preview
+@Composable
+fun MediaActionButtonPreview() {
+    MediaActionButton(
+        onShareClick = {},
+        onSaveClick = {},
+        isDownloading = false
+    )
 }

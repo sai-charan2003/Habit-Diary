@@ -8,6 +8,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +30,8 @@ import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.rounded.OpenInNew
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -166,7 +169,26 @@ fun MediaViewerScreen(
             TopAppBar(
                 title = {},
                 navigationIcon = { BackButton(onBackClick = onBack) },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                actions = {
+                    Box(
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .background(Color.Black.copy(alpha = 0.5f), shape = CircleShape)
+                            .padding(5.dp),
+
+                        contentAlignment = Alignment.Center
+
+                    ) {
+                        Text(
+                            text = "${pageState.currentPage + 1} / ${state.images.size}",
+                            modifier = Modifier
+                                .wrapContentSize()
+
+                        )
+                    }
+
+                }
             )
         },
         bottomBar = {
