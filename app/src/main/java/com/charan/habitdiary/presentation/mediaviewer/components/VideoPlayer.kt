@@ -158,7 +158,8 @@ private fun VideoScrubber(
 @Composable
 fun MiniVideoPlayer(
     videoPath : String,
-    onVideoClick : () -> Unit
+    onVideoClick : () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val player = remember {
@@ -167,7 +168,7 @@ fun MiniVideoPlayer(
             val mediaItem = MediaItem.fromUri(videoPath.toUri())
             setMediaItem(mediaItem)
             prepare()
-            playWhenReady = false
+            playWhenReady = true
             mute()
         }
     }
@@ -181,7 +182,7 @@ fun MiniVideoPlayer(
         }
     }
     Box(
-        modifier = Modifier
+        modifier = modifier
     ) {
         Player(
             player = player,
@@ -199,7 +200,7 @@ fun MiniVideoPlayer(
             },
             modifier = Modifier
                 .align(Alignment.Center)
-                .size(30.dp)
+                .size(IconButtonDefaults.extraSmallContainerSize())
             ,
             colors = IconButtonDefaults.filledTonalIconButtonColors(
                 containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f)
