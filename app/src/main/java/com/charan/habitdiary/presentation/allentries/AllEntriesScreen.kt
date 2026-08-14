@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -20,6 +22,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TonalToggleButton
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.FilledTonalToggleButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -97,36 +101,9 @@ fun AllEntriesScreen(
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    EntriesTab.entries.forEachIndexed { index, tab ->
-                        TonalToggleButton(
-                            checked = state.selectedTab == tab,
-                            onCheckedChange = {
-                                viewModel.onEvent(AllEntriesEvent.OnTabSelected(tab))
-                            },
-                            shapes = when (index) {
-                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                EntriesTab.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                            },
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text(
-                                text = stringResource(tab.titleResId),
-                                style = MaterialTheme.typography.labelMedium
-                            )
-                        }
-                    }
-                }
-            }
-
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     LogSortButton(
                         sortTypeRes = state.sortType.toResId(),
@@ -136,6 +113,35 @@ fun AllEntriesScreen(
                         },
                         onToggleSort = { viewModel.onEvent(AllEntriesEvent.OnSortToggle) }
                     )
+                    Row(
+                        modifier = Modifier
+
+
+                    ) {
+                        EntriesTab.entries.forEachIndexed { index, tab ->
+                            FilledTonalToggleButton(
+                                checked = state.selectedTab == tab,
+                                onCheckedChange = {
+                                    viewModel.onEvent(AllEntriesEvent.OnTabSelected(tab))
+                                },
+                                shapes = when (index) {
+                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                    EntriesTab.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                },
+                                contentPadding = ButtonDefaults.contentPaddingFor(ButtonDefaults.ExtraSmallContainerHeight, hasStartIcon = true)
+
+                            ) {
+                                Icon(
+                                    imageVector = tab.icon,
+                                    contentDescription = stringResource(tab.titleResId),
+                                    modifier = Modifier.size(ButtonDefaults.iconSizeFor(ButtonDefaults.ExtraSmallContainerHeight))
+                                )
+                            }
+                        }
+
+                    }
+
                 }
             }
 
