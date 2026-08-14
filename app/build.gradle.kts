@@ -30,8 +30,8 @@ android {
         applicationId = "com.charan.habitdiary"
         minSdk = 26
         targetSdk = 37
-        versionCode = 22
-        versionName = "0.14.0"
+        versionCode = 23
+        versionName = "0.15.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -184,6 +184,8 @@ dependencies {
     implementation(libs.androidx.compose.adaptive.navigation3)
     implementation(libs.richeditor.compose)
     debugImplementation(libs.leakcanary)
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
 
 
 }

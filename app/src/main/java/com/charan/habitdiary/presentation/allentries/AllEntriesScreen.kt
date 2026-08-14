@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ContainedLoadingIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -20,6 +24,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TonalToggleButton
 import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalToggleButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +43,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.charan.habitdiary.R
+import com.charan.habitdiary.core.utils.isVideo
 import com.charan.habitdiary.data.model.enums.DailyLogSortType
 import com.charan.habitdiary.presentation.common.components.CustomMediumTopBar
 import com.charan.habitdiary.presentation.common.components.DayLogEntryItem
@@ -97,36 +106,9 @@ fun AllEntriesScreen(
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    EntriesTab.entries.forEachIndexed { index, tab ->
-                        TonalToggleButton(
-                            checked = state.selectedTab == tab,
-                            onCheckedChange = {
-                                viewModel.onEvent(AllEntriesEvent.OnTabSelected(tab))
-                            },
-                            shapes = when (index) {
-                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                EntriesTab.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                            },
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Text(
-                                text = stringResource(tab.titleResId),
-                                style = MaterialTheme.typography.labelMedium
-                            )
-                        }
-                    }
-                }
-            }
-
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     LogSortButton(
                         sortTypeRes = state.sortType.toResId(),
@@ -136,6 +118,35 @@ fun AllEntriesScreen(
                         },
                         onToggleSort = { viewModel.onEvent(AllEntriesEvent.OnSortToggle) }
                     )
+                    Row(
+                        modifier = Modifier
+
+
+                    ) {
+                        EntriesTab.entries.forEachIndexed { index, tab ->
+                            FilledTonalToggleButton(
+                                checked = state.selectedTab == tab,
+                                onCheckedChange = {
+                                    viewModel.onEvent(AllEntriesEvent.OnTabSelected(tab))
+                                },
+                                shapes = when (index) {
+                                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                    EntriesTab.entries.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                },
+                                contentPadding = ButtonDefaults.contentPaddingFor(ButtonDefaults.ExtraSmallContainerHeight, hasStartIcon = true)
+
+                            ) {
+                                Icon(
+                                    imageVector = tab.icon,
+                                    contentDescription = stringResource(tab.titleResId),
+                                    modifier = Modifier.size(ButtonDefaults.iconSizeFor(ButtonDefaults.ExtraSmallContainerHeight))
+                                )
+                            }
+                        }
+
+                    }
+
                 }
             }
 
@@ -189,22 +200,53 @@ fun AllEntriesScreen(
 
                     EntriesTab.GALLERY -> {
                         items(allImages) { mediaItem ->
-                            AsyncImage(
-                                model = mediaItem.mediaPath,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .aspectRatio(1f)
-                                    .clip(MaterialTheme.shapes.medium)
-                                    .clickable {
-                                        viewModel.onEvent(
-                                            AllEntriesEvent.OnImageClick(
-                                                allImages,
-                                                mediaItem
+                            Box(){
+                                AsyncImage(
+                                    model = mediaItem.mediaPath,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .aspectRatio(1f)
+                                        .clip(MaterialTheme.shapes.medium)
+                                        .clickable {
+                                            viewModel.onEvent(
+                                                AllEntriesEvent.OnImageClick(
+                                                    allImages,
+                                                    mediaItem
+                                                )
                                             )
+                                        }
+                                )
+                                if(mediaItem.mediaPath.isVideo()) {
+
+                                    FilledIconButton(
+                                        onClick = {
+                                            viewModel.onEvent(
+                                                AllEntriesEvent.OnImageClick(
+                                                    allImages,
+                                                    mediaItem
+                                                )
+                                            )
+                                        },
+                                        modifier = Modifier
+                                            .align(Alignment.TopEnd)
+                                            .size(IconButtonDefaults.extraSmallContainerSize())
+                                            .padding(5.dp),
+                                        colors = IconButtonDefaults.filledIconButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                                        ),
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.PlayArrow,
+                                            contentDescription = stringResource(R.string.play_or_pause_video),
+                                            modifier = Modifier.size(IconButtonDefaults.extraSmallIconSize)
+
                                         )
                                     }
-                            )
+                                }
+
+                            }
+
                         }
                     }
                 }
