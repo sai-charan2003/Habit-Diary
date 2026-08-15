@@ -8,6 +8,7 @@ import com.charan.habitdiary.data.repository.FileRepository
 import com.charan.habitdiary.presentation.common.model.ToastMessage
 import com.charan.habitdiary.core.utils.PermissionManager
 import com.charan.habitdiary.core.utils.isSDK29OrAbove
+import com.charan.habitdiary.core.utils.isVideo
 import com.charan.habitdiary.presentation.common.model.MediaItemUIModel
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -63,6 +64,11 @@ class MediaViewerViewModel @AssistedInject constructor(
 
             }
 
+            is MediaViewerEvent.OpenMediaInExternalApp -> {
+                handleOpenMediaInExternalApp(event.filePath)
+
+            }
+
             is MediaViewerEvent.ToggleStoragePermissionRationale -> {
                 handleStoragePermissionRationale(event.show)
             }
@@ -99,6 +105,12 @@ class MediaViewerViewModel @AssistedInject constructor(
         val fileUri = fileRepository.getMediaUri(filePath)
         sendEffect(MediaViewerEffect.ShareMedia(fileUri))
 
+    }
+
+    private fun handleOpenMediaInExternalApp(filePath: String) = viewModelScope.launch {
+        val fileUri = fileRepository.getMediaUri(filePath)
+        val mimeType = if (filePath.isVideo()) "video/*" else "image/*"
+        sendEffect(MediaViewerEffect.OpenMediaInExternalApp(fileUri, mimeType))
     }
 
     private fun handleMediaDownload(filePath : String) = viewModelScope.launch {

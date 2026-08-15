@@ -9,5 +9,7 @@ sealed class MediaViewerEffect {
 
     data class ShareMedia(val filePath : Uri) : MediaViewerEffect()
 
+    data class OpenMediaInExternalApp(val filePath : Uri, val mimeType : String) : MediaViewerEffect()
+
     data object RequestStoragePermission : MediaViewerEffect()
 }

@@ -50,6 +50,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.LocalUiMediaScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -57,6 +58,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -70,6 +72,8 @@ import com.charan.habitdiary.presentation.common.model.MediaItemUIModel
 import com.charan.habitdiary.presentation.mediaviewer.components.MediaActionButton
 import com.charan.habitdiary.presentation.mediaviewer.components.VideoViewer
 import com.charan.habitdiary.core.utils.isVideo
+import com.charan.habitdiary.core.utils.launchExternalApp
+import com.charan.habitdiary.core.utils.launchShareIntent
 import com.charan.habitdiary.core.utils.showToast
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -126,16 +130,16 @@ fun MediaViewerScreen(
                 }
 
                 is MediaViewerEffect.ShareMedia -> {
-                        val shareIntent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_STREAM, effect.filePath)
-                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            type = context.contentResolver.getType(effect.filePath)
-                        }
+                    context.launchShareIntent(
+                        effect.filePath,
+                        context.contentResolver.getType(effect.filePath) ?: "*/*",
+                    )
 
-                        val chooser = Intent.createChooser(shareIntent, context.getString(R.string.share_via))
-                        context.startActivity(chooser)
-                    }
+                }
+
+                is MediaViewerEffect.OpenMediaInExternalApp -> {
+                    context.launchExternalApp(effect.filePath, context.contentResolver.getType(effect.filePath) ?: "*/*")
+                }
 
                 is MediaViewerEffect.RequestStoragePermission -> {
                     if(storagePermission.status.shouldShowRationale){
@@ -241,6 +245,16 @@ fun MediaViewerScreen(
                                 ))
                             }
                         },
+                        onOpenWith = {
+                            state.images.getOrNull(pageState.currentPage)?.let { mediaItem ->
+                                viewModel.onEvent(
+                                    MediaViewerEvent.OpenMediaInExternalApp(
+                                        filePath = mediaItem.mediaPath
+                                    )
+                                )
+                            }
+                        },
+
                         isDownloading = state.isDownloading
                     )
                 }

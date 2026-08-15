@@ -178,6 +178,39 @@ fun Context.launchUrl(url : String){
 
 }
 
+fun Context.launchExternalApp(filePath : Uri, mimeType : String){
+    try {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(filePath, mimeType)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+        val chooser = Intent.createChooser(intent, getString(R.string.open_with))
+        this.startActivity(chooser)
+    } catch (e: Exception) {
+        showToast(
+            ToastMessage.Res(R.string.no_app_found)
+        )
+        return
+    }
+}
+
+fun Context.launchShareIntent(filePath : Uri, mimeType : String){
+    try {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = mimeType
+            putExtra(Intent.EXTRA_STREAM, filePath)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+        val chooser = Intent.createChooser(intent, getString(R.string.share))
+        this.startActivity(chooser)
+    } catch (e: Exception) {
+        showToast(
+            ToastMessage.Res(R.string.no_app_found)
+        )
+        return
+    }
+}
+
 fun Long.toFormatTimeMs(): String {
     if (this <= 0) return "0:00"
 
