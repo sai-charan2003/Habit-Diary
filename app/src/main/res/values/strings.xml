@@ -204,4 +204,7 @@
     <string name="three_months_ago">3 Months Ago</string>
     <string name="exporting_data">Exporting Data</string>
     <string name="importing_data">Importing Data</string>
+    <string name="share">Share</string>
+    <string name="open_with">Open with</string>
+    <string name="no_app_found">No app found to open this media</string>
 </resources>
