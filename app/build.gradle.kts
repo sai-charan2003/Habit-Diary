@@ -33,8 +33,8 @@ android {
         applicationId = "com.charan.habitdiary"
         minSdk = 26
         targetSdk = 37
-        versionCode = 16
-        versionName = "0.11.0"
+        versionCode = 23
+        versionName = "0.15.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -151,6 +151,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.sqlite.bundled)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.kotlinx.serialization.json)
@@ -185,10 +186,12 @@ dependencies {
     implementation(libs.androidx.compose.adaptive.navigation)
     implementation(libs.androidx.compose.adaptive.navigation3)
     implementation(libs.richeditor.compose)
-    implementation( libs.androidx.appfunctions)
-    implementation (libs.androidx.appfunctions.service)
-
-    ksp (libs.androidx.appfunctions.compiler)
+    implementation(libs.androidx.appfunctions)
+    implementation(libs.androidx.appfunctions.service)
+    ksp(libs.androidx.appfunctions.compiler)
+    debugImplementation(libs.leakcanary)
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
 
 
 }

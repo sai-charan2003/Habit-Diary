@@ -20,6 +20,7 @@ import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
@@ -42,6 +43,10 @@ import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.diary.DiaryScreen
 import com.charan.habitdiary.presentation.habits.HabitScreen
 import com.charan.habitdiary.presentation.settings.SettingsScreen
+import com.charan.habitdiary.presentation.common.model.MediaItemUIModel
+import com.charan.habitdiary.presentation.journey.JourneyScreen
+import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.rounded.Explore
 import kotlinx.datetime.LocalDate
 
 @Composable
@@ -49,9 +54,9 @@ fun BottomBarNavigation(
     onAddHabitNav : (Long?) -> Unit,
     onAddDailyLogNav : (id : Long? , date : LocalDate?) -> Unit,
     onNavigateToAboutLibraries : () -> Unit,
-    onImageOpen : (allImage : List<String>,currentImage : String) -> Unit,
+    onImageOpen : (allImage : List<MediaItemUIModel>,currentImage : MediaItemUIModel, showLogEntryButton: Boolean) -> Unit,
     onHabitStats : (id : Long) -> Unit,
-
+    onNavigateToAllEntries : () -> Unit,
 ) {
     val bottomBarBackStack = rememberNavBackStack(BottomBarNavDestinations.Home)
     var selectedItem by rememberSaveable {
@@ -60,7 +65,7 @@ fun BottomBarNavigation(
     var previousSelectedItem by rememberSaveable { mutableIntStateOf(0) }
 
     val navSuiteType =
-        NavigationSuiteScaffoldDefaults.navigationSuiteType(currentWindowAdaptiveInfo())
+        NavigationSuiteScaffoldDefaults.navigationSuiteType(currentWindowAdaptiveInfoV2())
     val (entryAnimation, exitAnimation) = remember(
         selectedItem,
         previousSelectedItem,
@@ -119,6 +124,11 @@ fun BottomBarNavigation(
             BottomNavItem.CALENDAR -> {
                 bottomBarBackStack.clear()
                 bottomBarBackStack.add(BottomBarNavDestinations.Calender)
+            }
+
+            BottomNavItem.JOURNEY -> {
+                bottomBarBackStack.clear()
+                bottomBarBackStack.add(BottomBarNavDestinations.Journey)
             }
 
             BottomNavItem.SETTINGS -> {
@@ -198,11 +208,15 @@ fun BottomBarNavigation(
                                     date
                                 )
                             },
-                            onImageOpen = { allImages, currentImage ->
+                            onImageOpen = { allImages, currentImage, showLogEntryButton ->
                                 onImageOpen(
                                     allImages,
-                                    currentImage
+                                    currentImage,
+                                    showLogEntryButton
                                 )
+                            },
+                            onNavigateToAllEntries = {
+                                onNavigateToAllEntries()
                             }
                         )
                     }
@@ -212,6 +226,18 @@ fun BottomBarNavigation(
                             navigateToAboutLibraries = {
                                 onNavigateToAboutLibraries()
 
+                            }
+                        )
+                    }
+
+                    is BottomBarNavDestinations.Journey -> NavEntry(key) {
+                        JourneyScreen(
+                            onImageClick = { allImages, currentImage, showLogEntryButton ->
+                                onImageOpen(
+                                    allImages,
+                                    currentImage,
+                                    showLogEntryButton
+                                )
                             }
                         )
                     }
@@ -240,6 +266,11 @@ enum class BottomNavItem(
         title = R.string.diary,
         selectedIcon = Icons.Rounded.ImportContacts,
         unselectedIcon = Icons.Outlined.ImportContacts,
+    ),
+    JOURNEY(
+        title = R.string.journey,
+        selectedIcon = Icons.Rounded.Explore,
+        unselectedIcon = Icons.Outlined.Explore,
     ),
     SETTINGS(
         title = R.string.settings,

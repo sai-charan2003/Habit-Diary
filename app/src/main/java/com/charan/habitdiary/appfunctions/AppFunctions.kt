@@ -1,19 +1,19 @@
 package com.charan.habitdiary.appfunctions
 
-import android.util.Log
 import androidx.appfunctions.AppFunctionContext
 import androidx.appfunctions.AppFunctionSerializable
 import androidx.appfunctions.service.AppFunction
+import com.charan.habitdiary.core.utils.DateUtil
 import com.charan.habitdiary.data.local.entity.HabitEntity
-import com.charan.habitdiary.data.repository.HabitLocalRepository
-import com.charan.habitdiary.utils.DateUtil
+import com.charan.habitdiary.data.repository.HabitRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalTime
+import javax.inject.Inject
 
-class AppFunctions(
-    private val habitLocalRepository: HabitLocalRepository
+class AppFunctions @Inject constructor(
+    private val habitRepository: HabitRepository
 ) {
 
     /**
@@ -47,7 +47,7 @@ class AppFunctions(
     ): List<HabitDetails> {
         return withContext(Dispatchers.IO) {
             val pendingHabits =
-                habitLocalRepository.getTodayHabits().filter { !it.isDone }
+                habitRepository.getTodayHabitsList().getOrNull()?.filter { !it.isDone } ?: emptyList()
 
             pendingHabits.map { it.habitEntity.toHabitDetails() }
         }
@@ -98,7 +98,7 @@ class AppFunctions(
             }
 
             val habitEntity = HabitEntity(
-                id = habitId ?: 0 ,
+                id = habitId ?: 0,
                 habitName = habitName,
                 habitDescription = habitDescription,
                 habitTime = parsedHabitTime,
@@ -109,7 +109,7 @@ class AppFunctions(
                 createdAt = DateUtil.getCurrentDateTime(),
             )
 
-            habitLocalRepository.upsetHabit(habitEntity)
+            habitRepository.upsertHabit(habitEntity)
         }
     }
 
@@ -126,12 +126,11 @@ class AppFunctions(
     ): List<HabitDetails> {
         return withContext(Dispatchers.IO) {
             val pendingHabits =
-                habitLocalRepository.getAllHabits().filter { !it.isDeleted }
+                habitRepository.getAllHabits().getOrNull()?.filter { !it.isDeleted } ?: emptyList()
 
-           pendingHabits.map { it.toHabitDetails() }
+            pendingHabits.map { it.toHabitDetails() }
         }
     }
-
 
     private fun HabitEntity.toHabitDetails(): HabitDetails {
         return HabitDetails(

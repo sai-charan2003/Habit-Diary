@@ -12,26 +12,16 @@ import kotlinx.datetime.DayOfWeek
 interface HabitDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsetHabit(habit: HabitEntity) : Long
+    suspend fun upsertHabit(habit: HabitEntity) : Long
 
     @Insert
-    fun insertHabits(habits: List<HabitEntity>) : List<Long>
+    suspend fun insertHabits(habits: List<HabitEntity>) : List<Long>
 
     @Query("SELECT * FROM habit_entity ORDER BY createdAt DESC")
     fun getAllHabitsFlow(): Flow<List<HabitEntity>>
 
     @Query("SELECT * FROM habit_entity ORDER BY createdAt DESC")
-    fun getAllHabits(): List<HabitEntity>
-
-    @Query("""
-    SELECT * FROM habit_entity
-    WHERE isDeleted = 0
-    AND habitFrequency LIKE '%' || :currentDayOfWeek || '%'
-    ORDER BY habitTime
-""")
-    fun getTodayHabitsFlow(
-        currentDayOfWeek: DayOfWeek
-    ): Flow<List<HabitEntity>>
+    suspend fun getAllHabits(): List<HabitEntity>
 
     @Query("""
     SELECT * FROM habit_entity
@@ -41,6 +31,16 @@ interface HabitDao {
 """)
     fun getTodayHabits(
         currentDayOfWeek: DayOfWeek
+    ): Flow<List<HabitEntity>>
+
+    @Query("""
+    SELECT * FROM habit_entity
+    WHERE isDeleted = 0
+    AND habitFrequency LIKE '%' || :currentDayOfWeek || '%'
+    ORDER BY habitTime
+""")
+    suspend fun getTodayHabitsList(
+        currentDayOfWeek: DayOfWeek
     ): List<HabitEntity>
 
 
@@ -48,10 +48,10 @@ interface HabitDao {
 
 
     @Query("SELECT * FROM habit_entity WHERE id = :id")
-    fun getHabitWithId(id: Long): HabitEntity
+    suspend fun getHabitWithId(id: Long): HabitEntity
 
     @Query("UPDATE habit_entity SET isDeleted = 1 WHERE id = :id")
-    fun deleteHabit(id: Long)
+    suspend fun deleteHabit(id: Long)
 
     @Query("SELECT * FROM habit_entity WHERE id = :id")
     fun getHabitByIdFLow(id: Long): Flow<HabitEntity>

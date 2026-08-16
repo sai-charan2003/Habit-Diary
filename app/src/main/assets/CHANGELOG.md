@@ -1,5 +1,10 @@
-## Features
+## New Features
+- Added a play icon indicator on video items in the gallery view.
+- Added an index counter in the media viewer to show the current media position.
 
-* Added changelog feature to display app updates within the app.
-* Swipe gesture support to switch between week and month views.
-* Added “Rate on Google Play” option in Settings.
+## Improvements
+- Enhanced the All Entries top bar with updated view toggles and sort controls.
+- Improved media carousel performance and video preview playback.
+
+## Bug Fixes
+- Fixed an issue where notifications were sent for deleted or disabled habit reminders.
