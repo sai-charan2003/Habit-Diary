@@ -101,7 +101,8 @@ jobs:
 
           mkdir -p whatsnew
           if [ -f "$CHANGELOG_PATH" ]; then
-            head -c 500 "$CHANGELOG_PATH" > whatsnew/whatsnew-en-US
+            # Remove '## ' headers for Google Play release notes (plain text)
+            sed 's/^## //' "$CHANGELOG_PATH" | head -c 500 > whatsnew/whatsnew-en-US
           else
             echo "Released on $RELEASE_DATE" > whatsnew/whatsnew-en-US
           fi
