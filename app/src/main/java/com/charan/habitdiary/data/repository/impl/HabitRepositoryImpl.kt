@@ -8,6 +8,7 @@ import com.charan.habitdiary.data.repository.HabitRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDateTime
@@ -101,5 +102,23 @@ class HabitRepositoryImpl @Inject constructor(
         return habitDao.getHabitByIdFLow(id)
             .map { Result.success(it) }
             .catch { emit(Result.failure(it)) }
+    }
+
+    override suspend fun getTodayHabitsList(currentDayOfWeek: DayOfWeek): Result<List<HabitWithDone>> = suspendRunCatching {
+        val todayHabits = habitDao.getTodayHabitsList(currentDayOfWeek)
+        val loggedHabits = diaryRepository.getLoggedHabitIdsForRange().first().getOrThrow()
+        todayHabits.map { habit ->
+            val log = loggedHabits.find { it.habitId == habit.id }
+            HabitWithDone(
+                habitEntity = habit,
+                isDone = log != null,
+                logId = log?.id,
+                created = log?.createdAt
+            )
+        }
+    }
+
+    override suspend fun getHabitByName(habitName: String): Result<HabitEntity?> = suspendRunCatching {
+        habitDao.getHabitByName(habitName)
     }
 }

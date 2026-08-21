@@ -14,6 +14,9 @@ plugins {
 
 }
 val appName = "Habit Diary"
+ksp {
+    arg("appfunctions:aggregateAppFunctions", "true")
+}
 
 android {
     namespace = "com.charan.habitdiary"
@@ -183,6 +186,9 @@ dependencies {
     implementation(libs.androidx.compose.adaptive.navigation)
     implementation(libs.androidx.compose.adaptive.navigation3)
     implementation(libs.richeditor.compose)
+    implementation(libs.androidx.appfunctions)
+    implementation(libs.androidx.appfunctions.service)
+    ksp(libs.androidx.appfunctions.compiler)
     debugImplementation(libs.leakcanary)
     implementation(libs.haze)
     implementation(libs.haze.blur)

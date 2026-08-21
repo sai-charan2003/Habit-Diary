@@ -9,6 +9,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+import com.charan.habitdiary.appfunctions.AppFunctions
+import com.charan.habitdiary.data.repository.HabitRepository
+
 @Module
 @InstallIn(SingletonComponent::class)
 object SystemModule {
@@ -18,4 +21,10 @@ object SystemModule {
     fun provideBiometricManager(
         @ApplicationContext context: Context
     ) : BiometricManager = BiometricManager.from(context)
+
+    @Provides
+    @Singleton
+    fun provideAppFunctions(
+        habitRepository: HabitRepository
+    ): AppFunctions = AppFunctions(habitRepository)
 }

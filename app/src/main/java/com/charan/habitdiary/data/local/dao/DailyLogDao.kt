@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import androidx.room.Upsert
 import com.charan.habitdiary.data.local.entity.DailyLogEntity
 import com.charan.habitdiary.data.local.model.DailyLogWithHabit
 import com.charan.habitdiary.data.local.model.DailyLogWithMedia
@@ -51,7 +50,10 @@ interface DailyLogDao {
     suspend fun deleteDailyLog(id: Long)
 
     @Query("SELECT * FROM daily_log_entity WHERE createdAt >= :startOfDay and createdAt <= :endOfDay AND isDeleted = 0")
-    fun getLoggedHabitIdsForToday(startOfDay: LocalDateTime,endOfDay : LocalDateTime): Flow<List<DailyLogEntity>>
+    fun getLoggedHabitIdsForToday(startOfDay: LocalDateTime, endOfDay : LocalDateTime): Flow<List<DailyLogEntity>>
+
+    @Query("SELECT * FROM daily_log_entity WHERE createdAt >= :startOfDay and createdAt <= :endOfDay AND isDeleted = 0")
+    suspend fun getLoggedHabitIdsForTodayList(startOfDay: LocalDateTime, endOfDay : LocalDateTime): List<DailyLogEntity>
 
     @Query("SELECT * FROM daily_log_entity WHERE habitId = :habitId AND createdAt >= :startOfDay and createdAt <= :endOfDay AND isDeleted = 0 LIMIT 1")
     suspend fun getLoggedHabitFromIdForRange(habitId : Long,startOfDay: LocalDateTime,endOfDay : LocalDateTime): DailyLogEntity?
