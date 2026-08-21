@@ -8,6 +8,8 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import com.charan.habitdiary.R
 
@@ -17,7 +19,7 @@ object AppFonts {
     val GoogleSans =
         FontFamily(
             Font(
-                resId = R.font.google_sans_flex_variable,
+                googleFont = GoogleFont("Google Sans Flex"),
                 variationSettings = FontVariation.Settings(
                     FontVariation.width(100f),
                     FontVariation.weight(FontWeight.Normal.weight),
@@ -32,10 +34,11 @@ object AppFonts {
     val GoogleSansWide =
         FontFamily(
             Font(
-                resId = R.font.google_sans_flex_variable,
+                googleFont = GoogleFont("Google Sans Flex"),
                 variationSettings = FontVariation.Settings(
                     FontVariation.weight(FontWeight.Bold.weight),
                     FontVariation.width(125f),
+                    FontVariation.Setting("ROND", 0f)
                 )
             )
         )
