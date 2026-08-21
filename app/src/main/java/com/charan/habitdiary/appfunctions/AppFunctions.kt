@@ -47,7 +47,7 @@ class AppFunctions @Inject constructor(
     ): List<HabitDetails> {
         return withContext(Dispatchers.IO) {
             val pendingHabits =
-                habitRepository.getTodayHabitsList().getOrNull()?.filter { !it.isDone } ?: emptyList()
+                habitRepository.getTodayHabitsList().getOrThrow().filter { !it.isDone }
 
             pendingHabits.map { it.habitEntity.toHabitDetails() }
         }
@@ -98,7 +98,7 @@ class AppFunctions @Inject constructor(
             }
 
             val existingHabit = habitId?.let { id ->
-                habitRepository.getHabitWithId(id).getOrNull()
+                habitRepository.getHabitWithId(id).getOrThrow()
             }
 
             val habitEntity = HabitEntity(
@@ -130,7 +130,7 @@ class AppFunctions @Inject constructor(
     ): List<HabitDetails> {
         return withContext(Dispatchers.IO) {
             val pendingHabits =
-                habitRepository.getAllHabits().getOrNull()?.filter { !it.isDeleted } ?: emptyList()
+                habitRepository.getAllHabits().getOrThrow().filter { !it.isDeleted }
 
             pendingHabits.map { it.toHabitDetails() }
         }
