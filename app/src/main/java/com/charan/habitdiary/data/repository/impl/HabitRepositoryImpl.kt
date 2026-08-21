@@ -106,7 +106,7 @@ class HabitRepositoryImpl @Inject constructor(
 
     override suspend fun getTodayHabitsList(currentDayOfWeek: DayOfWeek): Result<List<HabitWithDone>> = suspendRunCatching {
         val todayHabits = habitDao.getTodayHabitsList(currentDayOfWeek)
-        val loggedHabits = diaryRepository.getLoggedHabitIdsForRange().first().getOrNull() ?: emptyList()
+        val loggedHabits = diaryRepository.getLoggedHabitIdsForRange().first().getOrThrow()
         todayHabits.map { habit ->
             val log = loggedHabits.find { it.habitId == habit.id }
             HabitWithDone(

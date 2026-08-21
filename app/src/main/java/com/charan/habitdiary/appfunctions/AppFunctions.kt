@@ -97,6 +97,10 @@ class AppFunctions @Inject constructor(
                 DayOfWeek.valueOf(it.uppercase())
             }
 
+            val existingHabit = habitId?.let { id ->
+                habitRepository.getHabitWithId(id).getOrNull()
+            }
+
             val habitEntity = HabitEntity(
                 id = habitId ?: 0,
                 habitName = habitName,
@@ -106,10 +110,10 @@ class AppFunctions @Inject constructor(
                 habitReminder = parsedReminderTime,
                 isDeleted = false,
                 isReminderEnabled = isReminderEnabled,
-                createdAt = DateUtil.getCurrentDateTime(),
+                createdAt = existingHabit?.createdAt ?: DateUtil.getCurrentDateTime(),
             )
 
-            habitRepository.upsertHabit(habitEntity)
+            habitRepository.upsertHabit(habitEntity).getOrThrow()
         }
     }
 
