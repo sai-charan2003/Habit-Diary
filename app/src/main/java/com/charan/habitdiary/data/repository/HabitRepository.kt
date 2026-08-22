@@ -24,6 +24,10 @@ interface HabitRepository {
     suspend fun insertHabits(habits: List<HabitEntity>): Result<List<Long>>
 
     fun getTodayHabits(currentDayOfWeek: DayOfWeek = DateUtil.getCurrentDayOfWeek()): Flow<Result<List<HabitWithDone>>>
+ 
+    suspend fun getTodayHabitsList(currentDayOfWeek: DayOfWeek = DateUtil.getCurrentDayOfWeek()): Result<List<HabitWithDone>>
 
     fun getHabitWithIdFlow(id: Long): Flow<Result<HabitEntity>>
+
+    suspend fun getHabitByName(habitName: String): Result<HabitEntity?>
 }

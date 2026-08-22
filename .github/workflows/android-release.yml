@@ -99,6 +99,24 @@ jobs:
             echo "No changelog found." >> release_notes.md
           fi
 
+          mkdir -p whatsnew
+          if [ -f "$CHANGELOG_PATH" ]; then
+            # Remove '## ' headers for Google Play release notes (plain text)
+            sed 's/^## //' "$CHANGELOG_PATH" | head -c 500 > whatsnew/whatsnew-en-US
+          else
+            echo "Released on $RELEASE_DATE" > whatsnew/whatsnew-en-US
+          fi
+
+      - name: Upload To Play Store
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: com.charan.habitdiary
+          releaseFile: app/build/outputs/bundle/release/*.aab
+          track: production
+          inAppUpdatePriority: 5
+          whatsNewDirectory: whatsnew
+
       - name: Create GitHub Beta Release
         if: ${{ env.IS_BETA == 'true' }}
         uses: softprops/action-gh-release@v2
