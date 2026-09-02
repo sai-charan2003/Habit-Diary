@@ -6,9 +6,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import androidx.room.Upsert
 import com.charan.habitdiary.data.local.entity.DailyLogEntity
 import com.charan.habitdiary.data.local.model.DailyLogWithHabit
+import com.charan.habitdiary.data.local.model.DailyLogWithMedia
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -50,7 +50,10 @@ interface DailyLogDao {
     suspend fun deleteDailyLog(id: Long)
 
     @Query("SELECT * FROM daily_log_entity WHERE createdAt >= :startOfDay and createdAt <= :endOfDay AND isDeleted = 0")
-    fun getLoggedHabitIdsForToday(startOfDay: LocalDateTime,endOfDay : LocalDateTime): Flow<List<DailyLogEntity>>
+    fun getLoggedHabitIdsForToday(startOfDay: LocalDateTime, endOfDay : LocalDateTime): Flow<List<DailyLogEntity>>
+
+    @Query("SELECT * FROM daily_log_entity WHERE createdAt >= :startOfDay and createdAt <= :endOfDay AND isDeleted = 0")
+    suspend fun getLoggedHabitIdsForTodayList(startOfDay: LocalDateTime, endOfDay : LocalDateTime): List<DailyLogEntity>
 
     @Query("SELECT * FROM daily_log_entity WHERE habitId = :habitId AND createdAt >= :startOfDay and createdAt <= :endOfDay AND isDeleted = 0 LIMIT 1")
     suspend fun getLoggedHabitFromIdForRange(habitId : Long,startOfDay: LocalDateTime,endOfDay : LocalDateTime): DailyLogEntity?
@@ -75,6 +78,14 @@ interface DailyLogDao {
     @Query("SELECT * FROM daily_log_entity WHERE isDeleted = 0 ORDER BY createdAt ASC")
     @Transaction
     fun getOldestLogWithHabit() : Flow<List<DailyLogWithHabit>>
+
+    @Transaction
+    @Query("SELECT * FROM daily_log_entity WHERE createdAt >= :start and createdAt <= :end and isDeleted = 0")
+    suspend fun getDailyLogWithMediaForDateRange(start: LocalDateTime, end: LocalDateTime): List<DailyLogWithMedia>
+
+    @Transaction
+    @Query("SELECT * FROM daily_log_entity WHERE isDeleted = 0")
+    suspend fun getAllLogsWithHabit() : List<DailyLogWithHabit>
 
 
 

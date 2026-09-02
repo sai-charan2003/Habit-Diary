@@ -33,7 +33,7 @@ class NotificationReceiver : BroadcastReceiver() {
             try {
                 when(intent?.action){
                     IntentActions.SHOW_NOTIFICATION.name -> {
-                        val habitId = intent?.getLongExtra("habitId", -1) ?: -1
+                        val habitId = intent.getLongExtra("habitId", -1)
                         if (habitId != -1L && appContext != null) {
                             val habitResult = habitRepository.getHabitWithId(habitId)
                             habitResult.onFailure {
@@ -48,6 +48,12 @@ class NotificationReceiver : BroadcastReceiver() {
                                 return@launch
                             }
                             val habitLog = habitLogResult.getOrNull()
+
+
+                            if(habit.isDeleted || !habit.isReminderEnabled){
+                                notificationScheduler.cancelReminder(habitId)
+                                return@launch
+                            }
                             
                             if(habitLog == null){
                                 notificationHelper.showNotification(
@@ -66,7 +72,7 @@ class NotificationReceiver : BroadcastReceiver() {
                     }
 
                     IntentActions.MARK_AS_DONE.name -> {
-                        val habitId = intent?.getLongExtra("habitId", -1) ?: -1
+                        val habitId = intent.getLongExtra("habitId", -1)
                         if (habitId != -1L) {
                             val habitResult = habitRepository.getHabitWithId(habitId)
                             habitResult.onFailure {

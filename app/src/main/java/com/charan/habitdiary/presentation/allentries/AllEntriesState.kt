@@ -1,6 +1,11 @@
 package com.charan.habitdiary.presentation.allentries
 
 import androidx.annotation.StringRes
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.List
+import androidx.compose.material.icons.rounded.GridOn
+import androidx.compose.material.icons.rounded.List
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.common.model.DailyLogItemUIModel
 import com.charan.habitdiary.data.model.enums.DailyLogSortType
@@ -15,7 +20,7 @@ data class AllEntriesState(
     val isLoading: Boolean = true
 )
 
-enum class EntriesTab(@StringRes val titleResId: Int) {
-    ALL_ENTRIES(R.string.all_entries),
-    GALLERY(R.string.gallery)
+enum class EntriesTab(@StringRes val titleResId: Int, val icon : ImageVector) {
+    ALL_ENTRIES(R.string.all_entries, Icons.AutoMirrored.Rounded.List),
+    GALLERY(R.string.gallery, Icons.Rounded.GridOn)
 }

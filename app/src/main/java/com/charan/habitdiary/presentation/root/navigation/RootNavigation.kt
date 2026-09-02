@@ -1,6 +1,14 @@
 package com.charan.habitdiary.presentation.root.navigation
 
 import android.net.Uri
+import android.util.Log
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -10,6 +18,10 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.presentation.adddailylog.AddDailyLogScreen
 import com.charan.habitdiary.presentation.addhabit.AddHabitScreen
 import com.charan.habitdiary.presentation.habitstats.HabitStatsScreen
@@ -45,8 +57,117 @@ fun RootNavigation(
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
+            rememberPredictiveBackCornerNavEntryDecorator(maxCornerRadius = 32.dp),
         ),
         sceneStrategies = listOf(listDetailStrategy),
+
+        predictivePopTransitionSpec = { swipeSide ->
+            when (swipeSide) {
+                0 -> {
+                    fadeIn(
+                        animationSpec = tween(
+                            300,
+                            easing = LinearOutSlowInEasing
+                        )
+                    ) togetherWith (
+                            scaleOut(
+                                targetScale = 0.85f,
+                                transformOrigin = TransformOrigin(0.9f, 0.5f),
+                                animationSpec = tween(
+                                    300,
+                                    easing = LinearOutSlowInEasing
+                                )
+                            ) +
+                                    fadeOut(
+                                        animationSpec = tween(
+                                            300,
+                                            easing = LinearOutSlowInEasing
+                                        )
+                                    )
+                            )
+                }
+
+                1 -> {
+                    fadeIn(
+                        animationSpec = tween(
+                            300,
+                            easing = LinearOutSlowInEasing
+                        )
+                    ) togetherWith (
+                            scaleOut(
+                                targetScale = 0.85f,
+                                transformOrigin = TransformOrigin(0.1f, 0.5f),
+                                animationSpec = tween(
+                                    300,
+                                    easing = LinearOutSlowInEasing
+                                )
+                            ) +
+                                    fadeOut(
+                                        animationSpec = tween(
+                                            300,
+                                            easing = LinearOutSlowInEasing
+                                        )
+                                    )
+                            )
+                }
+
+                else -> {
+                    scaleIn(
+                        initialScale = 0.92f,
+                        animationSpec = tween(300)
+                    ) +
+                            slideInHorizontally(
+                                initialOffsetX = { -it },
+                                animationSpec = tween(300)
+                            ) +
+                            fadeIn(
+                                animationSpec = tween(300)
+                            ) togetherWith (
+                            scaleOut(
+                                targetScale = 0.85f,
+                                animationSpec = tween(300)
+                            ) +
+                                    fadeOut(
+                                        animationSpec = tween(300)
+                                    )
+                            )
+                }
+            }
+        },
+        popTransitionSpec = {
+            (
+                slideInHorizontally(
+                    initialOffsetX = { -it },
+                    animationSpec = tween(300, easing = LinearOutSlowInEasing)
+                ) + fadeIn(
+                    animationSpec = tween(300, easing = LinearOutSlowInEasing)
+                )
+            ) togetherWith (
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(300, easing = LinearOutSlowInEasing)
+                ) + fadeOut(
+                    animationSpec = tween(300, easing = LinearOutSlowInEasing)
+                )
+            )
+        },
+        transitionSpec = {
+            (
+                slideInHorizontally(
+                    initialOffsetX = { it },
+                    animationSpec = tween(300, easing = LinearOutSlowInEasing)
+                ) + fadeIn(
+                    animationSpec = tween(300, easing = LinearOutSlowInEasing)
+                )
+            ) togetherWith (
+                slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(300, easing = LinearOutSlowInEasing)
+                ) + fadeOut(
+                    animationSpec = tween(300, easing = LinearOutSlowInEasing)
+                )
+            )
+        },
 
         entryProvider = { key->
             when(key){

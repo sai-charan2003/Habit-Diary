@@ -1,18 +1,13 @@
 package com.charan.habitdiary.presentation.settings
 
-import android.content.Intent
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.biometric.BiometricManager
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccessTime
-import androidx.compose.material.icons.rounded.BugReport
 import androidx.compose.material.icons.rounded.Campaign
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.ColorLens
@@ -29,7 +24,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
@@ -55,30 +49,24 @@ import com.charan.habitdiary.presentation.common.components.ChangeLogBottomSheet
 import com.charan.habitdiary.presentation.common.components.CustomListItem
 import com.charan.habitdiary.presentation.common.components.CustomMediumTopBar
 import com.charan.habitdiary.presentation.common.components.toScreenContentPadding
-import com.charan.habitdiary.presentation.common.model.ToastMessage
-import com.charan.habitdiary.presentation.settings.components.SectionHeader
-import com.charan.habitdiary.presentation.settings.components.SettingsRowItem
+import com.charan.habitdiary.presentation.common.components.SectionHeader
 import com.charan.habitdiary.presentation.settings.components.SettingsSwitchItem
 import com.charan.habitdiary.presentation.settings.components.ThemeOptionButtonGroup
 import android.Manifest
 import androidx.compose.material.icons.rounded.Notifications
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextButton
 import androidx.compose.ui.text.font.FontWeight
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
-import com.google.accompanist.permissions.isGranted
 import com.charan.habitdiary.presentation.common.components.RationaleDialog
 import com.charan.habitdiary.presentation.common.components.SelectTimeDialog
-import com.charan.habitdiary.core.utils.DateUtil
-import com.charan.habitdiary.core.utils.DateUtil.toFormattedString
 import com.charan.habitdiary.presentation.theme.IndexItem
 import com.charan.habitdiary.core.utils.showToast
 import kotlinx.coroutines.flow.collectLatest
 import com.charan.habitdiary.core.utils.launchFeedbackEmail
 import com.charan.habitdiary.core.utils.launchUrl
+import com.charan.habitdiary.presentation.common.components.LoadingDialog
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class,
     ExperimentalPermissionsApi::class
@@ -192,6 +180,14 @@ fun SettingsScreen(
             selectedTime = state.dailyLogReminderTime,
             is24HourFormat = state.is24HourFormat
         )
+    }
+
+    if(state.isExporting || state.isImporting){
+        LoadingDialog(
+            title = if(state.isExporting) stringResource(R.string.exporting_data) else stringResource(R.string.importing_data),
+
+        )
+
     }
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -333,13 +329,6 @@ fun SettingsScreen(
                     onClick = {
                         viewModel.onEvent(SettingsEvent.OnExportDataClick)
                     },
-                    trailingContent = {
-                        if(state.isExporting){
-                            ContainedLoadingIndicator(
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
-                    },
                     leadingContent = {
                         Icon(
                             imageVector = Icons.Rounded.Upload,
@@ -355,13 +344,6 @@ fun SettingsScreen(
                     },
                     onClick = {
                         viewModel.onEvent(SettingsEvent.OnImportDataClick)
-                    },
-                    trailingContent = {
-                        if(state.isImporting){
-                            ContainedLoadingIndicator(
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
                     },
                     leadingContent = {
                         Icon(

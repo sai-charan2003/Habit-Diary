@@ -14,6 +14,9 @@ plugins {
 
 }
 val appName = "Habit Diary"
+ksp {
+    arg("appfunctions:aggregateAppFunctions", "true")
+}
 
 android {
     namespace = "com.charan.habitdiary"
@@ -30,8 +33,8 @@ android {
         applicationId = "com.charan.habitdiary"
         minSdk = 26
         targetSdk = 37
-        versionCode = 20
-        versionName = "0.13.0"
+        versionCode = 25
+        versionName = "0.16.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -183,7 +186,13 @@ dependencies {
     implementation(libs.androidx.compose.adaptive.navigation)
     implementation(libs.androidx.compose.adaptive.navigation3)
     implementation(libs.richeditor.compose)
+    implementation(libs.androidx.appfunctions)
+    implementation(libs.androidx.appfunctions.service)
+    ksp(libs.androidx.appfunctions.compiler)
     debugImplementation(libs.leakcanary)
+    implementation(libs.haze)
+    implementation(libs.haze.blur)
+    implementation(libs.androidx.compose.ui.text.google.fonts)
 
 
 }

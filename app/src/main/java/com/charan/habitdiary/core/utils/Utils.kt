@@ -178,6 +178,39 @@ fun Context.launchUrl(url : String){
 
 }
 
+fun Context.launchExternalApp(filePath : Uri, mimeType : String){
+    try {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(filePath, mimeType)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+        val chooser = Intent.createChooser(intent, getString(R.string.open_with))
+        this.startActivity(chooser)
+    } catch (e: Exception) {
+        showToast(
+            ToastMessage.Res(R.string.no_app_found)
+        )
+        return
+    }
+}
+
+fun Context.launchShareIntent(filePath : Uri, mimeType : String){
+    try {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = mimeType
+            putExtra(Intent.EXTRA_STREAM, filePath)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+        val chooser = Intent.createChooser(intent, getString(R.string.share))
+        this.startActivity(chooser)
+    } catch (e: Exception) {
+        showToast(
+            ToastMessage.Res(R.string.no_app_found)
+        )
+        return
+    }
+}
+
 fun Long.toFormatTimeMs(): String {
     if (this <= 0) return "0:00"
 
@@ -205,3 +238,55 @@ fun getAppVersionWithVersionCode() =
     "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
 
 fun getAppVersion() = BuildConfig.VERSION_NAME
+
+fun List<DailyLogEntity>.getDiaryStreak(): Int {
+    if (isEmpty()) return 0
+
+    val completedDates = this
+        .map { it.createdAt.date }
+        .toSet()
+
+    var streak = 0
+    var date = DateUtil.getCurrentDate()
+
+    if (date !in completedDates) {
+        date = date.minusDays(1)
+        if (date !in completedDates) {
+            return 0
+        }
+    }
+
+    while (date in completedDates) {
+        streak++
+        date = date.minusDays(1)
+    }
+
+    return streak
+}
+
+fun List<DailyLogEntity>.getBestDiaryStreak(): Int {
+    if (isEmpty()) return 0
+
+    val completedDates = this
+        .map { it.createdAt.date }
+        .toSet()
+        .sorted()
+
+    var bestStreak = 0
+    var currentStreak = 0
+    var lastDate: LocalDate? = null
+
+    for (date in completedDates) {
+        val shouldContinue = if (lastDate == null) {
+            true
+        } else {
+            date == lastDate.plusDays(1)
+        }
+
+        currentStreak = if (shouldContinue) currentStreak + 1 else 1
+        bestStreak = maxOf(bestStreak, currentStreak)
+        lastDate = date
+    }
+
+    return bestStreak
+}

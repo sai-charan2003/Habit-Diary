@@ -1,8 +1,5 @@
 ## New Features
-- Added a daily diary entry reminder feature in the settings.
+- Added smooth navigation animations between screens.
+- Media can now be opened in an external gallery app.
+- Integrated app functions.
 
-## Improvements
-- Fixed localization support for app widgets.
-
-## Bug Fixes
-- Fixed image scrolling behavior in the media viewer.
