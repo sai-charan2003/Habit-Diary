@@ -73,7 +73,8 @@ import com.charan.habitdiary.presentation.common.components.LoadingDialog
 )
 @Composable
 fun SettingsScreen(
-    navigateToAboutLibraries : () -> Unit
+    navigateToAboutLibraries : () -> Unit,
+    onBack : () -> Unit
 ) {
     val viewModel = hiltViewModel<SettingsViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -115,7 +116,7 @@ fun SettingsScreen(
                 }
 
                 SettingsEffect.OnBack -> {
-
+                    onBack()
                 }
 
                 is SettingsEffect.ShowToast -> {
@@ -194,7 +195,11 @@ fun SettingsScreen(
         topBar = {
             CustomMediumTopBar(
                 title = stringResource(R.string.settings),
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                showBackButton = true,
+                onBackClick = {
+                    viewModel.onEvent(SettingsEvent.OnBack)
+                }
             )
 
         }
