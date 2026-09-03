@@ -85,18 +85,6 @@ fun HabitScreen(
                 scrollBehavior = scrollBehavior
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    viewModel.onEvent(HabitEvent.OnAddHabitClick)
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Add,
-                    contentDescription = stringResource(R.string.add_habit)
-                )
-            }
-        }
     ) { innerPadding->
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

@@ -7,6 +7,7 @@ import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.SelectableDropdownMenuItem
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -45,15 +46,15 @@ fun<T> CustomDropDown(
 
         ) {
             items.fastForEachIndexed { index, item ->
-                DropdownMenuItem(
+                SelectableDropdownMenuItem(
                     text = {
                         Text(text = stringResource(item as Int))
                     },
                     shapes = MenuDefaults.itemShape(index, items.size),
-                    onCheckedChange = {
+                    onClick = {
                         onItemSelected(item)
                     },
-                    checked = item == selectedItem,
+                    selected = item == selectedItem,
                     colors = MenuDefaults.selectableItemColors().copy(
                         containerColor = containerColor
                     )

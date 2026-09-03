@@ -182,6 +182,7 @@
     <string name="notification_daily_log_reminder_title">Diary Entry Reminder</string>
     <string name="notification_daily_log_reminder_message">Don\'t forget to write your diary entry today!</string>
     <string name="journey">Journey</string>
+    <string name="profile">Profile</string>
     <string name="no_flashback_memories">No flashback memories yet. Log daily moments to see memories from 3 months, 6 months, and a year ago!</string>
     <string name="one_year_back">One Year Back</string>
     <string name="six_months_back">Six Months Back</string>

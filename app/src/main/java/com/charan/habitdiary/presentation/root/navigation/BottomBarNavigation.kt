@@ -1,15 +1,23 @@
 package com.charan.habitdiary.presentation.root.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ImportContacts
 import androidx.compose.material.icons.outlined.Settings
@@ -19,10 +27,7 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
@@ -46,7 +51,22 @@ import com.charan.habitdiary.presentation.settings.SettingsScreen
 import com.charan.habitdiary.presentation.common.model.MediaItemUIModel
 import com.charan.habitdiary.presentation.journey.JourneyScreen
 import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Explore
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingToolbarDefaults
+import androidx.compose.material3.HorizontalFloatingToolbar
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
+import androidx.compose.material3.ToggleButtonShapes
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEachIndexed
 import kotlinx.datetime.LocalDate
 
 @Composable
@@ -131,40 +151,92 @@ fun BottomBarNavigation(
                 bottomBarBackStack.add(BottomBarNavDestinations.Journey)
             }
 
-            BottomNavItem.SETTINGS -> {
-                bottomBarBackStack.clear()
-                bottomBarBackStack.add(BottomBarNavDestinations.Settings)
-            }
-
         }
     }
-
-    NavigationSuiteScaffold(
-        navigationItemVerticalArrangement = Arrangement.Center,
-        navigationSuiteType = navSuiteType,
-        navigationItems = {
-            BottomNavItem.entries.mapIndexed { index, item ->
-                NavigationSuiteItem(
-                    selected = index == selectedItem,
-                    onClick = {
-                        previousSelectedItem = selectedItem
+    val isJourneySelected = BottomNavItem.entries[selectedItem] == BottomNavItem.JOURNEY
+    val toolbarContent: @Composable RowScope.() -> Unit = {
+        BottomNavItem.entries.fastForEachIndexed { index, item ->
+            val isSelected = index == selectedItem
+            ToggleButton(
+                checked = isSelected,
+                onCheckedChange = {
+                    if (selectedItem != index) {
                         selectedItem = index
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = if (index == selectedItem) item.selectedIcon else item.unselectedIcon,
-                            contentDescription = null
-                        )
-                    },
-                    label = {
-                        Text(stringResource(item.title))
-                    }
-                )
-            }
+                        previousSelectedItem = selectedItem
 
+                    }
+                },
+                shapes = ToggleButtonShapes(CircleShape, CircleShape, CircleShape),
+            ) {
+                if (isSelected) {
+                    Icon(
+                        imageVector = item.selectedIcon,
+                        contentDescription = stringResource(item.title)
+                    )
+                }
+                Text(
+                    text = stringResource(item.title),
+                    modifier = Modifier.padding(horizontal = 8.dp)
+
+                )
+
+            }
         }
-    ) {
+    }
+    Scaffold(
+        bottomBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isJourneySelected) {
+                    HorizontalFloatingToolbar(
+                        expanded = true,
+                        modifier = Modifier
+                            .navigationBarsPadding(),
+                        content = toolbarContent
+                    )
+                } else {
+                    HorizontalFloatingToolbar(
+                        expanded = true,
+                        modifier = Modifier
+                            .navigationBarsPadding(),
+                        floatingActionButton = {
+                            FloatingActionButton(
+                                onClick = {
+                                    when (BottomNavItem.entries[selectedItem]) {
+                                        BottomNavItem.HOME -> {
+                                            onAddHabitNav(
+                                                null
+                                            )
+                                        }
+
+                                        BottomNavItem.CALENDAR -> {
+                                            onAddDailyLogNav(
+                                                null,
+                                                null
+                                            )
+                                        }
+
+                                        else -> {}
+                                    }
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Add,
+                                    contentDescription = stringResource(R.string.add_entry)
+                                )
+                            }
+                        },
+                        content = toolbarContent
+                    )
+                }
+            }
+        }
+    ) { innerPadding->
         NavDisplay(
+            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
             backStack = bottomBarBackStack,
             onBack = { bottomBarBackStack.removeLastOrNull() },
             entryDecorators = listOf(
@@ -178,13 +250,13 @@ fun BottomBarNavigation(
                 when (key) {
                     is BottomBarNavDestinations.Home -> NavEntry(key) {
                         HabitScreen(
-                            onHabitDetails = { id->
+                            onHabitDetails = { id ->
                                 onAddHabitNav(
                                     id
                                 )
 
                             },
-                            onAddDailyLog = { id->
+                            onAddDailyLog = { id ->
                                 onAddDailyLogNav(
                                     id,
                                     null
@@ -200,9 +272,9 @@ fun BottomBarNavigation(
                         )
                     }
 
-                    is BottomBarNavDestinations.Calender -> NavEntry(key){
+                    is BottomBarNavDestinations.Calender -> NavEntry(key) {
                         DiaryScreen(
-                            onNavigateToDailyLogScreen = { id , date->
+                            onNavigateToDailyLogScreen = { id, date ->
                                 onAddDailyLogNav(
                                     id,
                                     date
@@ -241,6 +313,7 @@ fun BottomBarNavigation(
                             }
                         )
                     }
+
                     else -> NavEntry(key) { Text("Unknown route") }
 
                 }
@@ -248,7 +321,10 @@ fun BottomBarNavigation(
 
 
         )
+
+
     }
+
 }
 
 enum class BottomNavItem(
@@ -268,13 +344,8 @@ enum class BottomNavItem(
         unselectedIcon = Icons.Outlined.ImportContacts,
     ),
     JOURNEY(
-        title = R.string.journey,
-        selectedIcon = Icons.Rounded.Explore,
-        unselectedIcon = Icons.Outlined.Explore,
+        title = R.string.profile,
+        selectedIcon = Icons.Rounded.Person,
+        unselectedIcon = Icons.Outlined.Person,
     ),
-    SETTINGS(
-        title = R.string.settings,
-        selectedIcon = Icons.Rounded.Settings,
-        unselectedIcon = Icons.Outlined.Settings,
-    )
 }

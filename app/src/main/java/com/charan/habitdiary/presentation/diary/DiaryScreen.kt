@@ -226,18 +226,7 @@ fun DiaryScreen(
                 scrollBehavior = scrollBehavior
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    viewModel.onEvent(DiaryEvent.OnNavigateToAddDailyLogScreen(null))
-                }
-            ) {
-                Icon(
-                    Icons.Rounded.Add,
-                    contentDescription = stringResource(R.string.add_daily_log)
-                )
-            }
-        }
+
     ) { innerPadding ->
         SupportingPaneScaffold(
             modifier = Modifier.fillMaxSize().padding(top = innerPadding.calculateTopPadding()),
