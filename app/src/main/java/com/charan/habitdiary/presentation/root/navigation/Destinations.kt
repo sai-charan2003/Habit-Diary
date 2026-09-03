@@ -13,9 +13,6 @@ sealed class BottomBarNavDestinations : NavKey{
     object Calender : BottomBarNavDestinations()
 
     @Serializable
-    object Settings : BottomBarNavDestinations()
-
-    @Serializable
     object Journey : BottomBarNavDestinations()
 }
 
@@ -54,4 +51,7 @@ sealed class Destinations : NavKey {
 
     @Serializable
     data object AllEntriesScreenNav : Destinations()
+
+    @Serializable
+    data object SettingsScreenNav : Destinations()
 }

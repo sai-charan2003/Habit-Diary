@@ -7,4 +7,5 @@ sealed class JourneyEffect {
         val allImages: List<MediaItemUIModel>,
         val currentImage: MediaItemUIModel
     ) : JourneyEffect()
+    data object NavigateToSettings : JourneyEffect()
 }

@@ -24,9 +24,11 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.unit.dp
 import com.charan.habitdiary.presentation.adddailylog.AddDailyLogScreen
 import com.charan.habitdiary.presentation.addhabit.AddHabitScreen
+import com.charan.habitdiary.presentation.allentries.AllEntriesScreen
 import com.charan.habitdiary.presentation.habitstats.HabitStatsScreen
 import com.charan.habitdiary.presentation.mediaviewer.MediaViewerScreen
 import com.charan.habitdiary.presentation.onboarding.OnBoardingScreen
+import com.charan.habitdiary.presentation.settings.SettingsScreen
 import com.charan.habitdiary.presentation.settings.aboutlibraries.AboutLibrariesScreen
 
 @Composable
@@ -182,9 +184,6 @@ fun RootNavigation(
                         onAddDailyLogNav = { id, date->
                             backStack.add(Destinations.AddDailyLog(id = id, date = date))
                         },
-                        onNavigateToAboutLibraries = {
-                            backStack.add(Destinations.LibrariesScreenNav)
-                        },
                         onImageOpen = { allImages, currentImage, showLogEntryButton ->
                             backStack.add(Destinations.ImageViewerScreenNav(allImages,currentImage, showLogEntryButton))
                         },
@@ -193,6 +192,9 @@ fun RootNavigation(
                         },
                         onNavigateToAllEntries = {
                             backStack.add(Destinations.AllEntriesScreenNav)
+                        },
+                        onNavigateToSettings = {
+                            backStack.add(Destinations.SettingsScreenNav)
                         }
 
                     )
@@ -274,7 +276,7 @@ fun RootNavigation(
                     key,
                     metadata = ListDetailScene.detailPane()
                 ) {
-                    com.charan.habitdiary.presentation.allentries.AllEntriesScreen(
+                    AllEntriesScreen(
                         onBack = {
                             backStack.removeLastOrNull()
                         },
@@ -301,6 +303,20 @@ fun RootNavigation(
                         },
                         onEditHabit = {
                             backStack.add(Destinations.AddHabit(it))
+                        }
+                    )
+                }
+
+                is Destinations.SettingsScreenNav -> NavEntry(
+                    key,
+                    metadata = ListDetailScene.detailPane()
+                ) {
+                    SettingsScreen(
+                        navigateToAboutLibraries = {
+                            backStack.add(Destinations.LibrariesScreenNav)
+                        },
+                        onBack = {
+                            backStack.removeLastOrNull()
                         }
                     )
                 }
