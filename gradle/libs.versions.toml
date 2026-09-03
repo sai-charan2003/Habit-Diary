@@ -2,6 +2,7 @@
 accompanistPermissions = "0.37.3"
 agp = "9.2.1"
 appfunctions = "1.0.0-alpha11"
+appfunctionsService = "1.0.0-alpha09"
 biometricCompose = "1.4.0-alpha07"
 coilCompose = "3.6.1"
 composeMultiplatform = "2.10.1"
@@ -50,7 +51,7 @@ accompanist-permissions = { module = "com.google.accompanist:accompanist-permiss
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-appfunctions = { module = "androidx.appfunctions:appfunctions", version.ref = "appfunctions" }
 androidx-appfunctions-compiler = { module = "androidx.appfunctions:appfunctions-compiler", version.ref = "appfunctions" }
-androidx-appfunctions-service = { module = "androidx.appfunctions:appfunctions-service", version.ref = "appfunctions" }
+androidx-appfunctions-service = { module = "androidx.appfunctions:appfunctions-service", version.ref = "appfunctionsService" }
 androidx-biometric-compose = { module = "androidx.biometric:biometric-compose", version.ref = "biometricCompose" }
 androidx-compose-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "adaptive" }
 androidx-compose-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "adaptive" }
