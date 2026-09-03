@@ -12,14 +12,11 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ImportContacts
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material.icons.rounded.ImportContacts
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteItem
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -42,21 +39,20 @@ import androidx.navigation3.ui.NavDisplay
 import com.charan.habitdiary.R
 import com.charan.habitdiary.presentation.diary.DiaryScreen
 import com.charan.habitdiary.presentation.habits.HabitScreen
-import com.charan.habitdiary.presentation.settings.SettingsScreen
 import com.charan.habitdiary.presentation.common.model.MediaItemUIModel
 import com.charan.habitdiary.presentation.journey.JourneyScreen
-import androidx.compose.material.icons.outlined.Explore
-import androidx.compose.material.icons.rounded.Explore
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.rounded.Person
 import kotlinx.datetime.LocalDate
 
 @Composable
 fun BottomBarNavigation(
     onAddHabitNav : (Long?) -> Unit,
     onAddDailyLogNav : (id : Long? , date : LocalDate?) -> Unit,
-    onNavigateToAboutLibraries : () -> Unit,
     onImageOpen : (allImage : List<MediaItemUIModel>,currentImage : MediaItemUIModel, showLogEntryButton: Boolean) -> Unit,
     onHabitStats : (id : Long) -> Unit,
     onNavigateToAllEntries : () -> Unit,
+    onNavigateToSettings : () -> Unit,
 ) {
     val bottomBarBackStack = rememberNavBackStack(BottomBarNavDestinations.Home)
     var selectedItem by rememberSaveable {
@@ -126,14 +122,9 @@ fun BottomBarNavigation(
                 bottomBarBackStack.add(BottomBarNavDestinations.Calender)
             }
 
-            BottomNavItem.JOURNEY -> {
+            BottomNavItem.YOU -> {
                 bottomBarBackStack.clear()
                 bottomBarBackStack.add(BottomBarNavDestinations.Journey)
-            }
-
-            BottomNavItem.SETTINGS -> {
-                bottomBarBackStack.clear()
-                bottomBarBackStack.add(BottomBarNavDestinations.Settings)
             }
 
         }
@@ -221,15 +212,6 @@ fun BottomBarNavigation(
                         )
                     }
 
-                    is BottomBarNavDestinations.Settings -> NavEntry(key) {
-                        SettingsScreen(
-                            navigateToAboutLibraries = {
-                                onNavigateToAboutLibraries()
-
-                            }
-                        )
-                    }
-
                     is BottomBarNavDestinations.Journey -> NavEntry(key) {
                         JourneyScreen(
                             onImageClick = { allImages, currentImage, showLogEntryButton ->
@@ -238,6 +220,9 @@ fun BottomBarNavigation(
                                     currentImage,
                                     showLogEntryButton
                                 )
+                            },
+                            onSettingsClick = {
+                                onNavigateToSettings()
                             }
                         )
                     }
@@ -267,14 +252,10 @@ enum class BottomNavItem(
         selectedIcon = Icons.Rounded.ImportContacts,
         unselectedIcon = Icons.Outlined.ImportContacts,
     ),
-    JOURNEY(
-        title = R.string.journey,
-        selectedIcon = Icons.Rounded.Explore,
-        unselectedIcon = Icons.Outlined.Explore,
+    YOU(
+        title = R.string.you,
+        selectedIcon = Icons.Rounded.Person,
+        unselectedIcon = Icons.Outlined.Person,
     ),
-    SETTINGS(
-        title = R.string.settings,
-        selectedIcon = Icons.Rounded.Settings,
-        unselectedIcon = Icons.Outlined.Settings,
-    )
+
 }

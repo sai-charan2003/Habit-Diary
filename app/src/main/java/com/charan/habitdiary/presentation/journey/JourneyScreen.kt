@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.Collections
 import androidx.compose.material.icons.rounded.ImportContacts
 import androidx.compose.material.icons.rounded.CheckCircle
@@ -22,6 +23,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -49,7 +53,8 @@ import com.charan.habitdiary.presentation.common.model.MediaItemUIModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JourneyScreen(
-    onImageClick: (List<MediaItemUIModel>, MediaItemUIModel, Boolean) -> Unit
+    onImageClick: (List<MediaItemUIModel>, MediaItemUIModel, Boolean) -> Unit,
+    onSettingsClick: () -> Unit
 ) {
     val viewModel = hiltViewModel<JourneyViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -64,6 +69,9 @@ fun JourneyScreen(
                 is JourneyEffect.NavigateToImageViewer -> {
                     onImageClick(effect.allImages, effect.currentImage, true)
                 }
+                is JourneyEffect.NavigateToSettings -> {
+                    onSettingsClick()
+                }
             }
         }
     }
@@ -72,8 +80,19 @@ fun JourneyScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CustomMediumTopBar(
-                title = stringResource(R.string.journey),
-                scrollBehavior = scrollBehavior
+                title = stringResource(R.string.your_journey),
+                scrollBehavior = scrollBehavior,
+                actions = {
+                    IconButton(
+                        onClick = { viewModel.onEvent(JourneyEvent.OnSettingsClick) },
+                        shapes = IconButtonDefaults.shapes()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Settings,
+                            contentDescription = stringResource(R.string.settings)
+                        )
+                    }
+                }
             )
         }
     ) { innerPadding ->

@@ -65,6 +65,8 @@
     <string name="backup_restored">Backup Restored</string>
     <string name="habits">Habits</string>
     <string name="diary">Diary</string>
+    <string name="you">You</string>
+    <string name="your_journey">Your Journey</string>
     <string name="daily">Daily</string>
     <string name="weekdays">Weekdays</string>
     <string name="weekends">Weekends</string>
