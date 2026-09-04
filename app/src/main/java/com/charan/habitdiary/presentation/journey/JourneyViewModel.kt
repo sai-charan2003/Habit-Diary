@@ -124,6 +124,9 @@ class JourneyViewModel @Inject constructor(
                     )
                 }
             }
+            is JourneyEvent.OnSettingsClick -> {
+                sendEffect(JourneyEffect.NavigateToSettings)
+            }
         }
     }
 
